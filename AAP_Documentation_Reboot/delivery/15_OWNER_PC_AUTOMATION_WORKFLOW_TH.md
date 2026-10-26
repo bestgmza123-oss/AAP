@@ -72,6 +72,7 @@ CI job ชื่อ `Playwright browser smoke` ติดตั้ง Chromium �
 ## 6. Branch, commit และ Required Status Checks
 
 - หลีกเลี่ยงการแก้ main โดยตรงหลัง initial bootstrap; ใช้ task branch + PR เพื่อให้ diff ตรวจสอบได้และลดความจำเป็นที่เจ้าของจะคอยทดสอบทุก commit
+- Workflow trigger ของ AAP: branch/topic changes ผ่าน `pull_request` ที่ base `main`; push-trigger รันเฉพาะบน `main` หลัง merge เพื่อลด CI ซ้ำบน SHA เดียวกัน. ไม่ใส่ path filters ใน workflow ที่ชื่อ check ถูกตั้งเป็น Required Status Checks เพราะ PR ที่ไฟล์ไม่ match filter อาจทำให้ check ค้างเป็น pending.
 - เชื่อม local checks, PR head, GitHub Actions run, reviewed diff และ checkpoint ด้วย **commit SHA เดียวกัน** ถ้ามี commit ใหม่ ต้องตรวจ CI และ acceptance ของ revision ใหม่นั้น ไม่ยกผลเก่ามาใช้โดยไม่เทียบ SHA
 - ใน AAP ปัจจุบันได้ตั้ง Required Status Checks และอ่านค่ากลับยืนยันแล้ว: contexts คือ AAP UI quality gates และ Playwright browser smoke, strict up-to-date enabled, enforce admins enabled, force-push/delete disabled, PR required โดย approvals required = 0. สำหรับ repo อื่น ให้ตั้ง Required Status Checks เฉพาะหลัง workflow ทำงานจริงและได้ชื่อ check ที่แน่นอนแล้ว ต้องมีสิทธิ์เปลี่ยน rule และอ่านค่ากลับเพื่อยืนยัน ไม่ถือว่า .github/workflows/ci.yml มีอยู่แล้วเท่ากับ branch protection เปิดใช้งาน
 - หลังตรวจ baseline CI ให้พิจารณากฎ main: require PR, require checks, ปิด force-push/delete ถ้าเหมาะสมกับ repo, และไม่ให้ bypass โดยไม่จำเป็น ก่อนเปลี่ยน settings ต้องยืนยันว่ามีสิทธิ์จริง

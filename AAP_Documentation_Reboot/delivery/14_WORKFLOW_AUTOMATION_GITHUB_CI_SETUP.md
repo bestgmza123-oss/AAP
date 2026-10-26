@@ -73,6 +73,7 @@
 - [x] A controlled failing browser run produced an inspectable retained artifact (run #9); the failure was intentionally injected on a disposable temporary branch and that branch was deleted after verification.
 - [x] PR #1 remains open for owner review; implementation commit `4b646efa708ac4be39a59d0dc55b47f7e7ec665d` matched Run #7, and checkpoint commit `910123ca57499174daf1d6f9f9fa9d988ced13cc` matched both Runs #10 and #11. Always verify the current PR head SHA and required checks before merge.
 - [x] Required Status Checks and main branch protection were configured and read back successfully; approvals required are set to zero. Do not merge PR #1 automatically.
+- [x] Workflow trigger efficiency updated: topic branches run on pull_request targeting main; push-trigger runs on main only. Path filters were removed to keep required checks from being skipped/pending on PRs that touch other files.
 - [x] Trello card links the real repository/commit/PR/CI runs/artifact proof and records that PR #1 remains open for owner review; no follow-on Task starts automatically.
 - [x] No game rules changed and P1-UI-002 remains unstarted.
 

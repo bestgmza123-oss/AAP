@@ -1,21 +1,12 @@
 name: AAP UI CI
 
 on:
+  # Topic branches are verified by pull_request; avoid running an identical push job.
+  # Do not path-filter these required checks, or unrelated PR changes can leave them pending.
   push:
-    branches: [main, "automation/**", "task/**"]
-    paths:
-      - "AAP_UI_P1/**"
-      - "AAP_Documentation_Reboot/**"
-      - ".github/workflows/ci.yml"
-      - "README.md"
-      - "DELIVERY_README_TH.md"
+    branches: [main]
   pull_request:
-    paths:
-      - "AAP_UI_P1/**"
-      - "AAP_Documentation_Reboot/**"
-      - ".github/workflows/ci.yml"
-      - "README.md"
-      - "DELIVERY_README_TH.md"
+    branches: [main]
   workflow_dispatch:
 
 permissions:

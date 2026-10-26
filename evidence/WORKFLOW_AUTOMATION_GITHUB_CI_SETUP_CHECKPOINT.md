@@ -15,6 +15,7 @@ Scope: workflow/tooling only. No game-rule changes. P1-UI-002 has not started.
 - PR branch: task/owner-pc-automation-workflow.
 - Implementation commit: 4b646efa708ac4be39a59d0dc55b47f7e7ec665d.
 - GitHub Actions Run #7 passed both AAP UI quality gates and Playwright browser smoke on that implementation SHA — https://github.com/bestgmza123-oss/AAP/actions/runs/40377930212.
+- Workflow trigger efficiency was adjusted in the final follow-up: topic branches run on pull_request targeting main; push-trigger runs only on main. Path filters were removed from required checks so unrelated PR file changes cannot leave the check contexts missing/pending. The latest change must pass its own PR run before merge.
 - Docs/checkpoint commit 910123ca57499174daf1d6f9f9fa9d988ced13cc passed both push Run #10 and PR Run #11 on the exact same SHA:
   - push: https://github.com/bestgmza123-oss/AAP/actions/runs/40379732579
   - pull request: https://github.com/bestgmza123-oss/AAP/actions/runs/40379738964
