@@ -1,21 +1,12 @@
 name: AAP UI CI
 
 on:
+  # Topic branches are verified by pull_request; avoid running an identical push job.
+  # Do not path-filter these required checks, or unrelated PR changes can leave them pending.
   push:
-    branches: [main, "automation/**", "task/**"]
-    paths:
-      - "AAP_UI_P1/**"
-      - "AAP_Documentation_Reboot/**"
-      - ".github/workflows/ci.yml"
-      - "README.md"
-      - "DELIVERY_README_TH.md"
+    branches: [main]
   pull_request:
-    paths:
-      - "AAP_UI_P1/**"
-      - "AAP_Documentation_Reboot/**"
-      - ".github/workflows/ci.yml"
-      - "README.md"
-      - "DELIVERY_README_TH.md"
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -61,3 +52,42 @@ jobs:
 
       - name: Production build
         run: npm run build
+
+  browser:
+    name: Playwright browser smoke
+    needs: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: AAP_UI_P1
+    steps:
+      - name: Checkout the exact source revision
+        uses: actions/checkout@v4
+
+      - name: Set up Node and npm cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: AAP_UI_P1/package-lock.json
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Install Chromium for Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Run browser smoke tests
+        run: npm run test:e2e
+
+      - name: Upload browser diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-failure-${{ github.sha }}-${{ github.run_attempt }}
+          path: |
+            AAP_UI_P1/playwright-report/
+            AAP_UI_P1/test-results/
+          if-no-files-found: warn
+          retention-days: 14

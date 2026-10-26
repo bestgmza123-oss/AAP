@@ -136,12 +136,16 @@ For the hash-verified source in `AAP1.2.zip`, the owner's latest Windows results
 The owner-provided Browser composite was reviewed: the right panel shows the root shell, `P1-UI-001`, and the required boundary banner; the left panel shows `Route not implemented` and `Return to shell`. Both rendered UI states are PASS. The full pathname is not visible in browser chrome; see `evidence/browser-smoke-evidence.md`. `P1-UI-001` is accepted for the bounded scaffold/shell scope. `DOC-WF-001` is complete; do not start `P1-UI-002` automatically; wait for explicit owner instruction.
 
 
-## Workflow Automation & GitHub CI Setup — current checkpoint (2026-10-26)
+## Workflow Automation & GitHub CI Setup — current checkpoint (2026-10-27)
 
-- [x] GitHub profile lookup returned a connected identity.
-- [x] Bounded repository list and exact AAP/Anime Apocalypse searches returned zero repositories; GitHub App installation listing returned zero installations.
-- [x] The extracted project directory was checked and is not a Git repository.
-- [x] Exact repository URL and metadata permissions verified directly (`bestgmza123-oss/AAP`, Public, `main`, `admin=true` / `push=true`); remote is empty, so the remaining bootstrap blocker is first source commit.
-- [ ] Task branch, commit, PR, real Actions run/artifacts, Playwright job and required status checks: `BLOCKED` / `NOT RUN` until the initial source is pushed and real runs/check names exist.
-- [x] Exactly one repository-bootstrap Owner Action is documented at `../evidence/OWNER_ACTION_GITHUB_REPOSITORY_TH.md`; no reconnection/authorization request is needed for the directly verified repository.
+- [x] Exact repository URL verified: `bestgmza123-oss/AAP`, Public, default branch `main`.
+- [x] Initial source pushed; remote `main` equals `ac893af3b772100477a9ddcb652bacde2987116c`.
+- [x] GitHub CLI OAuth scope `workflow` authorized; normal push succeeded without force-push.
+- [x] Real [AAP UI CI run #1](https://github.com/bestgmza123-oss/AAP/actions/runs/40372672282) completed `success` on the same SHA; npm ci, lint, unit tests, typecheck, static scope audit, and production build all passed.
+- [x] Owner PC automation guide added: `delivery/15_OWNER_PC_AUTOMATION_WORKFLOW_TH.md`.
+- [x] Playwright dependency/config/two route tests and CI browser job implemented on the task branch; Windows browser smoke is PASS (2/2).
+- [ ] Push this implementation and verify both browser routes in GitHub Actions on the exact SHA.
+- [ ] Failed browser artifacts (HTML report/screenshots/traces) verified from an actual failing workflow run.
+- [ ] Latest task branch/PR head and CI SHA match.
+- [ ] Required Status Checks/main branch protection changed only after real check names exist, then read back to prove settings.
 - [ ] Do not begin `P1-UI-002` automatically.

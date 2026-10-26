@@ -2,85 +2,93 @@
 
 ## Task contract
 
-- **Task ID:** `Workflow Automation & GitHub CI Setup`
-- **Status:** `Blocked` — `REPOSITORY_EMPTY_BOOTSTRAP_BLOCKER` (existing repository and write permissions confirmed; initial source commit still required)
-- **Purpose:** Make the existing AAP repository, commit history, pull requests and GitHub Actions the routine implementation/review/handoff path so the owner is not a manual bridge among Agent, Windows, ZIP and Trello.
-- **Source authority:** Current AAP package in this project root, particularly `AGENTS.md`, `delivery/03_NEXT_TASK.md`, `delivery/06_TASK_BOARD_WORKFLOW.md`, `delivery/08_REUSABLE_PROMPTS_TH.md`, `delivery/12_PROJECT_WORKSPACE_AND_SINGLE_ZIP_HANDOFF.md`, `CHECKLIST_FOR_REVIEW.md`, and the existing `AAP_UI_P1/package.json` + `package-lock.json`.
-- **Game-rule changes:** None authorized. This is workflow/tooling only. Do not edit game systems, mechanics, balance, feature scope, or backend contracts.
-- **Next-task control:** Do not start `P1-UI-002` automatically.
+- **Task ID:** Workflow Automation & GitHub CI Setup
+- **Current status:** Review — baseline CI, Playwright browser smoke, failure-artifact upload proof, PR/SHA checks, and main branch-protection read-back are verified. PR #1 remains open/unmerged for owner review.
+- **Purpose:** Make the existing AAP repository, commit history, pull requests, Windows checkout and GitHub Actions the routine workflow, reducing manual tests, copy/paste logs and unnecessary owner commits.
+- **Source authority:** AAP root README, AAP_Documentation_Reboot/AGENTS.md, delivery/03_NEXT_TASK.md, delivery/06_TASK_BOARD_WORKFLOW.md, delivery/12_PROJECT_WORKSPACE_AND_SINGLE_ZIP_HANDOFF.md, delivery/15_OWNER_PC_AUTOMATION_WORKFLOW_TH.md, CHECKLIST_FOR_REVIEW.md, and AAP_UI_P1/package.json + package-lock.json.
+- **Game-rule changes:** None authorized. Workflow/tooling only. Do not edit game systems, mechanics, balance, feature scope, or backend contracts.
+- **Next-task control:** Do not start P1-UI-002 automatically.
 
-## Verified preflight — 2026-10-26
+## Current verified state — 2026-10-27
 
 | Check | Result | Evidence |
 |---|---|---|
-| GitHub profile/tool authentication | `PASS` — an authenticated profile result was returned | GitHub connector profile lookup in this task |
-| Repository list, first page (100 max) | `PASS` for the query; zero repositories returned | `../../evidence/github-repository-access-check.md` |
-| Bounded repository search for `AAP` | `PASS` for the query; zero repositories returned | Same evidence report |
-| Bounded repository search for `Anime Apocalypse` | `PASS` for the query; zero repositories returned | Same evidence report |
-| GitHub App installation list | `PASS` for the query; zero installations returned | Same evidence report |
-| Local extracted Project Root | `BLOCKED` as a Git checkout; `git status` returned `fatal: not a git repository` | Same evidence report |
-| Direct URL `https://github.com/bestgmza123-oss/AAP` | `PASS` — existing public repository | `get_repo` returned repository metadata |
-| Default branch / reported write permissions | `PASS` — `main`, `admin=true`, `push=true` | Direct repository metadata |
-| Repository content | `BLOCKED` — `size=0`, Contents API reports empty repository | No source commit exists to branch from |
-| Branch, commit, PR, workflow run, CI artifacts | `NOT RUN` — remote repository is empty | Do not invent results; initial source push required |
-| Branch protection / required status checks | `NOT VERIFIED` — no workflow run/check names exist yet | Configure/read back only after actual run and permission check |
-| Playwright dependency/config/test | `NOT RUN` — requires an authorized repository branch and a lockfile update in a permitted environment | Do not retry dependency installation in the already DNS-blocked Agent environment without new network evidence |
-| Trello write/sync | `PASS` — this task's card is tracked on `AAP Development` | Trello card URL in checkpoint/report |
+| Canonical repository | PASS — public repository at the exact owner-provided URL | https://github.com/bestgmza123-oss/AAP |
+| Owner's initial push | PASS — main points to ac893af3b772100477a9ddcb652bacde2987116c | [Commit](https://github.com/bestgmza123-oss/AAP/commit/ac893af3b772100477a9ddcb652bacde2987116c) |
+| Git authentication | PASS — owner refreshed gh OAuth scope workflow; active account bestgmza123-oss; normal push succeeded | Owner-provided PowerShell output |
+| Base GitHub Actions | PASS — AAP UI CI run #1 completed with conclusion success on the same SHA | [Run #1](https://github.com/bestgmza123-oss/AAP/actions/runs/40372672282) |
+| Actual CI steps | PASS — checkout, Node/npm setup/cache, npm ci, lint, unit tests, typecheck, static scope audit, production build | [Job output](https://github.com/bestgmza123-oss/AAP/actions/runs/40372672282/job/121747257234) |
+| Windows remote workspace | PASS — DESKTOP-6U02MEL online; repository at C:\Users\ultra\Downloads\AAP_Project; main tracks origin/main at the verified commit | Remote Desktop inspection, 2026-10-27 |
+| Working-tree state at inspection | Known untracked local legacy/manifests/evidence files exist; do not auto-add or delete them without auditing scope | Remote git status output |
+| Playwright package/config/routes | PASS — npm dependency/lockfile, config, two route tests, Vitest exclusion and typecheck/lint scope are committed to PR #1 | [Run #7](https://github.com/bestgmza123-oss/AAP/actions/runs/40377930212) passed both jobs on SHA `4b646efa708ac4be39a59d0dc55b47f7e7ec665d`; Windows smoke 2/2 |
+| Browser failure report/screenshots/traces as Actions artifacts | PASS — controlled failure probe failed in the browser step and uploaded a retained artifact | [Run #9](https://github.com/bestgmza123-oss/AAP/actions/runs/40378477194); artifact `playwright-failure-aa4084efad09a897ecc7a8b3d849ddadefccb29d-1`, 5,001,070 bytes, not expired. Temporary probe branch was deleted after verification. |
+| PR handoff | IN REVIEW — PR #1 remains open/unmerged. Implementation commit `4b646efa708ac4be39a59d0dc55b47f7e7ec665d` passed both jobs in Run #7; docs/checkpoint commit `910123ca57499174daf1d6f9f9fa9d988ced13cc` passed both push Run #10 and PR Run #11. Always verify the current PR head has both checks green before merge. | [PR #1](https://github.com/bestgmza123-oss/AAP/pull/1) · [run #10](https://github.com/bestgmza123-oss/AAP/actions/runs/40379732579) · [run #11](https://github.com/bestgmza123-oss/AAP/actions/runs/40379738964) |
+| Required Status Checks / branch rules | PASS — branch protection PUT succeeded and read-back confirmed both required checks, strict up-to-date requirement, admin enforcement, no force-push/deletion, and PR requirement (zero approvals configured) | Readback via authenticated local `gh api repos/bestgmza123-oss/AAP/branches/main/protection`; rulesets endpoint returned `[]` |
+| Trello sync | Updated with the verified push/CI state and the next bounded actions | [Task card](https://trello.com/c/FQsbZsmU/6-workflow-automation-github-ci-setup-%E0%B9%80%E0%B8%8A%E0%B8%B7%E0%B9%88%E0%B8%AD%E0%B8%A1-aap-repository) |
+| P1-UI-002 / game rules | Not started / unchanged | Scope boundary for this task |
 
-The global repository list and bounded searches did not surface AAP, but the owner then provided `https://github.com/bestgmza123-oss/AAP` and a direct `get_repo` succeeded. The existing repository is Public, `main` is the default branch, and the connector reports `admin=true`/`push=true`; `size=0` and the Contents API error “This repository is empty” confirm it has no seed commit or source files. Therefore the correct blocker is initial source bootstrap, not repository absence or authorization. Never infer absence from list/search alone when a canonical URL is supplied. The exported workspace is not a Git checkout. No repository was created, guessed or claimed. No dependency install was retried.
+## What is in scope
 
-## Scope
+1. Keep repository branch/commit/PR/Actions as the authoritative code and test handoff.
+2. Use the authorized Windows checkout via Remote Desktop Commander for in-scope file edits, local commands, diff review and test execution when the device is online and the tool permits the action.
+3. Avoid requiring the owner to rerun routine lint/test/build, copy entire command transcripts, or commit every small edit when the Agent can inspect the same workspace or CI evidence directly.
+4. Create an isolated task branch for this follow-up; do not do routine new work directly on main.
+5. Add Playwright as a real dev dependency using npm and update package.json/package-lock.json together. Never hand-edit the lockfile.
+6. Test / (fixture-only boundary banner and P1-UI-001 shell) and /not-yet-implemented (placeholder and return-to-shell link).
+7. Publish browser reports, screenshots and traces as GitHub Actions artifacts when tests fail, with explicit artifact paths and retention.
+8. Verify every CI run against its source SHA. Configure/read back Required Status Checks only when actual stable check names and settings permission are confirmed.
+9. Update this task's documents/checkpoint/Trello without editing any game rules or starting P1-UI-002.
 
-### In scope
+## Out of scope
 
-1. Change workflow documentation to make repository branch/commit/PR/Actions the routine handoff when actually available.
-2. Keep Trello as a Thai status/dependency dashboard and link real repository/PR/CI/artifact records rather than copying source/test output as the long-term process.
-3. Once authorized repository access is effective, create one bounded branch and implement CI with Node/npm version compatible with `AAP_UI_P1/package.json` `engines`, `actions/setup-node`, npm cache keyed to `AAP_UI_P1/package-lock.json`, `npm ci`, and the scripts that truly exist: `lint`, `test`, `typecheck`, `audit:scope`, `build`.
-4. Add Playwright browser smoke only in the authorized repository and with the test dependency/config committed to the same revision. Test `/` (fixture boundary banner and shell) and `/not-yet-implemented` (placeholder and return-to-shell link). Upload HTML report, screenshots and traces as GitHub Actions artifacts when the browser job fails.
-5. Run the actual workflow; record commit SHA, run URL/status and artifact URLs. Only configure Required Status Checks if repository permissions allow and the exact check names have real runs; read back protection/ruleset configuration afterward.
-6. Verify and preserve one source revision across PR head SHA, CI run SHA, reviewed diff and checkpoint. If a new commit changes source, its checks/review must be rerun.
-7. Update the existing canonical policy docs and checklist without editing any game specification.
+- Gameplay or product work for P1-UI-002 and later.
+- API/backend/database/Supabase/auth/persistence, secrets, deployment or production release.
+- Replacing the canonical repository, force pushing, bypassing failing checks or weakening security settings to make automation pass.
+- Retrying npm installation in an Agent environment with known EAI_AGAIN evidence unless new diagnostics prove connectivity changed.
+- Claims of browser testing, artifacts, branch protection, or required checks without observable results.
 
-### Out of scope
+## Execution plan
 
-- Any gameplay/UI product work for `P1-UI-002` or later tasks.
-- Changes to game rules, balance, phase placement, API/backend/database/Supabase, secrets, deployment or production release.
-- Creating a replacement GitHub repository, using a guessed URL, asking the owner to paste credentials, or bypassing a failing/missing check.
-- Retrying `npm ci`/`npm install` in the current Agent environment after the previously evidenced `EAI_AGAIN` without new diagnostic evidence that connectivity/settings changed.
-- Marking CI, Playwright, branch protection or Required Status Checks `PASS` before an actual result/read-back exists.
-
-## CI / Browser plan after the initial source commit is pushed
-
-1. Verify repository URL, default branch, actual repository read/write permission, and whether GitHub Actions/workflows are enabled. Create a Task branch from the verified default branch; do not commit to the default branch directly.
-2. Add a GitHub Actions workflow that triggers on pull requests and relevant pushes. Use `actions/checkout`, `actions/setup-node` with Node 22 compatible with the declared `>=22.12.0` engine, npm cache and `cache-dependency-path: AAP_UI_P1/package-lock.json`. In `AAP_UI_P1/`, run `npm ci` then each package script separately: `npm run lint`, `npm test`, `npm run typecheck`, `npm run audit:scope`, and `npm run build`.
-3. Add `@playwright/test`, its npm script, config and two route smoke tests on that same branch; let npm update `package.json` and `package-lock.json` in the working repository/authorized environment. Use the local Vite app only. Install Chromium in the GitHub runner as part of the browser job. Do not use the known-blocked Agent DNS environment to retry an install.
-4. Preserve Playwright `playwright-report/`, `test-results/` screenshots and traces; on failure upload them as a workflow artifact with a predictable name including the commit SHA/run attempt. A real successful run must also be captured as evidence; YAML alone does not satisfy acceptance.
-5. Inspect each run result and its commit SHA. If checks pass, obtain exact stable job/check names from the real run. If permitted, configure those as required checks on the verified default branch and retrieve the settings to prove they are active. If permissions are insufficient, record `NOT CONFIGURED` and give the actual repository owner/admin the exact setting names/action.
-6. Open a PR and review its diff. CI run SHA and PR head SHA must match. Update the same Trello card with URLs for the repository, branch, commit, PR, run, artifacts and next action.
-
-
-### Integration write capability note
-
-The official [Connecting GitHub to ChatGPT guide](https://help.openai.com/en/articles/11145903-connecting-github-to-chatgpt) describes the standard connected app as read-only for code changes and directs users to Codex for direct code pushes. In this session, direct `get_repo` for the owner-provided URL reports `admin=true` and `push=true`; however, no write operation against a seeded branch has yet been tested because the repository is empty. After the one-time initial source push, verify the actual branch/ref operations and real workflow results before claiming the path is working end to end. Do not claim a PR or CI pass until the tool returns a real SHA/URL/run result.
+1. Inspect the online Windows device, actual Project Root, git status, branch/HEAD and the matching Trello card. Preserve unrelated untracked local files.
+2. Read the canonical workflow rules including delivery/15_OWNER_PC_AUTOMATION_WORKFLOW_TH.md.
+3. Create a branch based on the latest origin/main. Keep the work limited to the automation acceptance criteria above.
+4. Add Playwright test dependency, scripts, config and the two route tests with npm in the authorized checkout or a verified GitHub-hosted environment. Use the actual package scripts and Node/npm engines from AAP_UI_P1/package.json.
+5. Run relevant local checks. Reuse working dependencies while the lockfile is unchanged; if dependencies must be re-synced, use npm ci only where connectivity and environment support it.
+6. Inspect git diff, git diff --check, status and the staged file set. Do not include secrets, .env, node_modules, dist, logs or unrelated pre-existing untracked files.
+7. Commit a coherent, tested increment once, rather than committing each edit/test iteration. Push the task branch and open a PR when the authorized write surface supports those operations.
+8. Inspect actual Actions results/artifacts; compare PR head SHA, reviewed diff, workflow SHA and evidence. Any new commit needs checks for that new SHA.
+9. Configure required status checks only after real check names have completed successfully and repository permission is confirmed. Read back branch protection/ruleset settings.
+10. Update the same Trello card with the actual branch/commit/PR/run/artifact URLs and the next decision or blocker.
 
 ## Acceptance criteria
 
-- [x] Exact existing AAP repository `https://github.com/bestgmza123-oss/AAP` is resolved directly; it is Public, default branch `main`, and metadata reports `admin=true` / `push=true`. Repository contents are empty, so source bootstrap is still required.
-- [ ] Changes are placed on a named Task branch, with a traceable commit and PR; no direct default-branch write is done.
-- [ ] Workflow runs `npm ci` and all five real package scripts and results are visible in GitHub Actions.
-- [ ] Playwright dependency, lockfile, script, config and tests are committed; both required routes are tested against local fixture-only UI.
-- [ ] A real failed-browser-run path produces and retains its report/screenshots/traces as GitHub Actions artifacts, as configured and evidenced by the run/artifact interface when a failure occurs.
-- [ ] PR head, workflow run, review and checkpoint all identify the same source SHA.
-- [ ] Required status checks are enabled and read back as active **if** permission exists; otherwise report them honestly as `NOT CONFIGURED` with the observed permission limitation.
-- [ ] Thai Trello card has real repository/branch/commit/PR/CI/artifact links and a single executable next action; no links/results are invented.
-- [x] Existing workflow documentation and review checklist have been updated to repository-first policy, direct-URL verification and same-revision gates; repository exists, but workflow/PR/branch protection changes remain blocked until the initial source commit is pushed.
-- [ ] No gameplay requirements changed and `P1-UI-002` remains unstarted.
+- [x] Exact existing repository resolved: https://github.com/bestgmza123-oss/AAP.
+- [x] Initial commit pushed; remote main SHA matches ac893af3b772100477a9ddcb652bacde2987116c.
+- [x] Base CI workflow ran on that SHA and completed success. All existing package gates were green in the real Actions job.
+- [x] Project status/checkpoint updated to reflect the observed remote push and CI result, without claiming browser test success.
+- [x] A canonical owner-PC automation guide exists at delivery/15_OWNER_PC_AUTOMATION_WORKFLOW_TH.md.
+- [x] Playwright dependency, lockfile, `test:e2e` script, config, two route tests, Vitest exclusion and artifact upload workflow are implemented locally; Windows Playwright passes 2/2.
+- [x] Playwright implementation committed/pushed on PR branch; implementation commit SHA was verified by both push and PR Actions runs. Each subsequent commit requires a fresh run on that commit's exact SHA.
+- [x] Both browser routes pass in GitHub Actions run #7 on SHA `4b646efa708ac4be39a59d0dc55b47f7e7ec665d`.
+- [x] A controlled failing browser run produced an inspectable retained artifact (run #9); the failure was intentionally injected on a disposable temporary branch and that branch was deleted after verification.
+- [x] PR #1 remains open for owner review; implementation commit `4b646efa708ac4be39a59d0dc55b47f7e7ec665d` matched Run #7, and checkpoint commit `910123ca57499174daf1d6f9f9fa9d988ced13cc` matched both Runs #10 and #11. Always verify the current PR head SHA and required checks before merge.
+- [x] Required Status Checks and main branch protection were configured and read back successfully; approvals required are set to zero. Do not merge PR #1 automatically.
+- [x] Workflow trigger efficiency updated: topic branches run on pull_request targeting main; push-trigger runs on main only. Path filters were removed to keep required checks from being skipped/pending on PRs that touch other files.
+- [x] Trello card links the real repository/commit/PR/CI runs/artifact proof and records that PR #1 remains open for owner review; no follow-on Task starts automatically.
+- [x] No game rules changed and P1-UI-002 remains unstarted.
 
-## Single resume condition
+## Known owner/computer boundary
 
-Resume this same Task after the one-time bootstrap pushes the current canonical docs+source to the already verified `https://github.com/bestgmza123-oss/AAP` and the first commit is visible. Use `evidence/OWNER_ACTION_GITHUB_REPOSITORY_TH.md`; then re-read remote `main`, create a Task branch, add Playwright using an npm-generated lockfile update, run CI and verify artifacts/check settings. Do not request new ZIPs or test transcripts for every task. Do not start `P1-UI-002` automatically.
+The Windows computer is reachable through Remote Desktop Commander in this session, and direct workspace reads are working. This does not mean every action is always permitted: authentication/MFA/UAC/permission prompts and safety-blocked commands may require owner input or may have to stop. Do not bypass such a block. First try direct read/verification and authorized CI paths; if an owner action is truly required, provide one consolidated PowerShell action set with the real Project Root, expected output and resume criterion. Never ask for tokens/passwords.
 
-## References
+## Resume point
 
-- OpenAI Help Center, [Connecting GitHub to ChatGPT](https://help.openai.com/en/articles/11145903-connecting-github-to-chatgpt): repository selection/authorization, organization approval, and troubleshooting repositories missing from the connected app. Checked 2026-10-26.
-- Related canonical policies: `AGENTS.md`, `delivery/06_TASK_BOARD_WORKFLOW.md`, `delivery/08_REUSABLE_PROMPTS_TH.md`, `delivery/12_PROJECT_WORKSPACE_AND_SINGLE_ZIP_HANDOFF.md`, and `CHECKLIST_FOR_REVIEW.md`.
+Current handoff: automation acceptance checks are complete through browser CI and artifact-path validation; PR #1 remains open/unmerged for owner review. The only remaining human gate is review/merge decision on PR #1. Do not bootstrap the repository again, request recurring ZIPs, merge automatically, or start P1-UI-002.
+
+## References checked 2026-10-27
+
+- [GitHub CLI gh auth refresh](https://cli.github.com/manual/gh_auth_refresh)
+- [Playwright CI](https://playwright.dev/docs/ci) and [Trace Viewer](https://playwright.dev/docs/trace-viewer)
+- [GitHub Actions artifacts](https://docs.github.com/en/actions/concepts/workflows-and-actions/workflow-artifacts)
+- [Managing protected branches](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches)
+- [Managing workflow runs](https://docs.github.com/en/actions/how-tos/manage-workflow-runs)

@@ -101,3 +101,14 @@ For a known Agent DNS blocker, the required path is: inspect/fix any independent
 ## DOC-WF-001 acceptance gate
 
 The bounded permanent-rule update is documented in [`13_BOUNDED_DOC_TASK_ENVIRONMENT_BLOCKER_OWNER_ACTION.md`](13_BOUNDED_DOC_TASK_ENVIRONMENT_BLOCKER_OWNER_ACTION.md) and its audit checkpoint `../../evidence/DOC-WF-001_CHECKPOINT.md`. This gate must be completed before any `P1-UI-002` work. It is completed in this handoff; the active `P1-UI-001` still has its own acceptance gate, and no dependent Task may begin automatically.
+
+
+## Computer-assisted work and fewer Owner Actions
+
+When the authorized Windows device is online through Remote Desktop Commander, the Agent should inspect and operate on the actual Project Root: read files, run relevant checks, inspect diffs and capture outputs directly. Do not ask the owner to run routine lint/test/build commands, paste whole transcripts or commit every edit when these results are available through tools or GitHub Actions.
+
+Keep one bounded Task active. Batch its scoped changes, run the affected local/CI gates, inspect the staged diff, then create one coherent commit for the Task when practical; use an isolated task branch and PR for subsequent work rather than continuing direct edits on main. Reuse dependencies when the same checkout's lockfile is unchanged. Record actual PASS/FAIL/BLOCKED/NOT RUN status and the tested source SHA.
+
+Use Playwright for deterministic UI/browser checks once configured. Link the real report/screenshots/traces artifacts for failures so the owner does not have to recreate a failure manually. Manual owner action is reserved for authentication/MFA/UAC, true permission restrictions, product/UX judgement, and potentially destructive/production decisions. Do not bypass safety controls or request secrets. If a tool is genuinely unavailable, send one consolidated Owner Action with real paths, expected result and resume condition.
+
+Canonical detail: 15_OWNER_PC_AUTOMATION_WORKFLOW_TH.md. Current AAP baseline CI is verified PASS on ac893af3b772100477a9ddcb652bacde2987116c; the next workflow gate is Playwright + artifacts, PR SHA verification, then Required Status Checks/ruleset read-back when permitted.

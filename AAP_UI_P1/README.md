@@ -1,8 +1,8 @@
 # AAP_UI_P1 — Frontend scaffold and shell
 
-## Latest verification status — 2026-10-26
+## Latest verification status — 2026-10-27
 
-Owner Windows results for the exact source hashes in this handoff: `node --check`, `npm run lint` (exit 0; four reduced-motion warnings), Vitest 4/4, typecheck, scope audit and production build all passed. Only Browser evidence for `/` and `/not-yet-implemented` remains outstanding. See `../evidence/P1-UI-001_CHECKPOINT.md` and `../evidence/OWNER_ACTION_TASK_TH.md`. Do not reinstall or rerun successful code checks without a new technical reason; this Task remains Blocked until the two Browser routes are evidenced.
+`P1-UI-001` remains accepted for its fixture-only shell scope. Workflow follow-up adds `@playwright/test`, `playwright.config.ts`, `e2e/smoke.spec.ts`, and the `test:e2e` script. On the authorized Windows checkout, the current local revision passed lint (four pre-existing reduced-motion `!important` warnings only), Vitest 4/4, typecheck (now includes Playwright config/tests), scope audit, production build, and Playwright browser smoke (2/2). The browser workflow and artifact path still require GitHub Actions verification on the pushed SHA. Do not infer browser job/Artifacts/branch protection PASS from the older base CI run.
 
 ## Known Agent DNS blocker policy
 
@@ -33,6 +33,7 @@ npm run lint
 npm test
 npm run audit:scope
 npm run build
+npm run test:e2e
 npm run dev
 ```
 
