@@ -22,7 +22,7 @@
 | Working-tree state at inspection | Known untracked local legacy/manifests/evidence files exist; do not auto-add or delete them without auditing scope | Remote git status output |
 | Playwright package/config/routes | NOT RUN — needs a task branch and npm-generated package-lock update | No Playwright workflow run exists |
 | Browser failure report/screenshots/traces as Actions artifacts | NOT VERIFIED — requires a real browser job/run | No artifact result claimed |
-| PR-based task delivery | NOT RUN for this workflow enhancement | No PR exists for Playwright yet |
+| Docs-only handoff | IN PROGRESS — PR #1 open; first documentation commit passed CI run #2 on the exact SHA | [PR #1](https://github.com/bestgmza123-oss/AAP/pull/1) · [run #2](https://github.com/bestgmza123-oss/AAP/actions/runs/40374586525) |
 | Required Status Checks / branch rules | NOT VERIFIED — base CI passing does not imply protection has been enabled | Read branch protection/ruleset settings before claiming active |
 | Trello sync | Updated with the verified push/CI state and the next bounded actions | [Task card](https://trello.com/c/FQsbZsmU/6-workflow-automation-github-ci-setup-%E0%B9%80%E0%B8%8A%E0%B8%B7%E0%B9%88%E0%B8%AD%E0%B8%A1-aap-repository) |
 | P1-UI-002 / game rules | Not started / unchanged | Scope boundary for this task |
@@ -70,7 +70,8 @@
 - [ ] Playwright dependency, lockfile, script, config and tests committed on a named task branch.
 - [ ] Browser checks pass for both required routes on GitHub Actions.
 - [ ] Failed browser runs retain report/screenshots/traces as artifacts; verify artifact paths against a real run.
-- [ ] PR head, CI run, reviewed diff and checkpoint all identify the same source SHA.
+- [x] Docs-only PR #1 opened; CI run #2 passed on its first documentation commit SHA `9117f705c72b68ddc4385486a308dc48e5ad579c`. Review the current PR head and its latest run before merge; every subsequent commit needs its own check result.
+- [ ] Playwright PR head, CI run, reviewed diff and checkpoint all identify the same source SHA.
 - [ ] Required Status Checks and main branch rules are configured/read back if permission and stable check names are available; otherwise record NOT CONFIGURED/NOT VERIFIED and the actual limitation.
 - [ ] Trello links the real branch/commit/PR/Actions/artifacts and offers one genuine next action.
 - [x] No game rules changed and P1-UI-002 remains unstarted.

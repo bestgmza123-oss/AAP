@@ -42,3 +42,13 @@ When the authorized Windows device or GitHub Actions is accessible, the agent sh
 ## Source-revision gate
 
 Every future acceptance must bind the PR head SHA, Actions run SHA, reviewed diff and checkpoint to the exact same revision. Any new source commit invalidates previous acceptance for changed gates until checks run against that SHA. Trello remains the Thai status/dependency dashboard; source and CI evidence stay in the repository and Actions runs.
+
+
+## PR delivery update — 2026-10-27
+
+- Docs-only branch: task/owner-pc-automation-workflow.
+- First docs commit: 9117f705c72b68ddc4385486a308dc48e5ad579c; [PR #1](https://github.com/bestgmza123-oss/AAP/pull/1) opened against main.
+- The first docs commit's GitHub Actions run #2 completed success on that same SHA: https://github.com/bestgmza123-oss/AAP/actions/runs/40374586525.
+- The PR has since received a checkpoint/status documentation follow-up; check the PR's current head SHA and latest Actions run rather than treating run #2 as proof for any later commit.
+- GitHub connector's create-PR API returned 403; the authenticated local gh CLI was used normally on the authorized Windows checkout to open PR #1. This is an integration permission limitation, not evidence of repository write denial.
+- Branch protection/rulesets remain unverified: the rulesets endpoint returned an empty list and the connector's branch-protection detail endpoint returned 403. Do not claim protection is active.
