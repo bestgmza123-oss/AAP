@@ -1,0 +1,38 @@
+export const en = {
+  'app.name': 'Anime Apocalypse',
+  'app.shortName': 'AAP',
+  'app.previewLabel': 'Development Preview',
+  'app.localBuild': 'LOCAL BUILD',
+  'app.privateWorkspace': 'PRIVATE UI WORKSPACE',
+  'boundary.notice': 'PRIVATE PROTOTYPE · FIXTURE DATA · NOT CONNECTED TO GAME SERVER',
+  'boundary.regionLabel': 'Prototype boundary notice',
+  'boundary.detail':
+    'No live character, Run, reward, or persistent game state can be created from this shell.',
+  'shell.headerLabel': 'AAP prototype header',
+  'shell.skipToContent': 'Skip to main content',
+  'shell.phase': 'PHASE 01 / FOUNDATION',
+  'shell.title': 'The shell is in place.',
+  'shell.description':
+    'This workspace contains the private React + TypeScript foundation only. Gameplay routes are intentionally placeholders in P1-UI-001.',
+  'shell.currentBound': 'CURRENT BOUND',
+  'shell.taskId': 'P1-UI-001',
+  'shell.taskName': 'Frontend scaffold + shell',
+  'shell.taskIndex': '01 / 08',
+  'shell.runtimeBoundary': 'RUNTIME BOUNDARY',
+  'shell.localOnly': 'Local UI only',
+  'shell.notConnected': 'NOT CONNECTED',
+  'shell.noPersistence': 'PERSISTENCE DISABLED',
+  'shell.systemStatus': 'SYSTEM STATUS',
+  'shell.systemStatusDetail':
+    'No game server, database, account, or persistent session is connected.',
+  'shell.scopeCheck': 'SCOPE CHECK',
+  'shell.scopeRoute': 'Route placeholder only',
+  'shell.scopeFixtures': 'Prototype metadata only',
+  'shell.scopeNetwork': 'No remote API or backend calls',
+  'shell.footer': 'A bounded implementation workspace · Private/internal use only',
+  'shell.fixtureMode': 'FIXTURE MODE',
+  'route.unknownTitle': 'Route not implemented',
+  'route.unknownDescription':
+    'This route is a placeholder. No gameplay screen is available in P1-UI-001.',
+  'route.returnToShell': 'Return to shell',
+} as const;

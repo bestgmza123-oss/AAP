@@ -1,0 +1,63 @@
+name: AAP UI CI
+
+on:
+  push:
+    branches: [main, "automation/**", "task/**"]
+    paths:
+      - "AAP_UI_P1/**"
+      - "AAP_Documentation_Reboot/**"
+      - ".github/workflows/ci.yml"
+      - "README.md"
+      - "DELIVERY_README_TH.md"
+  pull_request:
+    paths:
+      - "AAP_UI_P1/**"
+      - "AAP_Documentation_Reboot/**"
+      - ".github/workflows/ci.yml"
+      - "README.md"
+      - "DELIVERY_README_TH.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aap-ui-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: AAP UI quality gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: AAP_UI_P1
+    steps:
+      - name: Checkout the exact source revision
+        uses: actions/checkout@v4
+
+      - name: Set up Node and npm cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: AAP_UI_P1/package-lock.json
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Static scope audit
+        run: npm run audit:scope
+
+      - name: Production build
+        run: npm run build
