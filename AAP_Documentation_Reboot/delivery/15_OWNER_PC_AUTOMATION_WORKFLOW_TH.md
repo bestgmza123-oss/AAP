@@ -59,11 +59,13 @@
 
 ## 5. Playwright และหลักฐาน browser
 
-เมื่อ @playwright/test, npm script, config และ test files ถูกเพิ่มผ่าน npm ใน branch ที่ได้รับอนุญาตแล้ว ให้มี CI test สำหรับ:
-- / — fixture-only boundary banner และ shell ของ P1-UI-001
-- /not-yet-implemented — placeholder และลิงก์กลับ shell
+สถานะปัจจุบัน: เพิ่ม `@playwright/test`, npm script `test:e2e`, `playwright.config.ts` และ `e2e/smoke.spec.ts` ใน branch ของ automation แล้ว; local Windows Playwright ผ่าน 2/2 tests. CI browser job เพิ่มแล้ว แต่ยังต้องตรวจผลบน SHA ล่าสุดของ PR. Test assertions สำหรับ:
+- `/` — title, fixture-only boundary banner, `P1-UI-001` shell และ `PERSISTENCE DISABLED`
+- `/not-yet-implemented` — placeholder text และคลิกลิงก์กลับไปยัง shell
 
-บน CI ให้ติดตั้ง browser/dependencies ตามแนวทาง Playwright, ตั้ง workers จำนวนต่ำเพื่อความเสถียรใน runner ปกติ, ใช้ trace เช่น on-first-retry และเก็บรายงาน/ภาพ/trace เป็น GitHub Actions artifacts เมื่อมี failure (รวมถึงรายงานสรุปที่ช่วยวินิจฉัย) กำหนด artifact path/retention ให้ชัด ห้ามอัปโหลด hidden files หรือ secrets โดยไม่ตรวจเนื้อหาก่อน
+การตรวจบน Windows ล่าสุดผ่าน Playwright 2/2, Vitest 4/4, typecheck, scope audit, production build และ lint (มีเพียง 4 warnings เดิมใน reduced-motion CSS). `tsconfig.json` และ Biome lint ครอบคลุม Playwright config/tests; Vitest exclude `e2e/**` เพื่อไม่ให้เอา browser specs ไปปน unit tests. `.gitignore` กัน `playwright-report/`, `test-results/` และ browser cache ไม่ให้ปะปนกับ source control.
+
+CI job ชื่อ `Playwright browser smoke` ติดตั้ง Chromium ด้วย `npx playwright install --with-deps chromium`, รัน `npm run test:e2e` และหาก job fail จะอัปโหลด `AAP_UI_P1/playwright-report/` และ `AAP_UI_P1/test-results/` เป็น artifact พร้อม SHA/run-attempt ในชื่อและ retention 14 วัน. **การตั้งค่าถูกเพิ่มแล้ว แต่ยังต้องยืนยันผล CI ของ revision ล่าสุด; ยังไม่อ้างว่า browser CI หรือ failure artifact ผ่านจนกว่าจะมีผล run จริง.**
 
 ลิงก์อ้างอิง: [Playwright CI](https://playwright.dev/docs/ci), [Trace Viewer](https://playwright.dev/docs/trace-viewer), [GitHub Actions artifacts](https://docs.github.com/en/actions/concepts/workflows-and-actions/workflow-artifacts). ห้ามอ้างว่า browser test ผ่านจนกว่า test จริงจะรันและผล/SHA ปรากฏใน workflow
 

@@ -143,8 +143,9 @@ The owner-provided Browser composite was reviewed: the right panel shows the roo
 - [x] GitHub CLI OAuth scope `workflow` authorized; normal push succeeded without force-push.
 - [x] Real [AAP UI CI run #1](https://github.com/bestgmza123-oss/AAP/actions/runs/40372672282) completed `success` on the same SHA; npm ci, lint, unit tests, typecheck, static scope audit, and production build all passed.
 - [x] Owner PC automation guide added: `delivery/15_OWNER_PC_AUTOMATION_WORKFLOW_TH.md`.
-- [ ] Playwright dependency/config/two route tests and CI browser job.
-- [ ] Failed browser artifacts (HTML report/screenshots/traces) verified from a real run.
-- [ ] Task branch/PR flow demonstrated on the follow-up automation change; PR head and CI SHA must match.
+- [x] Playwright dependency/config/two route tests and CI browser job implemented on the task branch; Windows browser smoke is PASS (2/2).
+- [ ] Push this implementation and verify both browser routes in GitHub Actions on the exact SHA.
+- [ ] Failed browser artifacts (HTML report/screenshots/traces) verified from an actual failing workflow run.
+- [ ] Latest task branch/PR head and CI SHA match.
 - [ ] Required Status Checks/main branch protection changed only after real check names exist, then read back to prove settings.
 - [ ] Do not begin `P1-UI-002` automatically.

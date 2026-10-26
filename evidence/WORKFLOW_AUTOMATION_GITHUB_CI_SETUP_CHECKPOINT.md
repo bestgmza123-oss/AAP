@@ -44,7 +44,7 @@ When the authorized Windows device or GitHub Actions is accessible, the agent sh
 Every future acceptance must bind the PR head SHA, Actions run SHA, reviewed diff and checkpoint to the exact same revision. Any new source commit invalidates previous acceptance for changed gates until checks run against that SHA. Trello remains the Thai status/dependency dashboard; source and CI evidence stay in the repository and Actions runs.
 
 
-## PR delivery update — 2026-10-27
+## PR delivery and browser automation update — 2026-10-27
 
 - Docs-only branch: task/owner-pc-automation-workflow.
 - First docs commit: 9117f705c72b68ddc4385486a308dc48e5ad579c; [PR #1](https://github.com/bestgmza123-oss/AAP/pull/1) opened against main.

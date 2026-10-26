@@ -28,7 +28,7 @@ The Windows Project Root is `C:\Users\ultra\Downloads\AAP_Project`; DESKTOP-6U02
 
 ## DOC-WF-001 gate status and acceptance / stop rule
 
-Complete the Workflow Automation task only against the real authorized repository and exact branch/commit. Base CI is verified PASS on `ac893af3b772100477a9ddcb652bacde2987116c`. Remaining items: Playwright browser tests for `/` and `/not-yet-implemented`, retained failure report/screenshots/traces, task branch + PR, and Required Status Checks/ruleset read-back where permission exists. Use the authorized Windows workspace and CI directly where possible; owner actions should be consolidated and reserved for real authorization/UX/permission gates. Do not start `P1-UI-002` automatically; it remains deferred until the owner explicitly instructs it.
+Complete the Workflow Automation task only against the real authorized repository and exact branch/commit. Base CI is verified PASS on `ac893af3b772100477a9ddcb652bacde2987116c`. Playwright has now been added locally on `task/owner-pc-automation-workflow`; Windows smoke passes 2/2, and the workflow has a browser job plus failure-artifact upload. Remaining items: commit/push this implementation, verify browser checks on the exact pushed SHA, prove the failed-run artifact path, and read back Required Status Checks/ruleset where permission exists. Use the authorized Windows workspace and CI directly where possible; owner actions should be consolidated and reserved for real authorization/UX/permission gates. Do not start `P1-UI-002` automatically; it remains deferred until the owner explicitly instructs it.
 
 ## Evidence status — resumed P1-UI-001 (owner Windows final source recheck 2026-10-26)
 

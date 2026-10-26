@@ -20,9 +20,9 @@
 | Actual CI steps | PASS — checkout, Node/npm setup/cache, npm ci, lint, unit tests, typecheck, static scope audit, production build | [Job output](https://github.com/bestgmza123-oss/AAP/actions/runs/40372672282/job/121747257234) |
 | Windows remote workspace | PASS — DESKTOP-6U02MEL online; repository at C:\Users\ultra\Downloads\AAP_Project; main tracks origin/main at the verified commit | Remote Desktop inspection, 2026-10-27 |
 | Working-tree state at inspection | Known untracked local legacy/manifests/evidence files exist; do not auto-add or delete them without auditing scope | Remote git status output |
-| Playwright package/config/routes | NOT RUN — needs a task branch and npm-generated package-lock update | No Playwright workflow run exists |
+| Playwright package/config/routes | LOCAL PASS — @playwright/test installed by npm; package-lock updated; two route tests pass locally | Windows smoke: 2/2; GitHub Actions browser run pending for the pushed implementation SHA |
 | Browser failure report/screenshots/traces as Actions artifacts | NOT VERIFIED — requires a real browser job/run | No artifact result claimed |
-| Docs-only handoff | IN PROGRESS — PR #1 open; first documentation commit passed CI run #2 on the exact SHA | [PR #1](https://github.com/bestgmza123-oss/AAP/pull/1) · [run #2](https://github.com/bestgmza123-oss/AAP/actions/runs/40374586525) |
+| PR handoff | IN PROGRESS — PR #1 is open; Playwright changes are locally verified and queued for a coherent commit/push; existing run #4 only verifies the previous documentation SHA | [PR #1](https://github.com/bestgmza123-oss/AAP/pull/1) · [run #4](https://github.com/bestgmza123-oss/AAP/actions/runs/40375137506) |
 | Required Status Checks / branch rules | NOT VERIFIED — base CI passing does not imply protection has been enabled | Read branch protection/ruleset settings before claiming active |
 | Trello sync | Updated with the verified push/CI state and the next bounded actions | [Task card](https://trello.com/c/FQsbZsmU/6-workflow-automation-github-ci-setup-%E0%B9%80%E0%B8%8A%E0%B8%B7%E0%B9%88%E0%B8%AD%E0%B8%A1-aap-repository) |
 | P1-UI-002 / game rules | Not started / unchanged | Scope boundary for this task |
@@ -67,10 +67,11 @@
 - [x] Base CI workflow ran on that SHA and completed success. All existing package gates were green in the real Actions job.
 - [x] Project status/checkpoint updated to reflect the observed remote push and CI result, without claiming browser test success.
 - [x] A canonical owner-PC automation guide exists at delivery/15_OWNER_PC_AUTOMATION_WORKFLOW_TH.md.
-- [ ] Playwright dependency, lockfile, script, config and tests committed on a named task branch.
+- [x] Playwright dependency, lockfile, `test:e2e` script, config, two route tests, Vitest exclusion and artifact upload workflow are implemented locally; Windows Playwright passes 2/2.
+- [ ] Commit/push the current Playwright implementation to the named task branch and verify GitHub Actions on that exact SHA.
 - [ ] Browser checks pass for both required routes on GitHub Actions.
-- [ ] Failed browser runs retain report/screenshots/traces as artifacts; verify artifact paths against a real run.
-- [x] Docs-only PR #1 opened; CI run #2 passed on its first documentation commit SHA `9117f705c72b68ddc4385486a308dc48e5ad579c`. Review the current PR head and its latest run before merge; every subsequent commit needs its own check result.
+- [ ] A controlled failing browser run produces an inspectable GitHub Actions artifact containing HTML report/screenshots/traces; verify actual artifact paths and retention.
+- [x] PR #1 open with the documentation/workflow guide and status checkpoints; each subsequent source change must be checked against the latest PR head SHA before merge.
 - [ ] Playwright PR head, CI run, reviewed diff and checkpoint all identify the same source SHA.
 - [ ] Required Status Checks and main branch rules are configured/read back if permission and stable check names are available; otherwise record NOT CONFIGURED/NOT VERIFIED and the actual limitation.
 - [ ] Trello links the real branch/commit/PR/Actions/artifacts and offers one genuine next action.

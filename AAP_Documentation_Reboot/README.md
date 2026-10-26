@@ -48,7 +48,7 @@ ZIP เริ่มต้นนี้เป็นเอกสารล้วน 
 
 ## สถานะ Workflow Automation & GitHub CI Setup
 
-Task ปัจจุบันคือ [`delivery/14_WORKFLOW_AUTOMATION_GITHUB_CI_SETUP.md`](delivery/14_WORKFLOW_AUTOMATION_GITHUB_CI_SETUP.md). Bootstrap สำเร็จ: `main` ชี้ไปที่ `ac893af3b772100477a9ddcb652bacde2987116c`, และ [AAP UI CI run #1](https://github.com/bestgmza123-oss/AAP/actions/runs/40372672282) ผ่านบน SHA เดียวกัน โดย npm ci, lint, unit tests, typecheck, static scope audit และ production build ผ่าน. Playwright/E2E, failure artifacts และ Required Status Checks/branch protection ยังไม่ยืนยัน. ใช้ [`delivery/15_OWNER_PC_AUTOMATION_WORKFLOW_TH.md`](delivery/15_OWNER_PC_AUTOMATION_WORKFLOW_TH.md) เป็นแนวทางทำงานผ่าน Windows checkout และ CI เพื่อลด Owner Action. ห้ามเริ่ม `P1-UI-002` อัตโนมัติ.
+Task ปัจจุบันคือ [`delivery/14_WORKFLOW_AUTOMATION_GITHUB_CI_SETUP.md`](delivery/14_WORKFLOW_AUTOMATION_GITHUB_CI_SETUP.md). Bootstrap สำเร็จ: `main` ชี้ไปที่ `ac893af3b772100477a9ddcb652bacde2987116c`, และ [AAP UI CI run #1](https://github.com/bestgmza123-oss/AAP/actions/runs/40372672282) ผ่านบน SHA เดียวกัน โดย npm ci, lint, unit tests, typecheck, static scope audit และ production build ผ่าน. บน automation branch เพิ่ม Playwright smoke tests แล้วและ Windows local run ผ่าน 2/2; ยังต้อง push implementation และยืนยันผล browser CI บน SHA นั้น รวมถึงตรวจ failure artifacts และ Required Status Checks/branch protection. ใช้ [`delivery/15_OWNER_PC_AUTOMATION_WORKFLOW_TH.md`](delivery/15_OWNER_PC_AUTOMATION_WORKFLOW_TH.md) เป็นแนวทางทำงานผ่าน Windows checkout และ CI เพื่อลด Owner Action. ห้ามเริ่ม `P1-UI-002` อัตโนมัติ.
 
 ## วิธีแนบเอกสารให้ AI อย่างไม่หลุด Scope
 
