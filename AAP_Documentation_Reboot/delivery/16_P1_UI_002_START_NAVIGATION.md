@@ -2,7 +2,7 @@
 
 ## Status
 
-**IN PROGRESS** — explicitly authorized by the owner on 2026-10-27. Implementation is being verified on the Windows project checkout and branch `task/p1-ui-002-start-navigation`. No PR has been opened yet.
+**IN PROGRESS — PR #2 OPEN** — explicitly authorized by the owner on 2026-10-27. Branch `task/p1-ui-002-start-navigation`, implementation commit `b3a9eb14af8d4ac9d492841ea0d5790a4854fa93`. PR: https://github.com/bestgmza123-oss/AAP/pull/2. Workflow run #16 attempt 2 passed both required checks on that exact implementation SHA: https://github.com/bestgmza123-oss/AAP/actions/runs/40387087526. The first browser job attempt was cancelled after stalling during Chromium installation; the retry completed successfully. Any subsequent commit changes the required-check SHA, so verify both checks against the latest PR HEAD before merge.
 
 ## Outcome
 
