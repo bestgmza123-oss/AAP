@@ -12,7 +12,7 @@
 - main ตรงกับ commit ac893af3b772100477a9ddcb652bacde2987116c (chore: bootstrap canonical AAP workspace and CI)
 - GitHub Actions run #1 ของ AAP UI CI บน SHA ข้างต้น: success — [เปิด run](https://github.com/bestgmza123-oss/AAP/actions/runs/40372672282)
 - ขั้น CI ที่ตรวจจาก job จริง: checkout, setup Node/cache, npm ci, lint, unit tests, typecheck, static scope audit และ production build ผ่านทั้งหมด
-- Browser/E2E ผ่าน GitHub Actions, Playwright failure artifacts และ branch protection/Required Status Checks: **ยังไม่ยืนยัน** อย่านับ CI run แรกเป็น browser test หรือเป็นหลักฐานว่า branch protection เปิดแล้ว
+- Browser/E2E: PASS บน GitHub Actions run #7 สำหรับ SHA 4b646efa708ac4be39a59d0dc55b47f7e7ec665d — [run](https://github.com/bestgmza123-oss/AAP/actions/runs/40377930212). Controlled failure-artifact probe: PASS ใน run #9 บน disposable branch โดย artifact ถูกเก็บจริง — [run](https://github.com/bestgmza123-oss/AAP/actions/runs/40378477194). Main branch protection/Required Status Checks: configured and read back successfully; see Section 6.
 - P1-UI-002 ยังไม่เริ่ม และไม่มีการเปลี่ยนกฎเกม
 
 ## 2. แบ่งงานระหว่าง Agent กับเจ้าของ
@@ -63,9 +63,9 @@
 - `/` — title, fixture-only boundary banner, `P1-UI-001` shell และ `PERSISTENCE DISABLED`
 - `/not-yet-implemented` — placeholder text และคลิกลิงก์กลับไปยัง shell
 
-การตรวจบน Windows ล่าสุดผ่าน Playwright 2/2, Vitest 4/4, typecheck, scope audit, production build และ lint (มีเพียง 4 warnings เดิมใน reduced-motion CSS). `tsconfig.json` และ Biome lint ครอบคลุม Playwright config/tests; Vitest exclude `e2e/**` เพื่อไม่ให้เอา browser specs ไปปน unit tests. `.gitignore` กัน `playwright-report/`, `test-results/` และ browser cache ไม่ให้ปะปนกับ source control.
+การตรวจบน Windows หลัง clean npm ci ผ่าน: Playwright 2/2, Vitest 4/4, typecheck, scope audit, production build และ lint (มีเพียง 4 warnings เดิมใน reduced-motion CSS). `tsconfig.json` และ Biome lint ครอบคลุม Playwright config/tests; Vitest exclude `e2e/**` เพื่อไม่ให้เอา browser specs ไปปน unit tests. `.gitignore` กัน `playwright-report/`, `test-results/` และ browser cache ไม่ให้ปะปนกับ source control.
 
-CI job ชื่อ `Playwright browser smoke` ติดตั้ง Chromium ด้วย `npx playwright install --with-deps chromium`, รัน `npm run test:e2e` และหาก job fail จะอัปโหลด `AAP_UI_P1/playwright-report/` และ `AAP_UI_P1/test-results/` เป็น artifact พร้อม SHA/run-attempt ในชื่อและ retention 14 วัน. **การตั้งค่าถูกเพิ่มแล้ว แต่ยังต้องยืนยันผล CI ของ revision ล่าสุด; ยังไม่อ้างว่า browser CI หรือ failure artifact ผ่านจนกว่าจะมีผล run จริง.**
+CI job ชื่อ `Playwright browser smoke` ติดตั้ง Chromium ด้วย `npx playwright install --with-deps chromium`, รัน `npm run test:e2e` และหาก job fail จะอัปโหลด `AAP_UI_P1/playwright-report/` และ `AAP_UI_P1/test-results/` เป็น artifact พร้อม SHA/run-attempt ในชื่อและ retention 14 วัน. ยืนยันการทำงานจริงแล้ว: PR run #7 ผ่านบน SHA 4b646efa708ac4be39a59d0dc55b47f7e7ec665d; temporary failure probe run #9 ล้มเหลวที่ assertion ตามตั้งใจและอัปโหลด artifact ขนาด 5,001,070 bytes ซึ่งยังไม่หมดอายุ. ลบ temporary probe branch แล้วหลังตรวจหลักฐาน.
 
 ลิงก์อ้างอิง: [Playwright CI](https://playwright.dev/docs/ci), [Trace Viewer](https://playwright.dev/docs/trace-viewer), [GitHub Actions artifacts](https://docs.github.com/en/actions/concepts/workflows-and-actions/workflow-artifacts). ห้ามอ้างว่า browser test ผ่านจนกว่า test จริงจะรันและผล/SHA ปรากฏใน workflow
 
@@ -73,7 +73,7 @@ CI job ชื่อ `Playwright browser smoke` ติดตั้ง Chromium �
 
 - หลีกเลี่ยงการแก้ main โดยตรงหลัง initial bootstrap; ใช้ task branch + PR เพื่อให้ diff ตรวจสอบได้และลดความจำเป็นที่เจ้าของจะคอยทดสอบทุก commit
 - เชื่อม local checks, PR head, GitHub Actions run, reviewed diff และ checkpoint ด้วย **commit SHA เดียวกัน** ถ้ามี commit ใหม่ ต้องตรวจ CI และ acceptance ของ revision ใหม่นั้น ไม่ยกผลเก่ามาใช้โดยไม่เทียบ SHA
-- ตั้ง Required Status Checks เฉพาะหลัง workflow ทำงานจริงและได้ชื่อ check ที่แน่นอนแล้ว ต้องมีสิทธิ์เปลี่ยน rule และอ่านค่ากลับเพื่อยืนยัน ไม่ถือว่า .github/workflows/ci.yml มีอยู่แล้วเท่ากับ branch protection เปิดใช้งาน
+- ใน AAP ปัจจุบันได้ตั้ง Required Status Checks และอ่านค่ากลับยืนยันแล้ว: contexts คือ AAP UI quality gates และ Playwright browser smoke, strict up-to-date enabled, enforce admins enabled, force-push/delete disabled, PR required โดย approvals required = 0. สำหรับ repo อื่น ให้ตั้ง Required Status Checks เฉพาะหลัง workflow ทำงานจริงและได้ชื่อ check ที่แน่นอนแล้ว ต้องมีสิทธิ์เปลี่ยน rule และอ่านค่ากลับเพื่อยืนยัน ไม่ถือว่า .github/workflows/ci.yml มีอยู่แล้วเท่ากับ branch protection เปิดใช้งาน
 - หลังตรวจ baseline CI ให้พิจารณากฎ main: require PR, require checks, ปิด force-push/delete ถ้าเหมาะสมกับ repo, และไม่ให้ bypass โดยไม่จำเป็น ก่อนเปลี่ยน settings ต้องยืนยันว่ามีสิทธิ์จริง
 - ดู [Managing protected branches](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches) และ [Managing workflow runs](https://docs.github.com/en/actions/how-tos/manage-workflow-runs).
 
@@ -102,7 +102,7 @@ Trello ใช้สถานะ/ความเสี่ยง/dependency/ลิ
 
 ## 9. ประวัติการปรับปรุง
 
-- 2026-10-27: push initial source สำเร็จหลังเพิ่ม GitHub CLI scope workflow; main ตรงกับ ac893af3b772100477a9ddcb652bacde2987116c; AAP UI CI run #1 บน SHA เดียวกัน success. เพิ่มแนวทางนี้เพื่อใช้ Remote Desktop Commander กับ Windows checkout เป็นเส้นทางทำงาน/ตรวจอัตโนมัติ พร้อมคง Playwright, artifacts และ branch protection ไว้เป็น acceptance criteria ที่ยัง pending.
+- 2026-10-27: push initial source สำเร็จหลังเพิ่ม GitHub CLI scope workflow; main ตรงกับ ac893af3b772100477a9ddcb652bacde2987116c; AAP UI CI run #1 บน SHA เดียวกัน success. เพิ่มแนวทางนี้เพื่อใช้ Remote Desktop Commander กับ Windows checkout เป็นเส้นทางทำงาน/ตรวจอัตโนมัติ พร้อมคง Playwright, artifacts และ branch protection ผ่านการตั้งค่าและ read-back แล้ว; PR #1 ยังเปิดไว้ให้เจ้าของ review/ตัดสินใจ merge.
 
 ตรวจสอบแหล่งอ้างอิงภายนอกเมื่อ 2026-10-27:
 - [GitHub CLI gh auth refresh](https://cli.github.com/manual/gh_auth_refresh) — เพิ่ม scope เพิ่มเติมให้ stored credentials

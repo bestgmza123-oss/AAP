@@ -1,54 +1,80 @@
 # Checkpoint — Workflow Automation & GitHub CI Setup
 
 Date: 2026-10-27
-Status: In Progress — bootstrap and base CI verified; Playwright/PR/branch gates pending.
+Status: Review — automation tests and branch protection verified; PR #1 remains open/not merged for owner review.
 Scope: workflow/tooling only. No game-rule changes. P1-UI-002 has not started.
 
-## Verified state
+## Repository and PR state
 
 - Project Root: C:\Users\ultra\Downloads\AAP_Project
-- Remote Desktop device: DESKTOP-6U02MEL, online and inspected in this session.
+- Remote Desktop device: DESKTOP-6U02MEL; workspace operations succeeded in this session.
 - Repository: https://github.com/bestgmza123-oss/AAP (public).
-- Remote main SHA: ac893af3b772100477a9ddcb652bacde2987116c.
-- Commit message: chore: bootstrap canonical AAP workspace and CI.
-- Owner refreshed GitHub CLI OAuth scope workflow. gh auth status showed active account bestgmza123-oss and scope workflow; after gh auth setup-git, the ordinary non-force push succeeded.
-- GitHub Actions workflow AAP UI CI run #1: success on the same SHA — https://github.com/bestgmza123-oss/AAP/actions/runs/40372672282.
-- Actual CI job PASS: checkout, Node/npm setup/cache, npm ci, lint, unit tests, typecheck, static scope audit, production build — https://github.com/bestgmza123-oss/AAP/actions/runs/40372672282/job/121747257234.
-- Windows local branch state at inspection: main tracks origin/main at the same SHA.
-- The local working tree also has seven unrelated untracked files: CHECKSUMS.sha256, PACKAGE_MANIFEST.json, PACKAGE_MANIFEST.md, evidence/OWNER_ACTION_TASK_TH.md, evidence/doc_workflow_static_audit.py, evidence/owner-recheck-analysis.md, evidence/owner-windows-final-results-summary.md. Preserve them; do not stage/delete them without scope review.
+- Main/base SHA: ac893af3b772100477a9ddcb652bacde2987116c.
+- Baseline AAP UI CI run #1: success on main SHA — https://github.com/bestgmza123-oss/AAP/actions/runs/40372672282.
+- PR #1 is open, not merged: https://github.com/bestgmza123-oss/AAP/pull/1.
+- PR branch: task/owner-pc-automation-workflow.
+- PR head as last verified: 4b646efa708ac4be39a59d0dc55b47f7e7ec665d — https://github.com/bestgmza123-oss/AAP/commit/4b646efa708ac4be39a59d0dc55b47f7e7ec665d.
+- GitHub Actions Run #7 for PR #1 completed success on that exact SHA; both AAP UI quality gates and Playwright browser smoke passed — https://github.com/bestgmza123-oss/AAP/actions/runs/40377930212.
+- Push run #6 also completed success on that same SHA — https://github.com/bestgmza123-oss/AAP/actions/runs/40377921318.
 
-## Documentation changes in this update
+## Local verification on Windows
 
-- Added AAP_Documentation_Reboot/delivery/15_OWNER_PC_AUTOMATION_WORKFLOW_TH.md with an agent-first Windows workflow, bounded local/CI testing, one coherent commit per Task, PR/SHA traceability, Playwright artifact plan, and a consolidated Owner Action rule.
-- Updated delivery/14_WORKFLOW_AUTOMATION_GITHUB_CI_SETUP.md with current remote/Actions results and remaining acceptance criteria.
-- Updated project README/status, documentation README, owner summary, delivery README, current-task index, review checklist and related workflow policy links to remove stale claims that the repository is empty or no CI run exists.
+The latest implementation was verified after a clean lockfile install:
 
-## Not run / not verified
+- npm ci --no-audit --no-fund: PASS (122 packages added, exit 0).
+- npm run lint: PASS (four existing reduced-motion CSS !important warnings only).
+- npm test: PASS (4/4 Vitest tests).
+- npm run typecheck: PASS; includes Playwright config and E2E specs.
+- npm run audit:scope: PASS.
+- npm run build: PASS.
+- npm run test:e2e: PASS (2/2 browser tests):
+  - / shows the expected private fixture-only shell and boundary banner.
+  - /not-yet-implemented shows placeholder content and returns to shell on click.
+- Static docs audit: PASS — 69 Markdown files, 0 non-Markdown files under documentation subtree, 1,290 local Markdown links, 0 missing targets, required policy markers present.
+- git diff --check / git diff --cached --check: passed before the relevant commits.
 
-- Playwright dependency/config/tests for / and /not-yet-implemented.
-- Browser workflow and failure report/screenshots/traces artifacts.
-- Task branch + PR for the next automation increment.
-- Required Status Checks and main branch protection/ruleset read-back.
-- No code/gameplay feature work is authorized by this checkpoint.
+## Browser failure artifact proof
 
-## Required resume point
+A deliberate failure was injected only on a disposable branch to test upload behavior; it was not a product-code change and was not merged.
 
-Continue this same Workflow Automation task at the first incomplete acceptance item: create a bounded task branch from latest origin/main, add Playwright using npm so package.json and package-lock.json update together, configure the browser CI and failure artifacts, then verify PR head SHA and CI SHA. Configure Required Status Checks only after a real run exposes exact stable check names and permissions are confirmed.
+- Temporary branch: task/playwright-artifact-validation.
+- Final probe SHA: aa4084efad09a897ecc7a8b3d849ddadefccb29d.
+- Run #9 completed failure intentionally: quality job succeeded, Playwright browser job failed on the deliberately false assertion — https://github.com/bestgmza123-oss/AAP/actions/runs/40378477194.
+- GitHub Actions artifact upload PASS: playwright-failure-aa4084efad09a897ecc7a8b3d849ddadefccb29d-1, 5,001,070 bytes, expired=false; artifact API: https://api.github.com/repos/bestgmza123-oss/AAP/actions/artifacts/12675223402/zip.
+- An earlier probe revision (run #8) stopped at lint due to the temporary assertion's formatting and did not reach browser/artifact upload. The probe was corrected and Run #9 proves the intended failure-upload path.
+- Temporary test branch was deleted locally and remotely after evidence was captured. The automation PR branch remains at its normal passing SHA.
 
-## Owner-effort reduction rule
+## Main branch protection read-back
 
-When the authorized Windows device or GitHub Actions is accessible, the agent should run routine commands/tests, inspect diffs and capture the actual outputs directly. Do not ask the owner to rerun passing checks, paste full transcripts or make a commit per edit. One consolidated Owner Action is reserved for true authorization/MFA/UAC/permission gates, owner product/UX decisions, destructive/production actions, or when tool access is genuinely blocked. Never bypass a safety block; never ask for credentials or secrets.
+Protected through authenticated local GitHub CLI and read back from gh api repos/bestgmza123-oss/AAP/branches/main/protection:
 
-## Source-revision gate
+- Required status checks: AAP UI quality gates, Playwright browser smoke.
+- Strict up-to-date requirement: enabled.
+- Enforce for admins: enabled.
+- Required PR review configuration present; required_approving_review_count=0 (PR required, no reviewer approval count enforced).
+- Force pushes disabled; branch deletions disabled.
+- Rulesets endpoint returned an empty array []; protection uses branch-protection API configuration.
 
-Every future acceptance must bind the PR head SHA, Actions run SHA, reviewed diff and checkpoint to the exact same revision. Any new source commit invalidates previous acceptance for changed gates until checks run against that SHA. Trello remains the Thai status/dependency dashboard; source and CI evidence stay in the repository and Actions runs.
+## Documentation and operating policy
 
+- Added AAP_Documentation_Reboot/delivery/15_OWNER_PC_AUTOMATION_WORKFLOW_TH.md as the canonical owner-PC / Remote Desktop / CI operating guide.
+- Updated root README, documentation README, owner summary, delivery README, AGENTS policy, review checklist, current-task index, workflow setup brief, and Trello workflow policy/checkpoint.
+- The guide says to use authorized Windows checkout/CI directly where possible, avoid asking the owner to repeat routine checks or paste full logs, batch a coherent Task into one commit, link source SHA to PR/Actions, preserve unrelated untracked files, and reserve Owner Action for real auth/permission/UX/destructive gates.
+- GitHub Actions workflow now has a separate Playwright browser job with HTML report, screenshots, traces and video retained for failure diagnostics; on failure it uploads AAP_UI_P1/playwright-report/ and AAP_UI_P1/test-results/ with a SHA/run-attempt artifact name and 14-day retention.
 
-## PR delivery and browser automation update — 2026-10-27
+## Untracked local files intentionally preserved
 
-- Docs-only branch: task/owner-pc-automation-workflow.
-- First docs commit: 9117f705c72b68ddc4385486a308dc48e5ad579c; [PR #1](https://github.com/bestgmza123-oss/AAP/pull/1) opened against main.
-- The first docs commit's GitHub Actions run #2 completed success on that same SHA: https://github.com/bestgmza123-oss/AAP/actions/runs/40374586525.
-- The PR has since received a checkpoint/status documentation follow-up; check the PR's current head SHA and latest Actions run rather than treating run #2 as proof for any later commit.
-- GitHub connector's create-PR API returned 403; the authenticated local gh CLI was used normally on the authorized Windows checkout to open PR #1. This is an integration permission limitation, not evidence of repository write denial.
-- Branch protection/rulesets remain unverified: the rulesets endpoint returned an empty list and the connector's branch-protection detail endpoint returned 403. Do not claim protection is active.
+The local working tree had seven unrelated untracked files. They were not staged or deleted:
+- CHECKSUMS.sha256
+- PACKAGE_MANIFEST.json
+- PACKAGE_MANIFEST.md
+- evidence/OWNER_ACTION_TASK_TH.md
+- evidence/doc_workflow_static_audit.py
+- evidence/owner-recheck-analysis.md
+- evidence/owner-windows-final-results-summary.md
+
+## Remaining human gate
+
+Automation implementation, CI verification, failure-artifact proof and main protection are complete for this setup scope. PR #1 remains open/not merged so the owner can review/decide merge. Do not merge automatically and do not start P1-UI-002.
+
+Trello remains the Thai status/decision dashboard; Git and Actions remain the source of code history and test evidence.

@@ -3,7 +3,7 @@
 ## Task contract
 
 - **Task ID:** Workflow Automation & GitHub CI Setup
-- **Current status:** In Progress — initial repository bootstrap and base CI are verified; Playwright, failure artifacts, PR flow and Required Status Checks remain pending.
+- **Current status:** Review — baseline CI, Playwright browser smoke, failure-artifact upload proof, PR/SHA checks, and main branch-protection read-back are verified. PR #1 remains open/unmerged for owner review.
 - **Purpose:** Make the existing AAP repository, commit history, pull requests, Windows checkout and GitHub Actions the routine workflow, reducing manual tests, copy/paste logs and unnecessary owner commits.
 - **Source authority:** AAP root README, AAP_Documentation_Reboot/AGENTS.md, delivery/03_NEXT_TASK.md, delivery/06_TASK_BOARD_WORKFLOW.md, delivery/12_PROJECT_WORKSPACE_AND_SINGLE_ZIP_HANDOFF.md, delivery/15_OWNER_PC_AUTOMATION_WORKFLOW_TH.md, CHECKLIST_FOR_REVIEW.md, and AAP_UI_P1/package.json + package-lock.json.
 - **Game-rule changes:** None authorized. Workflow/tooling only. Do not edit game systems, mechanics, balance, feature scope, or backend contracts.
@@ -20,10 +20,10 @@
 | Actual CI steps | PASS — checkout, Node/npm setup/cache, npm ci, lint, unit tests, typecheck, static scope audit, production build | [Job output](https://github.com/bestgmza123-oss/AAP/actions/runs/40372672282/job/121747257234) |
 | Windows remote workspace | PASS — DESKTOP-6U02MEL online; repository at C:\Users\ultra\Downloads\AAP_Project; main tracks origin/main at the verified commit | Remote Desktop inspection, 2026-10-27 |
 | Working-tree state at inspection | Known untracked local legacy/manifests/evidence files exist; do not auto-add or delete them without auditing scope | Remote git status output |
-| Playwright package/config/routes | LOCAL PASS — @playwright/test installed by npm; package-lock updated; two route tests pass locally | Windows smoke: 2/2; GitHub Actions browser run pending for the pushed implementation SHA |
-| Browser failure report/screenshots/traces as Actions artifacts | NOT VERIFIED — requires a real browser job/run | No artifact result claimed |
-| PR handoff | IN PROGRESS — PR #1 is open; Playwright changes are locally verified and queued for a coherent commit/push; existing run #4 only verifies the previous documentation SHA | [PR #1](https://github.com/bestgmza123-oss/AAP/pull/1) · [run #4](https://github.com/bestgmza123-oss/AAP/actions/runs/40375137506) |
-| Required Status Checks / branch rules | NOT VERIFIED — base CI passing does not imply protection has been enabled | Read branch protection/ruleset settings before claiming active |
+| Playwright package/config/routes | PASS — npm dependency/lockfile, config, two route tests, Vitest exclusion and typecheck/lint scope are committed to PR #1 | [Run #7](https://github.com/bestgmza123-oss/AAP/actions/runs/40377930212) passed both jobs on SHA `4b646efa708ac4be39a59d0dc55b47f7e7ec665d`; Windows smoke 2/2 |
+| Browser failure report/screenshots/traces as Actions artifacts | PASS — controlled failure probe failed in the browser step and uploaded a retained artifact | [Run #9](https://github.com/bestgmza123-oss/AAP/actions/runs/40378477194); artifact `playwright-failure-aa4084efad09a897ecc7a8b3d849ddadefccb29d-1`, 5,001,070 bytes, not expired. Temporary probe branch was deleted after verification. |
+| PR handoff | IN REVIEW — PR #1 remains open/unmerged. Implementation commit `4b646efa708ac4be39a59d0dc55b47f7e7ec665d` passed both jobs in Run #7; this docs-only checkpoint will trigger a fresh CI run for its own SHA before merge. | [PR #1](https://github.com/bestgmza123-oss/AAP/pull/1) · [run #7](https://github.com/bestgmza123-oss/AAP/actions/runs/40377930212) |
+| Required Status Checks / branch rules | PASS — branch protection PUT succeeded and read-back confirmed both required checks, strict up-to-date requirement, admin enforcement, no force-push/deletion, and PR requirement (zero approvals configured) | Readback via authenticated local `gh api repos/bestgmza123-oss/AAP/branches/main/protection`; rulesets endpoint returned `[]` |
 | Trello sync | Updated with the verified push/CI state and the next bounded actions | [Task card](https://trello.com/c/FQsbZsmU/6-workflow-automation-github-ci-setup-%E0%B9%80%E0%B8%8A%E0%B8%B7%E0%B9%88%E0%B8%AD%E0%B8%A1-aap-repository) |
 | P1-UI-002 / game rules | Not started / unchanged | Scope boundary for this task |
 
@@ -68,13 +68,12 @@
 - [x] Project status/checkpoint updated to reflect the observed remote push and CI result, without claiming browser test success.
 - [x] A canonical owner-PC automation guide exists at delivery/15_OWNER_PC_AUTOMATION_WORKFLOW_TH.md.
 - [x] Playwright dependency, lockfile, `test:e2e` script, config, two route tests, Vitest exclusion and artifact upload workflow are implemented locally; Windows Playwright passes 2/2.
-- [ ] Commit/push the current Playwright implementation to the named task branch and verify GitHub Actions on that exact SHA.
-- [ ] Browser checks pass for both required routes on GitHub Actions.
-- [ ] A controlled failing browser run produces an inspectable GitHub Actions artifact containing HTML report/screenshots/traces; verify actual artifact paths and retention.
-- [x] PR #1 open with the documentation/workflow guide and status checkpoints; each subsequent source change must be checked against the latest PR head SHA before merge.
-- [ ] Playwright PR head, CI run, reviewed diff and checkpoint all identify the same source SHA.
-- [ ] Required Status Checks and main branch rules are configured/read back if permission and stable check names are available; otherwise record NOT CONFIGURED/NOT VERIFIED and the actual limitation.
-- [ ] Trello links the real branch/commit/PR/Actions/artifacts and offers one genuine next action.
+- [x] Playwright implementation committed/pushed on PR branch; implementation commit SHA was verified by both push and PR Actions runs. Each subsequent commit requires a fresh run on that commit's exact SHA.
+- [x] Both browser routes pass in GitHub Actions run #7 on SHA `4b646efa708ac4be39a59d0dc55b47f7e7ec665d`.
+- [x] A controlled failing browser run produced an inspectable retained artifact (run #9); the failure was intentionally injected on a disposable temporary branch and that branch was deleted after verification.
+- [x] PR #1 remains open for owner review; implementation commit `4b646efa708ac4be39a59d0dc55b47f7e7ec665d`, reviewed diff and Actions run #7 SHA matched. Fresh docs-only follow-up must pass CI before merge.
+- [x] Required Status Checks and main branch protection were configured and read back successfully; approvals required are set to zero. Do not merge PR #1 automatically.
+- [x] Trello card links the real repository/commit/PR/CI runs/artifact proof and records that PR #1 remains open for owner review; no follow-on Task starts automatically.
 - [x] No game rules changed and P1-UI-002 remains unstarted.
 
 ## Known owner/computer boundary
@@ -83,7 +82,7 @@ The Windows computer is reachable through Remote Desktop Commander in this sessi
 
 ## Resume point
 
-Resume this same task at the first incomplete acceptance item: Playwright + browser artifacts on a task branch, then PR-based verification and Required Status Checks read-back. The first baseline CI is complete; do not bootstrap the repository again, request recurring ZIPs, or start P1-UI-002.
+Current handoff: automation acceptance checks are complete through browser CI and artifact-path validation; PR #1 remains open/unmerged for owner review. The only remaining human gate is review/merge decision on PR #1. Do not bootstrap the repository again, request recurring ZIPs, merge automatically, or start P1-UI-002.
 
 ## References checked 2026-10-27
 
