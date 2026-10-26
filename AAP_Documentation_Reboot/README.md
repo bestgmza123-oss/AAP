@@ -23,6 +23,7 @@
 15. [`delivery/07_P1_UI_PROTOTYPE_TASK.md`](delivery/07_P1_UI_PROTOTYPE_TASK.md) — งานแรก `P1-UI-001` คือ scaffold/shell เท่านั้น
 16. [`delivery/11_TRELLO_OWNER_OUTPUT_LANGUAGE.md`](delivery/11_TRELLO_OWNER_OUTPUT_LANGUAGE.md) — ข้อกำหนดรายงานบน Trello เป็นภาษาไทย โดยคงรหัสและหลักฐานทางเทคนิคเดิม
 17. [`delivery/12_PROJECT_WORKSPACE_AND_SINGLE_ZIP_HANDOFF.md`](delivery/12_PROJECT_WORKSPACE_AND_SINGLE_ZIP_HANDOFF.md) — project layout, repository-first handoff และใช้ ZIP เฉพาะ milestone/release/fallback
+18. [`delivery/15_OWNER_PC_AUTOMATION_WORKFLOW_TH.md`](delivery/15_OWNER_PC_AUTOMATION_WORKFLOW_TH.md) — วิธีใช้ Windows checkout/Remote Desktop/CI ให้ Agent ตรวจเองมากที่สุด ลดการทดสอบซ้ำ การคัดลอก log และ commit ถี่เกินไป
 
 ## ชื่อไฟล์ระบบและรหัสอ้างอิง
 
@@ -47,7 +48,7 @@ ZIP เริ่มต้นนี้เป็นเอกสารล้วน 
 
 ## สถานะ Workflow Automation & GitHub CI Setup
 
-Task ปัจจุบันคือ [`delivery/14_WORKFLOW_AUTOMATION_GITHUB_CI_SETUP.md`](delivery/14_WORKFLOW_AUTOMATION_GITHUB_CI_SETUP.md). ตรวจ URL ที่เจ้าของให้โดยตรงแล้วพบ `bestgmza123-oss/AAP` มีอยู่และมีสิทธิ์ `admin`/`push` แต่ repository ว่างและยังไม่มี commit/source. สถานะเป็น `REPOSITORY_EMPTY_BOOTSTRAP_BLOCKER`; ทำ bootstrap ครั้งเดียวตาม `../evidence/OWNER_ACTION_GITHUB_REPOSITORY_TH.md`. ยังไม่มี CI run/Playwright artifact/Required Status Check ที่ยืนยันได้ และห้ามเริ่ม `P1-UI-002` อัตโนมัติ.
+Task ปัจจุบันคือ [`delivery/14_WORKFLOW_AUTOMATION_GITHUB_CI_SETUP.md`](delivery/14_WORKFLOW_AUTOMATION_GITHUB_CI_SETUP.md). Bootstrap สำเร็จ: `main` ชี้ไปที่ `ac893af3b772100477a9ddcb652bacde2987116c`, และ [AAP UI CI run #1](https://github.com/bestgmza123-oss/AAP/actions/runs/40372672282) ผ่านบน SHA เดียวกัน โดย npm ci, lint, unit tests, typecheck, static scope audit และ production build ผ่าน. Playwright/E2E, failure artifacts และ Required Status Checks/branch protection ยังไม่ยืนยัน. ใช้ [`delivery/15_OWNER_PC_AUTOMATION_WORKFLOW_TH.md`](delivery/15_OWNER_PC_AUTOMATION_WORKFLOW_TH.md) เป็นแนวทางทำงานผ่าน Windows checkout และ CI เพื่อลด Owner Action. ห้ามเริ่ม `P1-UI-002` อัตโนมัติ.
 
 ## วิธีแนบเอกสารให้ AI อย่างไม่หลุด Scope
 
