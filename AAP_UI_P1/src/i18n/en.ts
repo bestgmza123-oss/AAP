@@ -2,6 +2,8 @@ export const en = {
   'app.name': 'Anime Apocalypse',
   'app.shortName': 'AAP',
   'app.previewLabel': 'Development Preview',
+  'app.versionPrefix': 'VERSION',
+  'app.previewStatus': 'PRIVATE PREVIEW',
   'app.localBuild': 'LOCAL BUILD',
   'app.privateWorkspace': 'PRIVATE UI WORKSPACE',
   'boundary.notice': 'PRIVATE PROTOTYPE · FIXTURE DATA · NOT CONNECTED TO GAME SERVER',
@@ -31,8 +33,36 @@ export const en = {
   'shell.scopeNetwork': 'No remote API or backend calls',
   'shell.footer': 'A bounded implementation workspace · Private/internal use only',
   'shell.fixtureMode': 'FIXTURE MODE',
+  'nav.label': 'Global navigation',
+  'nav.start': 'Start',
+  'nav.updates': 'Updates',
+  'nav.mail': 'Mail',
+  'nav.unavailable': 'UNAVAILABLE',
+  'nav.mailDisabledReason':
+    'Mail is disabled in this prototype. No account or message delivery is connected.',
+  'identity.sectionLabel': 'FIXTURE IDENTITY',
+  'identity.title': 'Local preview identity',
+  'identity.description':
+    'This label identifies the local UI fixture only. It is not a player account or a login session.',
+  'identity.idLabel': 'FIXTURE ID',
+  'identity.fixture': 'LOCAL FIXTURE',
+  'identity.localState': 'Local preview - not signed in',
+  'start.eyebrow': 'PHASE 01 / START',
+  'start.title': 'A private preview. A clear starting point.',
+  'start.description':
+    'Explore the current interface shell and preview information. Game services, player accounts, and persistent state are not connected.',
+  'start.updatesAction': 'View Updates',
+  'start.actionNote': 'Preview metadata only',
+  'updates.sectionLabel': 'UPDATES / RELEASE NOTES',
+  'updates.title': 'Updates',
+  'updates.description':
+    'This panel reports only information bundled with this private preview. It does not represent a published patch feed.',
+  'updates.emptyTitle': 'No published updates',
+  'updates.emptyDescription':
+    'There is no published patch history in this prototype. The version label describes this local UI package only.',
+  'updates.viewLink': 'Open Updates',
   'route.unknownTitle': 'Route not implemented',
   'route.unknownDescription':
-    'This route is a placeholder. No gameplay screen is available in P1-UI-001.',
-  'route.returnToShell': 'Return to shell',
+    'This route is a placeholder. No gameplay screen is available in P1-UI-002.',
+  'route.returnToStart': 'Return to Start',
 } as const;

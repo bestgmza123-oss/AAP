@@ -1,7 +1,7 @@
-import { Route, Routes } from 'react-router-dom';
+import { NavLink, Route, Routes } from 'react-router-dom';
 import { prototypeFixture } from './fixtures/prototype';
 import { t } from './i18n';
-import { ShellPlaceholderPage } from './routes/ShellPlaceholderPage';
+import { StartPage, UpdatesPage } from './routes/StartPage';
 import { UnknownRoutePage } from './routes/UnknownRoutePage';
 
 export function App() {
@@ -27,11 +27,43 @@ export function App() {
         <div className="build-meta">
           <span className="build-indicator">
             <span className="build-indicator-dot" aria-hidden="true" />
-            {t(prototypeFixture.buildLabelKey)}
+            {t('app.previewLabel')}
           </span>
-          <span className="build-id">{prototypeFixture.taskId}</span>
+          <span className="build-id">
+            {t('app.versionPrefix')} {prototypeFixture.version}
+          </span>
         </div>
       </header>
+
+      <nav className="global-nav" aria-label={t('nav.label')}>
+        <NavLink
+          to="/"
+          end
+          className={({ isActive }) => (isActive ? 'global-nav-link active' : 'global-nav-link')}
+        >
+          {t('nav.start')}
+        </NavLink>
+        <NavLink
+          to="/updates"
+          className={({ isActive }) => (isActive ? 'global-nav-link active' : 'global-nav-link')}
+        >
+          {t('nav.updates')}
+        </NavLink>
+        <button
+          className="global-nav-link mail-nav-link"
+          type="button"
+          disabled
+          aria-describedby="mail-disabled-reason"
+        >
+          {t('nav.mail')}
+          <span className="nav-soon">{t('nav.unavailable')}</span>
+        </button>
+        <span className="nav-spacer" />
+        <span className="fixture-identity-chip">{t('identity.fixture')}</span>
+      </nav>
+      <p id="mail-disabled-reason" className="visually-hidden">
+        {t('nav.mailDisabledReason')}
+      </p>
 
       <aside className="prototype-boundary" aria-label={t('boundary.regionLabel')}>
         <span className="boundary-icon" aria-hidden="true">
@@ -42,15 +74,14 @@ export function App() {
 
       <main id="main-content" className="main-content" tabIndex={-1}>
         <Routes>
-          <Route path="/" element={<ShellPlaceholderPage />} />
+          <Route path="/" element={<StartPage />} />
+          <Route path="/updates" element={<UpdatesPage />} />
           <Route path="*" element={<UnknownRoutePage />} />
         </Routes>
       </main>
 
       <footer className="app-footer">
-        <span className="footer-mark" aria-hidden="true">
-          AAP / 01
-        </span>
+        <span className="footer-mark">AAP / {prototypeFixture.version}</span>
         <p>{t('shell.footer')}</p>
         <span className="footer-status">{t('shell.fixtureMode')}</span>
       </footer>
