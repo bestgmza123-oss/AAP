@@ -186,18 +186,11 @@ export function ProvincePage() {
                 </dl>
               </div>
             </div>
-            <button
-              className="province-disabled-action"
-              type="button"
-              disabled
-              aria-describedby="run-preflight-disabled-reason"
-            >
+            <Link className="province-preflight-action" to="/run/preflight">
               {t('province.run.detailsAction')}
               <span aria-hidden="true">→</span>
-            </button>
-            <p id="run-preflight-disabled-reason" className="disabled-action-reason">
-              {t('province.run.preflightNotAvailable')}
-            </p>
+            </Link>
+            <p className="disabled-action-reason">{t('province.run.preflightNotAvailable')}</p>
           </section>
 
           <section

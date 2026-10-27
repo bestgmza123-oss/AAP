@@ -3,7 +3,7 @@
  * Gameplay/display values live in named task fixtures, not in build metadata.
  */
 export const prototypeFixture = {
-  taskId: 'P1-UI-003',
+  taskId: 'P1-UI-004',
   version: '0.1.0',
   fixtureIdentity: 'AAP-LOCAL-001',
   buildLabelKey: 'app.previewLabel',
