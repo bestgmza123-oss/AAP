@@ -84,3 +84,15 @@ The implemented Escape and Surrender confirmations are distinct, display consequ
 P1-UI-007 is accepted and merged through PR #12 https://github.com/bestgmza123-oss/AAP/pull/12 at merge SHA `b26bc38f6c2d27cfa6249325df5540669dd813a4`. Exact PR-head CI https://github.com/bestgmza123-oss/AAP/actions/runs/40534566040 and post-merge `main` CI https://github.com/bestgmza123-oss/AAP/actions/runs/40534844513 both passed. Its checkpoint: [`../../evidence/P1-UI-007_CHECKPOINT.md`](../../evidence/P1-UI-007_CHECKPOINT.md).
 
 **Next task candidate:** `P2-GATE-000 — Phase 2 semantic/test preflight` is next in the execution matrix but has not been authorized or started. Wait for an explicit owner instruction before proceeding.
+
+## Latest bounded task status — P2-GATE-000 (2026-10-28)
+
+P2-GATE-000 semantic/test preflight is **CONDITIONAL PASS WITH TWO ISOLATED BLOCKERS**. Phase 2 source-test rows and exact current AC mappings are recorded in [P2_GATE_000_SEMANTIC_TEST_PREFLIGHT.md](P2_GATE_000_SEMANTIC_TEST_PREFLIGHT.md), and the legacy crosswalk has a consistent 9-column schema with per-row gate status. All source tests remain NOT RUN IN REBOOT.
+
+Isolated blockers:
+1. P1-DB-001 / P2-CORE-002: current schema/table inventory, RLS policy/role/grant matrix and migration re-apply AC are not defined by current canonical owners. Do not use legacy SoT §8 as current authority.
+2. V18-STOR-001/002 / subset of P2-CORE-011: Starting Room storage capacity/access/overflow/retry ACs are missing. Do not implement that storage slice until the current contract is defined.
+
+Scope splits: Phase 2 uses internal allowlisted identity; public signup/Auth remains Phase 3; Fridge/housing/lease remains Phase 3; Simulation remains Phase 4; full gear/affixes remains Phase 4; Companion/Home Raid/Auction/chat integration remains in the assigned later phases; paid features remain disabled. Shared primitives may use synthetic fixtures only as documented.
+
+Checkpoint: [P2-GATE-000_CHECKPOINT.md](../../evidence/P2-GATE-000_CHECKPOINT.md). This gate does not auto-authorize P2-CORE-001 or any implementation. Wait for explicit owner direction before the next bounded task.
