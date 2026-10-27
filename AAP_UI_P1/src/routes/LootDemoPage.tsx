@@ -8,6 +8,7 @@ import {
   type ReturnEncounterBranch,
   sumSelectedWeightGrams,
 } from '../fixtures/loot-capacity';
+import { itemsFromSelection, runResultFixtureId } from '../fixtures/run-result';
 import { type TranslationKey, t } from '../i18n';
 
 type LootStage = 'main-selection' | 'return-choice' | 'return-encounter' | 'return-loot' | 'result';
@@ -90,6 +91,23 @@ export function LootDemoPage() {
     setReturnBranch('none');
     setResult(null);
   }
+
+  const selectedTerminalItems = itemsFromSelection(
+    [...lootCapacityFixture.mainLoot, ...returnStacks],
+    result === 'escaped-return' ? mainSelection : { ...mainSelection, ...returnSelection },
+  );
+  const forfeitedTerminalItems =
+    result === 'escaped-return' ? itemsFromSelection(returnStacks, { 'return-salvage': 1 }) : [];
+  const terminalResultState = {
+    fixtureId: runResultFixtureId,
+    source: 'loot-demo' as const,
+    carriedInWeightGrams: lootCapacityFixture.initialCarriedWeightGrams,
+    chosenPendingItems: selectedTerminalItems,
+    receivedDemoItems: [],
+    forfeitedItems: forfeitedTerminalItems,
+    escapeContext:
+      result === 'escaped-return' ? ('return-encounter' as const) : ('not-applicable' as const),
+  };
 
   const resultTitle: TranslationKey =
     result === 'escaped-return'
@@ -487,9 +505,17 @@ export function LootDemoPage() {
           </div>
           <p className="loot-capacity-note">{t('loot.result.noPersistence')}</p>
           <div className="loot-panel-actions">
+            <Link
+              className="loot-primary-action"
+              to={result === 'escaped-return' ? '/run/result/escaped' : '/run/result/completed'}
+              state={terminalResultState}
+              data-testid="loot-view-terminal-result"
+            >
+              {t('loot.result.viewTerminalResult')}
+            </Link>
             <button
               type="button"
-              className="loot-primary-action"
+              className="loot-secondary-action"
               data-testid="loot-reset"
               onClick={resetDemo}
             >

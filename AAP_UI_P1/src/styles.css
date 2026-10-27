@@ -3732,3 +3732,464 @@ a {
     transition: none;
   }
 }
+
+/* P1-UI-008 — terminal Result, accessible recovery states and inactive Mail */
+.app-shell .main-content .result-page,
+.app-shell .main-content .mail-inactive-page {
+  display: grid;
+  gap: 1rem;
+  width: min(100%, var(--content-width));
+  min-width: 0;
+  margin: 0 auto;
+}
+.app-shell .main-content .result-breadcrumbs,
+.app-shell .main-content .mail-breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--color-muted);
+  font-size: 0.7rem;
+}
+.app-shell .main-content .result-breadcrumbs a,
+.app-shell .main-content .mail-breadcrumbs a {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-soft);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.app-shell .main-content .result-breadcrumbs [aria-current="page"],
+.app-shell .main-content .mail-breadcrumbs [aria-current="page"] {
+  color: var(--color-text);
+  font-weight: 800;
+}
+.app-shell .main-content .result-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.app-shell .main-content .mail-page-heading {
+  display: grid;
+  align-content: start;
+  gap: 0.5rem;
+  min-width: 0;
+}
+.app-shell .main-content .result-heading > div,
+.app-shell .main-content .mail-page-heading {
+  min-width: 0;
+}
+.app-shell .main-content .result-eyebrow,
+.app-shell .main-content .mail-eyebrow {
+  margin: 0 0 0.45rem;
+  color: var(--color-cyan);
+  font-size: 0.67rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.app-shell .main-content .result-heading h1,
+.app-shell .main-content .mail-page-heading h1 {
+  margin: 0;
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+.app-shell .main-content .result-heading > div > p:last-child,
+.app-shell .main-content .mail-page-heading > p:last-child {
+  max-width: 76ch;
+  margin: 0.7rem 0 0;
+  color: var(--color-soft);
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+.app-shell .main-content .result-heading h1:focus {
+  outline: 2px solid var(--color-cyan);
+  outline-offset: 5px;
+}
+.app-shell .main-content .result-fixture-stamp {
+  flex: 0 0 auto;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid #4a7771;
+  background: #102522;
+  color: #baf2e4;
+  font-size: 0.61rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+.app-shell .main-content .result-boundary,
+.app-shell .main-content .mail-inactive-boundary {
+  display: grid;
+  gap: 0.4rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid #80633d;
+  background: #211b13;
+}
+.app-shell .main-content .result-boundary strong,
+.app-shell .main-content .mail-inactive-boundary strong {
+  color: var(--color-hazard);
+  font-size: 0.72rem;
+  letter-spacing: 0.07em;
+}
+.app-shell .main-content .result-boundary p,
+.app-shell .main-content .mail-inactive-boundary p {
+  margin: 0;
+  color: #e4d1b9;
+  font-size: 0.75rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.app-shell .main-content .result-review-tools,
+.app-shell .main-content .result-terminal-panel,
+.app-shell .main-content .result-state-panel,
+.app-shell .main-content .mail-empty-state {
+  display: grid;
+  gap: 0.9rem;
+  min-width: 0;
+  padding: clamp(1rem, 2.5vw, 1.4rem);
+  border: 1px solid var(--color-line);
+  background: linear-gradient(145deg, rgb(23 31 41 / 96%), rgb(15 21 28 / 96%));
+}
+.app-shell .main-content .result-review-tools {
+  grid-template-columns: minmax(0, 1fr) minmax(12rem, 0.55fr) minmax(12rem, 0.55fr);
+  align-items: end;
+}
+.app-shell .main-content .result-review-tools h2,
+.app-shell .main-content .result-state-panel h2,
+.app-shell .main-content .mail-empty-state h2 {
+  margin: 0.2rem 0 0;
+  font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+.app-shell .main-content .result-review-tools p,
+.app-shell .main-content .result-state-panel > p,
+.app-shell .main-content .result-terminal-panel > p,
+.app-shell .main-content .mail-empty-state > p {
+  margin: 0;
+  color: var(--color-soft);
+  font-size: 0.78rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.app-shell .main-content .result-select-label {
+  display: grid;
+  gap: 0.45rem;
+  min-width: 0;
+  color: var(--color-soft);
+  font-size: 0.7rem;
+  font-weight: 750;
+  line-height: 1.45;
+}
+.app-shell .main-content .result-select-label select {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--color-line);
+  background: #0b1117;
+  color: var(--color-text);
+  font: inherit;
+}
+.app-shell .main-content .result-state-panel {
+  align-content: start;
+  border-color: #5f6975;
+}
+.app-shell .main-content .result-state-panel.error {
+  border-color: #9a554c;
+  background: linear-gradient(145deg, #251817, #171315);
+}
+.app-shell .main-content .result-state-panel.blocked {
+  border-color: #816748;
+}
+.app-shell .main-content .result-state-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--color-line);
+  color: var(--color-cyan);
+  font-size: 1.35rem;
+  font-weight: 850;
+}
+.app-shell .main-content .result-terminal-panel {
+  border-color: #4b716b;
+}
+.app-shell .main-content .result-terminal-panel.escaped {
+  border-color: #8b7047;
+}
+.app-shell .main-content .result-terminal-panel.failed,
+.app-shell .main-content .result-terminal-panel.expired {
+  border-color: #8e514a;
+}
+.app-shell .main-content .result-terminal-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.app-shell .main-content .result-terminal-heading > div {
+  min-width: 0;
+}
+.app-shell .main-content .result-terminal-heading h2 {
+  margin: 0.25rem 0 0;
+  font-size: clamp(1.25rem, 2.5vw, 1.9rem);
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+.app-shell .main-content .result-outcome-status {
+  flex: 0 0 auto;
+  max-width: 15rem;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid #4a7771;
+  background: #102522;
+  color: #baf2e4;
+  font-size: 0.62rem;
+  font-weight: 850;
+  line-height: 1.4;
+  text-align: center;
+}
+.app-shell .main-content .result-terminal-panel.escaped .result-outcome-status {
+  border-color: #8a7046;
+  background: #2b2114;
+  color: #ffe1a8;
+}
+.app-shell .main-content .result-terminal-panel.failed .result-outcome-status,
+.app-shell .main-content .result-terminal-panel.expired .result-outcome-status {
+  border-color: #92544c;
+  background: #2a1718;
+  color: #ffd1c6;
+}
+.app-shell .main-content .result-terminal-panel ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: var(--color-soft);
+  font-size: 0.78rem;
+  line-height: 1.75;
+}
+.app-shell .main-content .result-buckets {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+  min-width: 0;
+}
+.app-shell .main-content .result-bucket {
+  display: grid;
+  align-content: start;
+  gap: 0.4rem;
+  min-width: 0;
+  padding: 0.85rem;
+  border: 1px solid var(--color-line);
+  background: rgb(7 12 17 / 46%);
+}
+.app-shell .main-content .result-bucket.forfeited {
+  border-color: #846e48;
+  background: #211b13;
+}
+.app-shell .main-content .result-bucket > span {
+  color: var(--color-muted);
+  font-size: 0.68rem;
+  font-weight: 750;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.app-shell .main-content .result-bucket strong {
+  color: var(--color-text);
+  font-size: clamp(0.82rem, 1.4vw, 1.05rem);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.app-shell .main-content .result-bucket p {
+  margin: 0;
+  color: var(--color-soft);
+  font-size: 0.7rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+.app-shell .main-content .result-bucket p:last-child {
+  color: var(--color-muted);
+}
+.app-shell .main-content .result-capacity-note {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.app-shell .main-content .result-disabled-action {
+  display: grid;
+  justify-items: start;
+  gap: 0.4rem;
+  padding: 0.8rem;
+  border: 1px dashed var(--color-line);
+  background: rgb(7 12 17 / 40%);
+}
+.app-shell .main-content .result-disabled-action button,
+.app-shell .main-content .mail-disabled-actions button {
+  min-height: 44px;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid #3f474f;
+  background: #171b1f;
+  color: #9ba4ad;
+  font: inherit;
+  font-size: 0.74rem;
+  font-weight: 800;
+  cursor: not-allowed;
+}
+.app-shell .main-content .result-disabled-action p,
+.app-shell .main-content .mail-disabled-actions p {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.7rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+.app-shell .main-content .result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  align-items: stretch;
+  margin-top: 0.2rem;
+}
+.app-shell .main-content .result-primary-action,
+.app-shell .main-content .result-secondary-action,
+.app-shell .main-content .mail-return-link {
+  display: inline-flex;
+  min-width: 0;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 0.95rem;
+  border: 1px solid #438b82;
+  background: #17312d;
+  color: #e9fffa;
+  font-size: 0.75rem;
+  font-weight: 800;
+  line-height: 1.4;
+  text-decoration: none;
+  text-align: center;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.app-shell .main-content .result-secondary-action {
+  border-color: #65543e;
+  background: #221b13;
+  color: #f2ddbf;
+}
+.app-shell .main-content .result-primary-action:hover,
+.app-shell .main-content .result-secondary-action:hover,
+.app-shell .main-content .mail-return-link:hover {
+  filter: brightness(1.14);
+}
+.app-shell .main-content .mail-inactive-boundary {
+  border-color: #80633d;
+}
+.app-shell .main-content .mail-empty-state {
+  align-content: start;
+  border-color: #5d6873;
+}
+.app-shell .main-content .mail-empty-icon {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  place-items: center;
+  border: 1px solid var(--color-line);
+  color: var(--color-muted);
+  font-size: 1.35rem;
+}
+.app-shell .main-content .mail-disabled-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  gap: 0.6rem;
+}
+.app-shell .main-content .mail-disabled-actions p {
+  flex-basis: 100%;
+}
+.app-shell .main-content .mail-return-link {
+  justify-self: start;
+  border-color: var(--color-line);
+  background: #141c24;
+  color: var(--color-text);
+}
+.app-shell .main-content .result-page a:focus-visible,
+.app-shell .main-content .result-page button:focus-visible,
+.app-shell .main-content .result-page select:focus-visible,
+.app-shell .main-content .mail-inactive-page a:focus-visible,
+.app-shell .main-content .mail-inactive-page button:focus-visible {
+  outline: 2px solid var(--color-cyan);
+  outline-offset: 3px;
+}
+@media (max-width: 900px) {
+  .app-shell .main-content .result-review-tools {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .app-shell .main-content .result-review-tools > div {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 760px) {
+  .app-shell .main-content .result-heading,
+  .app-shell .main-content .result-terminal-heading {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .app-shell .main-content .result-fixture-stamp,
+  .app-shell .main-content .result-outcome-status {
+    justify-self: start;
+    max-width: 100%;
+  }
+  .app-shell .main-content .result-review-tools,
+  .app-shell .main-content .result-buckets {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .app-shell .main-content .result-review-tools > div {
+    grid-column: auto;
+  }
+  .app-shell .main-content .result-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .app-shell .main-content .result-actions > * {
+    width: 100%;
+  }
+  .app-shell .main-content .result-disabled-action {
+    justify-items: stretch;
+  }
+  .app-shell .main-content .mail-disabled-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .app-shell .main-content .mail-disabled-actions > * {
+    width: 100%;
+  }
+  .app-shell .main-content .mail-return-link {
+    justify-self: stretch;
+    width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-shell .main-content .result-page *,
+  .app-shell .main-content .mail-inactive-page * {
+    scroll-behavior: auto;
+    animation: none;
+    transition: none;
+  }
+}
+
+/* Keep the Mail action boundary copy out of the button flex row on narrow screens. */
+.app-shell .main-content .mail-disabled-reason {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.7rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  box-sizing: border-box;
+}

@@ -18,6 +18,7 @@ import {
   getEscapeScenario,
 } from '../fixtures/escape-surrender';
 import { runPreflightFixture } from '../fixtures/run-preflight';
+import { runResultFixtureId } from '../fixtures/run-result';
 import { type TranslationKey, t } from '../i18n';
 
 type ExitDialogKind = 'escape' | 'surrender';
@@ -254,6 +255,37 @@ export function CombatDemoPage() {
               </p>
               <p>{t('combat.exitOutcome.escapeDestination')}</p>
               <p className="combat-exit-outcome-boundary">{t('combat.exitOutcome.noMutation')}</p>
+              <Link
+                className="combat-exit-outcome-link"
+                to="/run/result/escaped"
+                data-testid="combat-view-run-result"
+                state={{
+                  fixtureId: runResultFixtureId,
+                  source: 'combat-exit',
+                  carriedInWeightGrams: 8500,
+                  chosenPendingItems: [],
+                  receivedDemoItems: [],
+                  forfeitedItems:
+                    exitOutcome.fixtureId === 'return-encounter-gold'
+                      ? [
+                          {
+                            id: 'return-salvage',
+                            nameKey: 'loot.stack.returnSalvage',
+                            weightGrams: 1800,
+                            quantity: 1,
+                          },
+                        ]
+                      : [],
+                  escapeContext:
+                    exitOutcome.fixtureId === 'return-encounter-gold'
+                      ? 'return-encounter'
+                      : 'pre-clear',
+                  escapePaymentMethod: exitOutcome.paymentMethod,
+                  escapeCostGold: exitOutcome.goldCost,
+                }}
+              >
+                {t('combat.exitOutcome.viewRunResult')}
+              </Link>
               <Link className="combat-exit-outcome-link" to="/province">
                 {t('combat.exitOutcome.returnToProvince')}
               </Link>
@@ -268,6 +300,22 @@ export function CombatDemoPage() {
                 <li>{t('combat.exitOutcome.surrenderNoHpRefill')}</li>
               </ul>
               <p className="combat-exit-outcome-boundary">{t('combat.exitOutcome.noMutation')}</p>
+              <Link
+                className="combat-exit-outcome-link"
+                to="/run/result/failed"
+                data-testid="combat-view-run-result"
+                state={{
+                  fixtureId: runResultFixtureId,
+                  source: 'combat-exit',
+                  carriedInWeightGrams: 8500,
+                  chosenPendingItems: [],
+                  receivedDemoItems: [],
+                  forfeitedItems: [],
+                  escapeContext: 'not-applicable',
+                }}
+              >
+                {t('combat.exitOutcome.viewRunResult')}
+              </Link>
             </>
           )}
           <button type="button" className="combat-secondary-action" onClick={resetDemo}>
