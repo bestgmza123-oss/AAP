@@ -2,7 +2,7 @@
 
 Date: 2026-10-27 (Asia/Bangkok)
 Task: `P1-UI-003 — Province and resource preview`
-Status: **IMPLEMENTATION AND EXACT-HEAD CI PASS; PR #4 READY FOR MERGE REVIEW**
+Status: **ACCEPTED / COMPLETE — PR #4 MERGED; PR-HEAD AND POST-MERGE CI PASS**
 
 ## Source identity and preservation
 
@@ -52,7 +52,7 @@ The browser tests assert the route transition, hierarchy and Safe Zone status, S
 - [GitHub Actions run #22](https://github.com/bestgmza123-oss/AAP/actions/runs/40479139048), attempt 2, completed successfully on that exact SHA.
 - `AAP UI quality gates`: PASS — locked dependency install, lint, Vitest, typecheck, scope audit and production build all succeeded.
 - `Playwright browser smoke`: PASS — 4/4 browser tests; Chromium installation and browser test step both completed successfully. Diagnostics upload was skipped because no failure occurred.
-- PR status was `OPEN`, `MERGEABLE`, and `CLEAN` when reviewed. Verify the current PR check rollup before merge if another commit is pushed.
+- PR #4 was squash-merged at `aae3f18dffa78b6261d00553acfc7544df823b54`. The post-merge `main` Actions run #24 also passed both required jobs on the merge SHA: https://github.com/bestgmza123-oss/AAP/actions/runs/40484189586.
 
 ## Handoff fields
 
@@ -60,5 +60,5 @@ The browser tests assert the route transition, hierarchy and Safe Zone status, S
 - Pull request: https://github.com/bestgmza123-oss/AAP/pull/4
 - Exact-head Actions: https://github.com/bestgmza123-oss/AAP/actions/runs/40479139048
 - Trello task: https://trello.com/c/y0PIp8wB/8-p1-ui-003-province-and-resource-preview
-- Acceptance summary: implementation, local verification and exact-head GitHub checks passed. PR merge/acceptance state is tracked by the PR and Trello.
+- Acceptance summary: implementation and local verification passed; PR #4 exact-head Actions run #23 and post-merge `main` run #24 both passed; PR #4 is merged and Trello is marked complete.
 - Stop condition: after P1-UI-003 acceptance. Do not start P1-UI-004 automatically.
