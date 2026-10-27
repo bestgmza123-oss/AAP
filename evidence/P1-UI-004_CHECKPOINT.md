@@ -2,7 +2,7 @@
 
 Date: 2026-10-27 (Asia/Bangkok)
 Task: `P1-UI-004 — Run preflight screen`
-Status: **READY FOR REVIEW — local acceptance checks PASS; exact-head GitHub Actions pending**
+Status: **READY FOR REVIEW — local acceptance PASS; implementation source passed both required Actions jobs**
 
 ## Source identity and preservation
 
@@ -36,7 +36,7 @@ Executed on the final local source before commit; commands ran in `AAP_UI_P1/` u
 | `npm.cmd run audit:scope` | PASS, exit 0 | 14 source files; no Supabase references/imports or direct client-network call patterns |
 | `npm.cmd run build` | PASS, exit 0 | Vite 8.3.5; 32 modules transformed |
 | `npm.cmd run test:e2e` | PASS, exit 0 | Playwright: 5/5 tests, including desktop/mobile preflight, Level cost scenarios, disabled states, local confirmation and cancel |
-| `python.exe evidence/doc_workflow_static_audit.py` (Project Root) | PASS, exit 0 | 70 Markdown docs; 0 non-Markdown files in documentation subtree; 1,301 local links; no missing targets or required policy markers |
+| `python.exe evidence/doc_workflow_static_audit.py` (Project Root) | PASS, exit 0 | 70 Markdown docs; 0 non-Markdown files in documentation subtree; 1,302 local links; no missing targets or required policy markers |
 | `git diff --check` | PASS, exit 0 | No whitespace errors |
 
 ## Browser evidence
@@ -50,9 +50,9 @@ The tests and screenshots prove only local UI fixture behavior. They do not vali
 
 ## Remote verification and handoff
 
-- Pull request: pending creation after scoped diff review.
-- Implementation commit SHA: pending.
-- Required Actions checks: pending; must pass on the exact PR head before acceptance/merge.
+- Pull request: [#6 — P1-UI-004: Run preflight disclosure and local confirmation](https://github.com/bestgmza123-oss/AAP/pull/6), currently open on `main`.
+- Implementation commit SHA: `07aa40595cf0311b508dc5e756933b9aa8e26d2d`.
+- [GitHub Actions run #27](https://github.com/bestgmza123-oss/AAP/actions/runs/40491822726) passed on implementation SHA `07aa40595cf0311b508dc5e756933b9aa8e26d2d` (then-current PR head): `AAP UI quality gates` **PASS** and `Playwright browser smoke` **PASS**; browser diagnostics were correctly skipped on success. Any later PR commit, including documentation-only updates, must be checked on its own latest PR-head SHA before merge.
 - Trello task: [P1-UI-004 — Run preflight screen](https://trello.com/c/1Yfn29lE/9-p1-ui-004-run-preflight-screen), currently In Progress.
 
 ## Stop condition
