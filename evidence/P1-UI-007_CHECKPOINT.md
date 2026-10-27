@@ -2,7 +2,7 @@
 
 Date: 2026-10-27 (Asia/Bangkok)
 Task: `P1-UI-007 — Loot selection, capacity and optional return encounter`
-Status: **IMPLEMENTED LOCALLY — Windows gates and Playwright passed; exact-head PR CI / merge still pending**
+Status: **ACCEPTED — implementation PR merged; exact-head and post-merge CI passed**
 
 ## Source identity
 
@@ -11,6 +11,11 @@ Status: **IMPLEMENTED LOCALLY — Windows gates and Playwright passed; exact-hea
 - Implementation branch: `feat/p1-ui-007-loot-capacity`
 - Base `main` SHA: `96422785399948bb2ded69868edb30567e7608ef`
 - Trello card: https://trello.com/c/Ko40aq9q/12-p1-ui-007-loot-selection-capacity-optional-return-encounter
+- Implementation PR #12: https://github.com/bestgmza123-oss/AAP/pull/12 — squash-merged on 2026-10-27.
+- Implementation commit / exact tested PR head: `258c3b8d20d8cbce7b8a6b1f793f0142e9a91b4f`.
+- Merge commit on `main`: `b26bc38f6c2d27cfa6249325df5540669dd813a4`.
+- Exact PR-head Actions run: https://github.com/bestgmza123-oss/AAP/actions/runs/40534566040 — both required jobs passed on the exact tested head.
+- Post-merge `main` Actions run: https://github.com/bestgmza123-oss/AAP/actions/runs/40534844513 — both required jobs passed on merge SHA `b26bc38f6c2d27cfa6249325df5540669dd813a4`.
 - Canonical scope: `AAP_Documentation_Reboot/delivery/09_PHASE_BOUNDARY_EXECUTION_MATRIX.md`, P1-UI-007; `delivery/04_REQUIREMENTS_TRACEABILITY.md`, UI-P1-10/11; `systems/dungeon-run-lifecycle.md` (SYS-09); `systems/items-weight-inventory.md` (SYS-13); SYS-29.
 - Related ESC-/RUN- legacy crosswalk entries are preserved test-design inputs, not evidence of server behavior.
 
@@ -36,7 +41,7 @@ Executed from the merged-base checkout plus the P1-UI-007 working branch, reusin
 | `npm.cmd run audit:scope` | PASS, exit 0 | 21 source files; no Supabase references/imports or direct client-network call patterns |
 | `npm.cmd run build` | PASS, exit 0 | Vite 8.3.5; 37 modules transformed |
 | `npm.cmd run test:e2e` | PASS, exit 0 | Playwright: 18/18 tests |
-| `python.exe evidence/doc_workflow_static_audit.py` | PASS, exit 0 | 70 Markdown files, 1,308 links, zero missing targets/policy markers |
+| `python.exe evidence/doc_workflow_static_audit.py` | PASS, exit 0 | 70 Markdown files, 1,309 links, zero missing targets/policy markers |
 | `git diff --check` | PASS, exit 0 | No whitespace errors |
 
 The four lint warnings are the existing reduced-motion CSS `!important` warnings; the command exits successfully. These checks cover local UI/fixture behavior only and are not authoritative inventory, reward, server Run, encounter RNG or balance tests.
@@ -52,6 +57,6 @@ The four lint warnings are the existing reduced-motion CSS `!important` warnings
 
 No actual inventory mutation, item claim/drop, server Run, server encounter roll, currency/item debit, authoritative reward, persistence, API/backend/Supabase/Auth, Character death, timer simulation or P1-UI-008 work was added. All fixture values and choices are local demo data.
 
-## Acceptance gate / next step
+## Acceptance result / next step
 
-The local implementation and gates pass. P1-UI-007 is not yet accepted until its exact PR-head required checks pass, the implementation PR is merged, and post-merge `main` CI passes. Do not begin P1-UI-008 before explicit owner authorization.
+P1-UI-007 is accepted: implementation PR #12 merged; exact-head and post-merge `main` CI both passed. All three captured screenshots and the local Windows results above are committed. P1-UI-008 remains unauthorized; do not start it until the owner explicitly authorizes that separate bounded task.
