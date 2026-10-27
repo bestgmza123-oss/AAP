@@ -3146,3 +3146,283 @@ a {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* P1-UI-006 — local Escape/Surrender confirmation and outcome states. */
+.combat-page .combat-exit-fixture-picker {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.8rem;
+  border: 1px solid #394b59;
+  background: #0c1218;
+}
+
+.combat-page .combat-exit-fixture-picker label {
+  color: #b8c5ce;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.combat-page .combat-exit-fixture-picker select {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.65rem 0.7rem;
+  border: 1px solid #526979;
+  background: #151f29;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.75rem;
+}
+
+.combat-page .combat-exit-fixture-picker p {
+  margin: 0;
+  color: #aab7c0;
+  font-size: 0.7rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.combat-page .combat-exit-overlay {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  overflow-y: auto;
+  padding: max(1rem, env(safe-area-inset-top)) 1rem max(1rem, env(safe-area-inset-bottom));
+  background: rgb(3 7 11 / 88%);
+  backdrop-filter: blur(5px);
+}
+
+.combat-page .combat-exit-dialog {
+  width: min(100%, 42rem);
+  max-height: min(88vh, 52rem);
+  overflow-y: auto;
+  padding: clamp(1rem, 3.5vw, 1.8rem);
+  border: 1px solid #657786;
+  border-top: 4px solid var(--color-hazard);
+  background: linear-gradient(140deg, rgb(255 196 92 / 7%), transparent 45%), #10171f;
+  box-shadow: 0 1.4rem 5rem rgb(0 0 0 / 60%);
+}
+
+.combat-page .combat-exit-dialog.surrender {
+  border-top-color: #f39b75;
+}
+
+.combat-page .combat-exit-dialog h2 {
+  margin: 0.2rem 0 0.85rem;
+  color: #f0f3f6;
+  font-family: "Segoe UI", Inter, sans-serif;
+  font-size: clamp(1.35rem, 4vw, 1.9rem);
+  line-height: 1.2;
+}
+
+.combat-page .combat-exit-dialog > p,
+.combat-page .combat-exit-dialog li {
+  color: #c1cbd3;
+  font-size: 0.78rem;
+  line-height: 1.65;
+}
+
+.combat-page .combat-exit-context {
+  padding: 0.75rem;
+  border-left: 3px solid var(--color-cyan);
+  background: #16232b;
+}
+
+.combat-page .combat-exit-cost-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+  margin: 1rem 0;
+}
+
+.combat-page .combat-exit-cost-grid > div {
+  min-width: 0;
+  padding: 0.7rem;
+  border: 1px solid #344452;
+  background: #0d141b;
+}
+
+.combat-page .combat-exit-cost-grid dt {
+  color: #92a2ae;
+  font-size: 0.57rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+}
+
+.combat-page .combat-exit-cost-grid dd {
+  margin: 0.35rem 0 0;
+  color: #e6ecf0;
+  font-size: 0.83rem;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.combat-page .combat-exit-payment-options {
+  display: grid;
+  gap: 0.6rem;
+  margin: 1rem 0;
+  padding: 0.8rem;
+  border: 1px solid #40515f;
+}
+
+.combat-page .combat-exit-payment-options legend {
+  padding: 0 0.35rem;
+  color: #d7e0e6;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.combat-page .combat-exit-payment-options label {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.65rem;
+  border: 1px solid #3b4b58;
+  background: #151f28;
+  color: #e3e9ed;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  cursor: pointer;
+}
+
+.combat-page .combat-exit-payment-options input {
+  width: 1.1rem;
+  height: 1.1rem;
+  flex: 0 0 auto;
+  accent-color: var(--color-cyan);
+}
+
+.combat-page .combat-exit-dialog .combat-exit-warning {
+  padding: 0.75rem;
+  border-left: 3px solid #ffb45c;
+  background: #281d12;
+  color: #ffe0ae;
+}
+
+.combat-page .combat-exit-dialog p.combat-exit-dialog-note {
+  color: #b5c1ca;
+}
+
+.combat-page .combat-exit-dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.7rem;
+  margin-top: 1.2rem;
+}
+
+.combat-page .combat-exit-dialog-actions button,
+.combat-page .combat-exit-outcome button,
+.combat-page .combat-exit-outcome-link {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  border: 1px solid #596c7a;
+  background: #17222c;
+  color: #e8eef2;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.combat-page .combat-exit-dialog-actions button.combat-exit-confirm {
+  border-color: #a96f31;
+  background: #3b2919;
+  color: #ffe0ab;
+}
+
+.combat-page .combat-exit-dialog-actions button.combat-exit-confirm.surrender {
+  border-color: #a94e44;
+  background: #351d1d;
+  color: #ffd6ca;
+}
+
+.combat-page .combat-exit-dialog-actions button:disabled {
+  border-color: #4a5158;
+  background: #171b1f;
+  color: #88939b;
+  cursor: not-allowed;
+}
+
+.combat-page .combat-exit-consequence-list {
+  display: grid;
+  gap: 0.35rem;
+  padding-left: 1.25rem;
+}
+
+.combat-page .combat-exit-outcome {
+  margin: 1rem 0 1.25rem;
+  padding: clamp(1rem, 3.5vw, 1.6rem);
+  border: 1px solid #657786;
+  border-top: 4px solid var(--color-cyan);
+  background: #111a22;
+}
+
+.combat-page .combat-exit-outcome.surrendered {
+  border-top-color: #f39b75;
+}
+
+.combat-page .combat-exit-outcome h2 {
+  margin: 0.2rem 0 0.8rem;
+  color: #eef3f6;
+  font-size: clamp(1.25rem, 3.5vw, 1.8rem);
+}
+
+.combat-page .combat-exit-outcome p,
+.combat-page .combat-exit-outcome li {
+  color: #c0cbd3;
+  font-size: 0.78rem;
+  line-height: 1.65;
+}
+
+.combat-page .combat-exit-outcome p.combat-exit-outcome-boundary {
+  padding: 0.75rem;
+  border-left: 3px solid var(--color-hazard);
+  background: #211b12;
+  color: #ffe1ae;
+}
+
+.combat-page .combat-exit-outcome-link {
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 480px) {
+  .combat-page .combat-exit-overlay {
+    align-items: start;
+    padding: max(0.5rem, env(safe-area-inset-top)) 0.5rem max(0.5rem, env(safe-area-inset-bottom));
+  }
+
+  .combat-page .combat-exit-dialog {
+    max-height: none;
+    width: 100%;
+    padding: 1rem;
+  }
+
+  .combat-page .combat-exit-cost-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .combat-page .combat-exit-dialog-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .combat-page .combat-exit-dialog-actions button {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .combat-page .combat-exit-overlay {
+    backdrop-filter: none;
+  }
+}
