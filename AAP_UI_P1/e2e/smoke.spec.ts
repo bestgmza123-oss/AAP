@@ -42,6 +42,6 @@ test.describe('P1-UI-002 browser smoke', () => {
   test('unknown route stays a placeholder and returns to Start', async ({ page }) => {
     await page.goto('/not-yet-implemented');
     await expect(page.getByRole('heading', { name: 'Route not implemented' })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Return to shell' })).toHaveAttribute('href', '/');
+    await expect(page.getByRole('link', { name: 'Return to Start' })).toHaveAttribute('href', '/');
   });
 });

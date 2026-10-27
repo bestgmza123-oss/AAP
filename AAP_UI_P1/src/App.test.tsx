@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import { App } from './App';
+import { prototypeFixture } from './fixtures/prototype';
 import { t } from './i18n';
 
 function renderAt(path = '/') {
@@ -23,7 +24,8 @@ describe('P1-UI-002 Start and global navigation', () => {
 
   it('shows a truthful version label and navigates to Updates', async () => {
     renderAt();
-    expect(screen.getAllByText('VERSION 0.1.0')).toHaveLength(2);
+    const expectedVersion = `${t('app.versionPrefix')} ${prototypeFixture.version}`;
+    expect(screen.getAllByText(expectedVersion)).toHaveLength(2);
     expect(screen.getByRole('link', { name: 'Updates' })).toHaveAttribute('href', '/updates');
     expect(screen.getByText(t('updates.emptyTitle'))).toBeVisible();
   });
@@ -44,7 +46,7 @@ describe('P1-UI-002 Start and global navigation', () => {
   it('keeps unknown routes explicit and returns to Start', () => {
     renderAt('/not-yet-implemented');
     expect(screen.getByRole('heading', { name: t('route.unknownTitle') })).toBeVisible();
-    expect(screen.getByRole('link', { name: t('route.returnToShell') })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: t('route.returnToStart') })).toHaveAttribute(
       'href',
       '/',
     );

@@ -2,7 +2,7 @@ export const en = {
   'app.name': 'Anime Apocalypse',
   'app.shortName': 'AAP',
   'app.previewLabel': 'Development Preview',
-  'app.versionLabel': 'VERSION 0.1.0',
+  'app.versionPrefix': 'VERSION',
   'app.previewStatus': 'PRIVATE PREVIEW',
   'app.localBuild': 'LOCAL BUILD',
   'app.privateWorkspace': 'PRIVATE UI WORKSPACE',
@@ -64,6 +64,5 @@ export const en = {
   'route.unknownTitle': 'Route not implemented',
   'route.unknownDescription':
     'This route is a placeholder. No gameplay screen is available in P1-UI-002.',
-  'route.returnToShell': 'Return to shell',
   'route.returnToStart': 'Return to Start',
 } as const;

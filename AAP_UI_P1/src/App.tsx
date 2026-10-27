@@ -29,7 +29,9 @@ export function App() {
             <span className="build-indicator-dot" aria-hidden="true" />
             {t('app.previewLabel')}
           </span>
-          <span className="build-id">{t('app.versionLabel')}</span>
+          <span className="build-id">
+            {t('app.versionPrefix')} {prototypeFixture.version}
+          </span>
         </div>
       </header>
 

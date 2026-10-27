@@ -43,7 +43,9 @@ export function StartPage() {
             {t('updates.viewLink')} <span aria-hidden="true">→</span>
           </Link>
           <div className="version-row">
-            <span>{t('app.versionLabel')}</span>
+            <span>
+              {t('app.versionPrefix')} {prototypeFixture.version}
+            </span>
             <span>{t('app.previewStatus')}</span>
           </div>
         </section>
@@ -71,7 +73,9 @@ export function UpdatesPage() {
         </div>
       </div>
       <div className="updates-meta">
-        <span>{t('app.versionLabel')}</span>
+        <span>
+          {t('app.versionPrefix')} {prototypeFixture.version}
+        </span>
         <span>{t('app.previewStatus')}</span>
       </div>
       <Link className="return-link" to="/">

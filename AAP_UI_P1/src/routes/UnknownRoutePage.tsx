@@ -8,7 +8,7 @@ export function UnknownRoutePage() {
       <h1 id="unknown-route-title">{t('route.unknownTitle')}</h1>
       <p>{t('route.unknownDescription')}</p>
       <Link className="return-link" to="/">
-        {t('route.returnToShell')}
+        {t('route.returnToStart')}
         <span aria-hidden="true">↗</span>
       </Link>
     </section>
