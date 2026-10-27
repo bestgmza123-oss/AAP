@@ -83,16 +83,18 @@ The implemented Escape and Surrender confirmations are distinct, display consequ
 
 P1-UI-007 is accepted and merged through PR #12 https://github.com/bestgmza123-oss/AAP/pull/12 at merge SHA `b26bc38f6c2d27cfa6249325df5540669dd813a4`. Exact PR-head CI https://github.com/bestgmza123-oss/AAP/actions/runs/40534566040 and post-merge `main` CI https://github.com/bestgmza123-oss/AAP/actions/runs/40534844513 both passed. Its checkpoint: [`../../evidence/P1-UI-007_CHECKPOINT.md`](../../evidence/P1-UI-007_CHECKPOINT.md).
 
-**Next task candidate:** `P2-GATE-000 — Phase 2 semantic/test preflight` is next in the execution matrix but has not been authorized or started. Wait for an explicit owner instruction before proceeding.
+**Historical note at P1-UI-008 checkpoint:** P2-GATE-000 was then the next task candidate; it has since been explicitly authorized, completed, and merged. See the current gate status below.
 
-## Latest bounded task status — P2-GATE-000 (2026-10-28)
+## Latest bounded task status — P2-GATE-000 (documentation reconciliation, 2026-10-28)
 
-P2-GATE-000 semantic/test preflight is **CONDITIONAL PASS WITH TWO ISOLATED BLOCKERS**. Phase 2 source-test rows and exact current AC mappings are recorded in [P2_GATE_000_SEMANTIC_TEST_PREFLIGHT.md](P2_GATE_000_SEMANTIC_TEST_PREFLIGHT.md), and the legacy crosswalk has a consistent 9-column schema with per-row gate status. All source tests remain NOT RUN IN REBOOT.
+P2-GATE-000 is **PASS for semantic/test preflight only** after the consistency repair. The complete crosswalk preserves all 379 unique source rows; 169 remain Phase 2-relevant after two Starting Room storage scenarios were correctly reassigned to Phase 3. Every Phase 2 row has current AC references, a disposition and NOT RUN IN REBOOT status. The two Phase 3 storage rows also remain NOT RUN IN REBOOT.
 
-Isolated blockers:
-1. P1-DB-001 / P2-CORE-002: current schema/table inventory, RLS policy/role/grant matrix and migration re-apply AC are not defined by current canonical owners. Do not use legacy SoT §8 as current authority.
-2. V18-STOR-001/002 / subset of P2-CORE-011: Starting Room storage capacity/access/overflow/retry ACs are missing. Do not implement that storage slice until the current contract is defined.
+### Resolved document-level gaps
+- Schema/RLS: SYS-33 now defines an AI-selected Phase 2 schema/security baseline and AC-SYS33-06..09 for schema inventory/relationships, grant/RLS rules, trusted identity/privileged server access and migration lineage/rebuild. This is a design contract, not evidence that the owner's live Supabase project/schema/access/backups were inspected.
+- Starting Room storage: SYS-20 already defined a 10 kg Starter Room and Phase 3 ownership. The former P2-CORE-011 assignment conflicted with RECON-005; V18-STOR-001/002 now belong to P3-LIFE-005. AC-SYS20-06/07 define conservative local-access and atomic-capacity behavior. Phase 2 uses synthetic non-housing containers for generic inventory/custody tests.
+- Stale P1-UI-008 checkpoint wording is explicitly annotated as historical; current status no longer says P2-GATE-000 is unauthorized or unstarted.
 
-Scope splits: Phase 2 uses internal allowlisted identity; public signup/Auth remains Phase 3; Fridge/housing/lease remains Phase 3; Simulation remains Phase 4; full gear/affixes remains Phase 4; Companion/Home Raid/Auction/chat integration remains in the assigned later phases; paid features remain disabled. Shared primitives may use synthetic fixtures only as documented.
+### Current task boundary
+No gameplay/backend source code, migration, API call, live database operation or runtime test was performed by this documentation task. A completed documentation gate does not auto-authorize P2-CORE-001. After separate explicit authorization, P2-CORE-001 is the next bounded implementation-preparation task. P2-CORE-002 additionally requires P2-CORE-001 acceptance and a verified disposable local/CI target/reset path; the existing project named AAP must not be linked or mutated by inference.
 
-Checkpoint: [P2-GATE-000_CHECKPOINT.md](../../evidence/P2-GATE-000_CHECKPOINT.md). This gate does not auto-authorize P2-CORE-001 or any implementation. Wait for explicit owner direction before the next bounded task.
+Checkpoint: [P2-GATE-000 checkpoint](../../evidence/P2-GATE-000_CHECKPOINT.md). Report: [P2-GATE-000 semantic/test preflight](P2_GATE_000_SEMANTIC_TEST_PREFLIGHT.md).
