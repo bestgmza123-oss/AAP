@@ -101,9 +101,9 @@ export const en = {
   'province.run.recommendedLevel': 'RECOMMENDED LEVEL · EXAMPLE',
   'province.run.threat': 'THREAT',
   'province.run.threatNormal': 'Normal · placeholder',
-  'province.run.detailsAction': 'View Run details',
+  'province.run.detailsAction': 'View Run Preflight',
   'province.run.preflightNotAvailable':
-    'Run preflight is not implemented in this task. No entry cost is charged and no timer starts.',
+    'Review the cost, timeout and restrictions before local demo confirmation. Nothing is charged or started.',
   'province.destinations.sectionLabel': 'WORLD MAP / ROUTES',
   'province.destinations.title': 'Other destinations',
   'province.destinations.previewOnly': 'PREVIEW ONLY',
@@ -145,4 +145,94 @@ export const en = {
   'province.events.noRunStarted': 'No Run or world-time event has been started.',
   'province.returnToStart': 'Return to Start',
   'province.footerNote': 'All locations and values on this page are non-persistent fixture data',
+  'preflight.breadcrumbLabel': 'Page location',
+  'preflight.title': 'Run Preflight',
+  'preflight.eyebrow': 'PHASE 01 / RUN PREFLIGHT',
+  'preflight.description':
+    'Review the entry cost, time limit, restrictions and risks before recording a local demo confirmation.',
+  'preflight.fixtureStamp': 'FIXTURE PREVIEW · NO RUN CREATED',
+  'preflight.boundaryNotice':
+    'This is a private UI fixture. Confirmation records only this screen state; it does not debit Stamina, roll enemies, create a server Run, start a timer, or open Combat.',
+  'preflight.overview.eyebrow': 'EXPEDITION / DETAILS',
+  'preflight.overview.title': 'Standard Run overview',
+  'preflight.overview.runDescription':
+    'A preview of the next flow. Enemy count and all displayed values remain fixture data until a later bounded task implements a local combat demo.',
+  'preflight.overview.provinceLabel': 'CURRENT PROVINCE',
+  'preflight.overview.enemyCount': 'ENEMY COUNT RANGE',
+  'preflight.overview.normalEnemies': 'Normal enemies · not rolled',
+  'preflight.levelScenario.label': 'Dungeon level scenario',
+  'preflight.levelScenario.description':
+    'Select one of the inspection fixtures to compare the Stamina cost. This is a dungeon-level cost scenario, not Character progression.',
+  'preflight.levelScenario.level': 'Level',
+  'preflight.entryCost.label': 'Entry Stamina cost',
+  'preflight.entryCost.basis':
+    'Calculated from the dungeon level, not the actual number of enemies.',
+  'preflight.entryCost.unit': 'Stamina',
+  'preflight.entryCost.disclaimer':
+    'Preview calculation only. The displayed cost is not reserved or deducted from the fixture Character.',
+  'preflight.timeout.label': 'HARD TIMEOUT',
+  'preflight.timeout.minutes': 'minutes',
+  'preflight.timeout.description':
+    'The authoritative Run limit is 30 minutes and includes offline time. No countdown starts on this page; timeout is not Character death.',
+  'preflight.restrictions.eyebrow': 'ENTRY RULES',
+  'preflight.restrictions.title': 'Restrictions during a Run',
+  'preflight.restrictions.noPotions': 'Potions cannot be used during the Run.',
+  'preflight.restrictions.noLoadoutChanges':
+    'Equipment and skill loadout cannot be changed after entering the Run.',
+  'preflight.risk.eyebrow': 'RISK / CONSEQUENCES',
+  'preflight.risk.title': 'Know the outcome before entry',
+  'preflight.risk.enemyRange':
+    'Standard Run uses a fixture range of 4–7 Normal enemies. The count is not rolled or persisted by this screen.',
+  'preflight.risk.returnEncounter':
+    'After main Run loot is selected, the full flow may check for at most one optional return encounter. No chance is configured or simulated here.',
+  'preflight.risk.expiry':
+    'A failed or expired Run grants no Run loot/EXP and does not refund entry Stamina. Expiry itself does not kill the Character.',
+  'preflight.risk.infectionInactive':
+    'Infection rolls and other survival mechanics are inactive in Phase 1; this preflight performs no time or risk simulation.',
+  'preflight.risk.escapeSummary': 'Escape consequences',
+  'preflight.risk.escapeDetails':
+    'Escape returns to the current Province, needs no home and triggers no additional encounter. Before the main dungeon is cleared, pending Run rewards are forfeited while carried-in items are preserved. Escape uses a configured Warp Stone or Gold cost; this screen does not invent or calculate a final cost.',
+  'preflight.risk.surrenderSummary': 'Surrender consequences',
+  'preflight.risk.surrenderDetails':
+    'Surrender is available only during active Combat after confirmation. It ends the Run as FAILED, grants no Run rewards/EXP, does not refund entry Stamina, does not kill the Character, and does not refill HP. This disclosure is informational only; Surrender is not an action on the preflight screen.',
+  'preflight.resources.regionLabel': 'Current resource preview',
+  'preflight.resources.eyebrow': 'CHARACTER / SNAPSHOT',
+  'preflight.resources.title': 'Current fixture resources',
+  'preflight.resources.description':
+    'Values are copied from the static Province fixture. They are not live Character state.',
+  'preflight.resource.fixtureOnly': 'Static fixture value · not changed by this screen',
+  'preflight.resource.hungerInactive': '100 = Fed · 0 = Death · preview only, inactive in Phase 1',
+  'preflight.resource.infectionInactive': 'Preview only · inactive in Phase 1 · no roll occurs',
+  'preflight.lowStamina.description':
+    'Accessibility/state example only: show how the action behaves when the fixture Stamina is below the entry cost.',
+  'preflight.lowStamina.previewAction': 'Preview insufficient Stamina',
+  'preflight.lowStamina.restoreAction': 'Restore current fixture Stamina',
+  'preflight.lowStamina.activeNotice':
+    'Low-Stamina UI example is active. The stored fixture value has not changed.',
+  'preflight.confirm.eyebrow': 'LOCAL DEMO / CONFIRMATION',
+  'preflight.confirm.title': 'Confirm the preflight preview',
+  'preflight.confirm.description':
+    'You can record a local UI confirmation when the shown fixture Stamina covers the preview cost. This does not enter a Run.',
+  'preflight.confirm.insufficientStamina':
+    'Insufficient fixture Stamina: {current} available, {cost} required. The demo confirmation is disabled.',
+  'preflight.confirm.beginAction': 'Begin Demo Run',
+  'preflight.confirm.recordedAction': 'Demo confirmation recorded',
+  'preflight.confirm.cancelAction': 'Cancel and return to Province',
+  'preflight.confirm.recordedTitle': 'Preflight confirmation recorded · fixture only',
+  'preflight.confirm.recordedDescription':
+    'No Run was created, no Stamina was deducted, no enemy roll was made and no timer started. Combat is outside P1-UI-004.',
+  'preflight.confirm.footer':
+    'Cancel returns to Province without changing any fixture resource or location.',
+  'preflight.confirm.fixtureMissing':
+    'No Run fixture is available. The displayed example is not an available Run entry, so confirmation stays disabled.',
+  'preflight.confirm.errorDescription':
+    'The preflight preview could not be displayed. Retry this local UI example; no network request was made.',
+  'preflight.confirm.retryAction': 'Retry local preview',
+  'preflight.stateDemo.summary': 'Preview additional UI states',
+  'preflight.stateDemo.description':
+    'Internal verification controls only. These buttons simulate a display state and do not perform a server request or change gameplay state.',
+  'preflight.stateDemo.noFixtureAction': 'Preview missing Run fixture',
+  'preflight.stateDemo.errorAction': 'Preview preflight error',
+  'preflight.stateDemo.restoreAction': 'Restore standard preflight',
+  'preflight.backToProvince': 'Back to Province',
 } as const;

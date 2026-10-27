@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { App } from './App';
 import { prototypeFixture } from './fixtures/prototype';
 import { provinceFixture } from './fixtures/province';
+import { calculateEntryStaminaCost, runPreflightFixture } from './fixtures/run-preflight';
 import { t } from './i18n';
 
 function renderAt(path = '/') {
@@ -91,8 +92,8 @@ describe('P1-UI-003 Province and resource preview', () => {
     expect(screen.getByText(t(provinceFixture.world.safeZone.nameKey))).toBeVisible();
     expect(screen.getByText(t('province.location.currentPositionNote'))).toBeVisible();
 
-    const runButton = screen.getByRole('button', { name: t('province.run.detailsAction') });
-    expect(runButton).toBeDisabled();
+    const runLink = screen.getByRole('link', { name: t('province.run.detailsAction') });
+    expect(runLink).toHaveAttribute('href', '/run/preflight');
     expect(screen.getByText(t('province.run.preflightNotAvailable'))).toBeVisible();
     const unavailable = screen.getAllByRole('button', {
       name: t('province.destinations.unavailable'),
@@ -111,5 +112,104 @@ describe('P1-UI-003 Province and resource preview', () => {
     expect(within(carryPanel).getByText('/ 20.0 kg')).toBeVisible();
     expect(within(carryPanel).getByText('11.5 kg')).toBeVisible();
     expect(within(carryPanel).getByText(t('province.carry.description'))).toBeVisible();
+  });
+});
+
+describe('P1-UI-004 Run preflight disclosure and local confirmation', () => {
+  it('calculates canonical entry costs for Levels 1, 5, 6 and 50 and rejects unsupported levels', () => {
+    const expected = [
+      [1, 20],
+      [5, 20],
+      [6, 22],
+      [50, 38],
+    ] as const;
+
+    for (const [level, cost] of expected) {
+      expect(calculateEntryStaminaCost(level)).toBe(cost);
+    }
+    expect(calculateEntryStaminaCost(0)).toBeNull();
+    expect(calculateEntryStaminaCost(51)).toBeNull();
+    expect(calculateEntryStaminaCost(1.5)).toBeNull();
+    expect(runPreflightFixture.normalEnemyCount).toEqual({ minimum: 4, maximum: 7 });
+    expect(runPreflightFixture.hardTimeoutMinutes).toBe(30);
+  });
+
+  it('renders required pre-entry disclosures and fixture-only resource values on direct route access', () => {
+    renderAt('/run/preflight');
+
+    expect(screen.getByRole('heading', { name: t('preflight.title') })).toBeVisible();
+    expect(screen.getByText(t('preflight.boundaryNotice'))).toBeVisible();
+    expect(screen.getByText(t('preflight.risk.enemyRange'))).toBeVisible();
+    expect(screen.getByText(t('preflight.risk.returnEncounter'))).toBeVisible();
+    expect(screen.getByText(t('preflight.risk.expiry'))).toBeVisible();
+    expect(screen.getByText(t('preflight.restrictions.noPotions'))).toBeVisible();
+    expect(screen.getByText(t('preflight.restrictions.noLoadoutChanges'))).toBeVisible();
+    expect(screen.getByText(t('preflight.timeout.description'))).toBeVisible();
+    expect(screen.getByRole('radio', { name: /Level 1.*20.*Stamina/ })).toBeChecked();
+    expect(screen.getByTestId('preflight-entry-cost')).toHaveTextContent('20');
+    expect(screen.getByTestId('preflight-resource-hp')).toHaveTextContent('86 / 120');
+    expect(screen.getByTestId('preflight-resource-stamina')).toHaveTextContent('186 / 240');
+    expect(screen.getByTestId('preflight-resource-mana')).toHaveTextContent('42 / 60');
+    expect(screen.getByTestId('preflight-resource-hunger')).toHaveTextContent('84 / 100');
+    expect(screen.getByTestId('preflight-resource-infection')).toHaveTextContent('12 / 100');
+    expect(screen.getByRole('button', { name: t('preflight.confirm.beginAction') })).toBeEnabled();
+    expect(screen.getByRole('link', { name: t('preflight.confirm.cancelAction') })).toHaveAttribute(
+      'href',
+      '/province',
+    );
+    fireEvent.click(screen.getByText(t('preflight.risk.escapeSummary')));
+    expect(screen.getByText(t('preflight.risk.escapeDetails'))).toBeVisible();
+    fireEvent.click(screen.getByText(t('preflight.risk.surrenderSummary')));
+    expect(screen.getByText(t('preflight.risk.surrenderDetails'))).toBeVisible();
+  });
+
+  it('updates the selected level cost and records confirmation without spending resources or starting a Run', () => {
+    renderAt('/run/preflight');
+    fireEvent.click(screen.getByRole('radio', { name: /Level 6.*22.*Stamina/ }));
+    expect(screen.getByTestId('preflight-entry-cost')).toHaveTextContent('22');
+
+    fireEvent.click(screen.getByRole('radio', { name: /Level 50.*38.*Stamina/ }));
+    expect(screen.getByTestId('preflight-entry-cost')).toHaveTextContent('38');
+    fireEvent.click(screen.getByRole('button', { name: t('preflight.confirm.beginAction') }));
+
+    expect(screen.getByRole('status')).toHaveTextContent(
+      t('preflight.confirm.recordedDescription'),
+    );
+    expect(screen.getByRole('heading', { name: t('preflight.title') })).toBeVisible();
+    expect(screen.getByTestId('preflight-resource-stamina')).toHaveTextContent('186 / 240');
+    expect(
+      screen.getByRole('button', { name: t('preflight.confirm.recordedAction') }),
+    ).toBeDisabled();
+  });
+
+  it('disables confirmation when the displayed fixture Stamina is insufficient and Cancel returns to Province', () => {
+    renderAt('/run/preflight');
+    fireEvent.click(screen.getByRole('button', { name: t('preflight.lowStamina.previewAction') }));
+
+    expect(screen.getByTestId('preflight-resource-stamina')).toHaveTextContent('18 / 240');
+    expect(screen.getByRole('alert')).toHaveTextContent('18 available, 20 required');
+    expect(screen.getByRole('button', { name: t('preflight.confirm.beginAction') })).toBeDisabled();
+
+    fireEvent.click(screen.getByRole('button', { name: t('preflight.lowStamina.restoreAction') }));
+    expect(screen.getByRole('button', { name: t('preflight.confirm.beginAction') })).toBeEnabled();
+    fireEvent.click(screen.getByRole('link', { name: t('preflight.confirm.cancelAction') }));
+    expect(screen.getByRole('heading', { name: t('province.title') })).toBeVisible();
+  });
+
+  it('previews missing-fixture and retryable-error states without network or gameplay mutation', () => {
+    renderAt('/run/preflight');
+    fireEvent.click(screen.getByText(t('preflight.stateDemo.summary')));
+
+    fireEvent.click(screen.getByRole('button', { name: t('preflight.stateDemo.noFixtureAction') }));
+    expect(screen.getByRole('alert')).toHaveTextContent(t('preflight.confirm.fixtureMissing'));
+    expect(screen.getByRole('button', { name: t('preflight.confirm.beginAction') })).toBeDisabled();
+
+    fireEvent.click(screen.getByRole('button', { name: t('preflight.stateDemo.errorAction') }));
+    expect(screen.getByRole('alert')).toHaveTextContent(t('preflight.confirm.errorDescription'));
+    expect(screen.getByRole('button', { name: t('preflight.confirm.beginAction') })).toBeDisabled();
+    fireEvent.click(screen.getByRole('button', { name: t('preflight.confirm.retryAction') }));
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: t('preflight.confirm.beginAction') })).toBeEnabled();
+    expect(screen.getByTestId('preflight-resource-stamina')).toHaveTextContent('186 / 240');
   });
 });
