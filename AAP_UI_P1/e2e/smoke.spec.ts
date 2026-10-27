@@ -454,3 +454,97 @@ test('P1-UI-006 confirmation dialog traps keyboard focus and restores it on Esca
   await expect(dialog).toHaveCount(0);
   await expect(opener).toBeFocused();
 });
+
+test.describe('P1-UI-007 Loot selection, capacity and return encounter', () => {
+  test('desktop loot page exposes weight in grams/kg and exact capacity refusal', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/run/loot');
+    await expect(page.getByRole('heading', { name: 'Loot & Capacity Demo' })).toBeVisible();
+    await expect(page.getByTestId('loot-current-weight')).toContainText('8.500 kg (8,500 g)');
+    await expect(page.getByTestId('loot-total-capacity')).toContainText('20.000 kg (20,000 g)');
+    await expect(page.getByText(/including the bag/i)).toBeVisible();
+    await expect(page.getByText(/Worn equipment is excluded/i)).toBeVisible();
+    await page.screenshot({ path: 'test-results/p1-ui-007-loot-desktop.png', fullPage: true });
+
+    for (let index = 0; index < 4; index += 1) {
+      await page.getByTestId('loot-increase-main-alloy').click();
+    }
+    await page.getByTestId('loot-increase-main-cloth').click();
+    await page.getByTestId('loot-increase-main-rations').click();
+    await expect(page.getByTestId('loot-current-weight')).toContainText('20.000 kg (20,000 g)');
+    await expect(page.getByTestId('loot-remaining-weight')).toContainText('0.000 kg (0 g)');
+    await expect(page.getByTestId('loot-increase-main-rations')).toBeDisabled();
+    await expect(page.getByTestId('loot-overflow-main-rations')).toContainText(
+      'exceed capacity by 500 g',
+    );
+  });
+
+  test('completed Combat can navigate into loot selection and no encounter is shown as a separate branch', async ({
+    page,
+  }) => {
+    await page.goto('/run/combat');
+    let phase = (await page.getByTestId('combat-phase').textContent()) ?? '';
+    let steps = 0;
+    while (!phase.includes('COMPLETE') && steps < 40) {
+      steps += 1;
+      if (phase.includes('PLAYER TURN')) {
+        const skill = page.getByTestId('combat-action-skill');
+        if (await skill.isEnabled()) await skill.click();
+        else await page.getByTestId('combat-action-attack').click();
+      } else if (phase.includes('ENEMY TURN')) {
+        await page.getByTestId('combat-resolve-enemy').click();
+      } else {
+        break;
+      }
+      phase = (await page.getByTestId('combat-phase').textContent()) ?? '';
+    }
+    await expect(page.getByTestId('combat-phase')).toContainText('COMPLETE');
+    await page.getByTestId('combat-continue-to-loot').click();
+    await expect(page).toHaveURL('/run/loot');
+    await page.getByTestId('loot-increase-main-alloy').click();
+    await page.getByTestId('loot-confirm-main').click();
+    await page.getByTestId('loot-return-branch').selectOption('none');
+    await page.getByTestId('loot-resolve-return').click();
+    await expect(page.getByTestId('loot-result')).toContainText('no return encounter');
+    await expect(page.getByTestId('loot-result-main')).toContainText('2.500 kg (2,500 g)');
+  });
+
+  test('one return encounter escape preserves chosen main loot and forfeits encounter reward', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/run/loot');
+    await page.getByTestId('loot-increase-main-alloy').click();
+    await page.getByTestId('loot-confirm-main').click();
+    await page.getByTestId('loot-return-branch').selectOption('one');
+    await page.getByTestId('loot-resolve-return').click();
+    await expect(page.getByRole('heading', { name: 'One return encounter' })).toBeVisible();
+    await page.getByTestId('loot-escape-return').click();
+    await expect(page.getByTestId('loot-result')).toContainText(
+      /return encounter reward forfeited/i,
+    );
+    await expect(page.getByTestId('loot-result-main')).toContainText('2.500 kg (2,500 g)');
+    await expect(page.getByTestId('loot-result-return')).toContainText('0.000 kg (0 g)');
+    await page.screenshot({
+      path: 'test-results/p1-ui-007-loot-escape-result-desktop.png',
+      fullPage: true,
+    });
+  });
+
+  test('mobile loot selection fits a 390px viewport with keyboard-operable quantity controls', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/run/loot');
+    await expect(page.getByRole('heading', { name: 'Loot & Capacity Demo' })).toBeVisible();
+    await expect(page.getByTestId('loot-increase-main-alloy')).toBeEnabled();
+    const width = await page.evaluate(() => document.documentElement.scrollWidth);
+    expect(width).toBeLessThanOrEqual(390);
+    await page.screenshot({ path: 'test-results/p1-ui-007-loot-mobile.png', fullPage: true });
+    await page.getByTestId('loot-increase-main-alloy').focus();
+    await page.keyboard.press('Enter');
+    await expect(page.getByTestId('loot-quantity-main-alloy')).toHaveText('1');
+  });
+});

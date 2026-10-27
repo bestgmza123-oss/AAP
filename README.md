@@ -1,8 +1,12 @@
 # Anime Apocalypse (AAP) — Project Workspace
 
-## Latest checkpoint — P1-UI-006 accepted — 2026-10-27
+## Active task — P1-UI-007 Loot / capacity / optional return encounter — 2026-10-27
 
-`P1-UI-006 — Escape / Surrender confirmations` is accepted and merged. PR #10 was squash-merged to `main` at `77066a810de7ad52fe92aba842213524d1e54255`; exact PR-head CI run #36 and post-merge `main` CI run #37 passed. The merged implementation was re-verified locally on Windows: typecheck PASS, Vitest 30/30, lint PASS with four existing reduced-motion CSS `!important` warnings, scope audit PASS (18 source files), production build PASS (35 modules), Playwright 14/14, documentation static audit PASS, and `git diff --check` PASS. See `evidence/P1-UI-006_CHECKPOINT.md` and the Escape desktop/mobile screenshots. The active task boundary is accepted through P1-UI-006; do not begin P1-UI-007 until explicit owner authorization.
+P1-UI-007 is authorized and implemented on `feat/p1-ui-007-loot-capacity`, based on `main` SHA `96422785399948bb2ded69868edb30567e7608ef`. The local Windows gates currently pass: typecheck, Vitest 38/38, lint (four existing reduced-motion CSS `!important` warnings only), scope audit (21 source files), production build (37 modules), Playwright 18/18, documentation static audit (70 Markdown files / 1,308 links / 0 missing targets), and `git diff --check`. New route `/run/loot` provides integer-gram weight/capacity selection and deterministic zero-or-one return-encounter branches; all outcomes are in-memory fixture UI only. Checkpoint: `evidence/P1-UI-007_CHECKPOINT.md`; screenshots: `evidence/p1-ui-007-loot-desktop.png`, `evidence/p1-ui-007-loot-escape-result-desktop.png`, `evidence/p1-ui-007-loot-mobile.png`. Implementation PR and exact-head/post-merge CI are pending; do not mark accepted until those gates pass. Do not begin P1-UI-008 without explicit owner authorization.
+
+## Latest accepted checkpoint — P1-UI-006 — 2026-10-27
+
+`P1-UI-006 — Escape / Surrender confirmations` is accepted and merged. PR #10 was squash-merged to `main` at `77066a810de7ad52fe92aba842213524d1e54255`; exact PR-head CI run #36 and post-merge `main` CI run #37 passed. The merged implementation was re-verified locally on Windows: typecheck PASS, Vitest 30/30, lint PASS with four existing reduced-motion CSS `!important` warnings, scope audit PASS (18 source files), production build PASS (35 modules), Playwright 14/14, documentation static audit PASS, and `git diff --check` PASS. See `evidence/P1-UI-006_CHECKPOINT.md` and the Escape desktop/mobile screenshots.
 
 ## Historical checkpoint through P1-UI-005 — 2026-10-27
 

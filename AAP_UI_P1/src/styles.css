@@ -3426,3 +3426,309 @@ a {
     backdrop-filter: none;
   }
 }
+
+/* P1-UI-007 — local loot and carrying-capacity prototype */
+.loot-page {
+  display: grid;
+  gap: 1.1rem;
+  width: min(100%, var(--content-width));
+  margin: 0 auto;
+}
+.loot-page .page-heading {
+  display: grid;
+  gap: 0.6rem;
+}
+.loot-page .page-eyebrow,
+.loot-page .card-eyebrow {
+  margin: 0;
+  color: var(--color-cyan);
+  font-size: 0.68rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.loot-page .page-heading h1 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  line-height: 1.1;
+}
+.loot-page .page-description,
+.loot-page .loot-panel > p {
+  max-width: 74ch;
+  margin: 0;
+  color: var(--color-soft);
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+.loot-boundary {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid #80633d;
+  background: #211b13;
+}
+.app-shell .loot-page .loot-boundary strong {
+  color: var(--color-hazard);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+}
+.app-shell .loot-page .loot-boundary p {
+  margin: 0;
+  color: #e4d1b9;
+  font-size: 0.75rem;
+  line-height: 1.55;
+}
+.loot-capacity-panel,
+.loot-panel {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+  border: 1px solid var(--color-line);
+  background: linear-gradient(145deg, rgb(23 31 41 / 96%), rgb(15 21 28 / 96%));
+}
+.loot-section-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.app-shell .loot-page .loot-section-heading h2,
+.app-shell .loot-page .loot-panel h2 {
+  margin: 0.25rem 0 0;
+  font-size: clamp(1.2rem, 2vw, 1.65rem);
+  line-height: 1.25;
+}
+.loot-capacity-state,
+.loot-tag {
+  flex: 0 0 auto;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid #356f66;
+  background: #10231f;
+  color: #9ee7d8;
+  font-size: 0.62rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+}
+.loot-capacity-state.over {
+  border-color: #91663b;
+  background: #2a1c11;
+  color: var(--color-hazard);
+}
+.loot-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+.app-shell .loot-page .loot-metrics > div,
+.app-shell .loot-page .loot-buckets > div {
+  display: grid;
+  align-content: start;
+  gap: 0.4rem;
+  min-width: 0;
+  padding: 0.85rem;
+  border: 1px solid var(--color-line);
+  background: rgb(7 12 17 / 45%);
+}
+.app-shell .main-content .loot-page .loot-metrics span,
+.app-shell .main-content .loot-page .loot-buckets span {
+  color: var(--color-muted);
+  font-size: 0.68rem;
+  line-height: 1.4;
+}
+.app-shell .loot-page .loot-metrics strong,
+.app-shell .loot-page .loot-buckets strong {
+  overflow-wrap: anywhere;
+  color: var(--color-text);
+  font-size: clamp(0.83rem, 1.2vw, 1.02rem);
+  font-variant-numeric: tabular-nums;
+}
+.loot-capacity-note {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  line-height: 1.55;
+}
+.loot-weight-bar {
+  overflow: hidden;
+  height: 0.5rem;
+  border: 1px solid var(--color-line);
+  background: #080d12;
+}
+.app-shell .main-content .loot-page .loot-weight-bar > span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #328f8a, var(--color-cyan));
+  transition: width 120ms ease-out;
+}
+.loot-weight-bar-labels {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--color-muted);
+  font-size: 0.64rem;
+  font-variant-numeric: tabular-nums;
+}
+.loot-buckets {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+.app-shell .loot-page .loot-buckets p {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.7rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.loot-stack-list {
+  display: grid;
+  gap: 0.65rem;
+}
+.loot-stack {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  min-width: 0;
+  padding: 0.9rem;
+  border: 1px solid var(--color-line);
+  background: rgb(7 12 17 / 42%);
+}
+.loot-stack-info {
+  min-width: 0;
+}
+.app-shell .loot-page .loot-stack h3 {
+  margin: 0;
+  font-size: 0.9rem;
+}
+.app-shell .loot-page .loot-stack-info p {
+  margin: 0.25rem 0 0;
+  color: var(--color-muted);
+  font-size: 0.68rem;
+  line-height: 1.45;
+}
+.loot-quantity-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.app-shell .loot-page .loot-quantity-control button {
+  display: inline-grid;
+  width: 2.6rem;
+  height: 2.6rem;
+  place-items: center;
+  border: 1px solid #4f7d79;
+  background: #122522;
+  color: var(--color-text);
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+.app-shell .loot-page .loot-quantity-control button:disabled {
+  border-color: #343c43;
+  background: #151a20;
+  color: #64717d;
+  cursor: not-allowed;
+}
+.loot-quantity-control output {
+  min-width: 2.1rem;
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: 850;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.loot-overflow-reason {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 0.6rem 0.7rem;
+  border-left: 3px solid var(--color-hazard);
+  background: #241a11;
+  color: #ffd99a;
+  font-size: 0.7rem;
+  line-height: 1.5;
+}
+.loot-panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 0.25rem;
+}
+.loot-primary-action,
+.loot-secondary-action {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  border: 1px solid #438b82;
+  background: #17312d;
+  color: #e9fffa;
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+.loot-secondary-action {
+  border-color: #65543e;
+  background: #221b13;
+  color: #f2ddbf;
+}
+.loot-primary-action:hover,
+.loot-secondary-action:hover {
+  filter: brightness(1.16);
+}
+.loot-fixture-select {
+  display: grid;
+  max-width: 34rem;
+  gap: 0.5rem;
+  color: var(--color-soft);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+.app-shell .loot-page .loot-fixture-select select {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--color-line);
+  background: #0b1117;
+  color: var(--color-text);
+  font: inherit;
+}
+.loot-return-preservation {
+  margin: 0.25rem 0;
+}
+.loot-result-panel {
+  border-color: #376c63;
+}
+@media (max-width: 760px) {
+  .loot-metrics,
+  .loot-buckets {
+    grid-template-columns: 1fr;
+  }
+  .loot-section-heading {
+    align-items: start;
+    flex-direction: column;
+  }
+  .loot-stack {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .loot-quantity-control {
+    justify-content: start;
+  }
+  .loot-panel-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .loot-panel-actions > * {
+    width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-shell .main-content .loot-page .loot-weight-bar > span {
+    transition: none;
+  }
+}
