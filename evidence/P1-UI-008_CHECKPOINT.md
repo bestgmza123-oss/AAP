@@ -2,7 +2,7 @@
 
 Date: 2026-10-27 (Asia/Bangkok)
 Task: `P1-UI-008 — Run Result, accessibility, localization & vertical-slice review`
-Status: **IMPLEMENTED LOCALLY — verification passed; implementation PR / exact-head CI / merge pending**
+Status: **ACCEPTED AND MERGED** — implementation PR #14 merged; exact-head CI and post-merge `main` CI passed.
 
 ## Source identity
 
@@ -10,6 +10,10 @@ Status: **IMPLEMENTED LOCALLY — verification passed; implementation PR / exact
 - Implementation branch: `feat/p1-ui-008-result-a11y-localization`
 - Base `main` SHA: `e881eea47dafc3aa1f2ac8d99a28499099267621`
 - Trello: https://trello.com/c/VtCqHOkx/13-p1-ui-008-run-result-accessibility-localization-vertical-slice-review
+- Implementation PR #14: https://github.com/bestgmza123-oss/AAP/pull/14
+- Exact PR-head CI on `946b423084d0340199f269188c16376f36aecb9e`: run #40545951534 — both `AAP UI quality gates` and `Playwright browser smoke` passed: https://github.com/bestgmza123-oss/AAP/actions/runs/40545951534
+- Squash merge: `d9477bbadbeb96e62150f417aa87661e570944e3`.
+- Post-merge `main` CI on the merge SHA: run #40546208070 — both required jobs passed: https://github.com/bestgmza123-oss/AAP/actions/runs/40546208070.
 - Canonical scope: `AAP_Documentation_Reboot/delivery/09_PHASE_BOUNDARY_EXECUTION_MATRIX.md`, P1-UI-008; `delivery/04_REQUIREMENTS_TRACEABILITY.md`, UI-P1-12…16; `experience/01_VISUAL_DIRECTION.md`; `experience/03_LOCALIZATION.md`; `experience/04_PHASE1_WIREFLOW.md`; `rules/02_CROSS_SYSTEM_CONTRACTS.md` CC-08.
 - Relevant legacy crosswalk design inputs: LOAD-001/002/005 and MAIL-UX-001. These remain UI-test design inputs only, not server-pass evidence.
 - Detailed mapping: `evidence/P1-UI-008_ACCEPTANCE_MATRIX.md`.
@@ -53,4 +57,4 @@ The tests verify deterministic UI/fixture behavior only; this task does not cert
 
 ## Acceptance result / next step
 
-The local implementation and current browser suite pass. The acceptance matrix traces each of UI-P1-01…16 to existing acceptance checks, local tests and inspectable screenshots. The task is not marked accepted until the exact implementation PR-head required CI checks pass, the PR is merged, and post-merge `main` CI passes. The next task remains unstarted until explicit owner authorization.
+P1-UI-008 is accepted: all 16 UI-P1 criteria have mapped implementation/test/evidence, local verification passed, the implementation PR exact-head checks passed, and post-merge `main` CI passed. No authoritative server or persistent gameplay behavior is implied. The next task candidate is `P2-GATE-000 — Phase 2 semantic and test preflight`; it has not been started or authorized.

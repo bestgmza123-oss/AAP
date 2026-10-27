@@ -1,8 +1,10 @@
 # AAP_UI_P1 — Private UI Prototype (P1-UI-001 through P1-UI-008)
 
-## Current implementation — P1-UI-008 Run Result, accessibility, localization and vertical slice — 2026-10-27
+## Latest accepted implementation — P1-UI-008 Run Result, accessibility, localization and vertical slice — 2026-10-28
 
-P1-UI-008 is implemented on `feat/p1-ui-008-result-a11y-localization` from `main` SHA `e881eea47dafc3aa1f2ac8d99a28499099267621`. Local checks currently pass: typecheck; Vitest 51/51; lint exit 0 (warnings only); scope audit across 25 source files; build (40 modules); and Playwright 25/25. It adds `/run/result/:outcome` for COMPLETED/ESCAPED/FAILED/EXPIRED, explicit local recovery states, separate pending/received/forfeited buckets, pseudo-expanded English copy, accessible inactive Mail, and the full responsive route matrix. These are demo fixtures only—no authoritative Run result, server request, actual reward, inventory mutation or persistence. Checkpoint: `../evidence/P1-UI-008_CHECKPOINT.md`; acceptance matrix: `../evidence/P1-UI-008_ACCEPTANCE_MATRIX.md`; screenshots: `../evidence/p1-ui-008-*.png`. Exact-head CI, merge and post-merge CI remain pending.
+P1-UI-008 is accepted and merged through PR #14 at merge SHA `d9477bbadbeb96e62150f417aa87661e570944e3`: https://github.com/bestgmza123-oss/AAP/pull/14. Exact-head CI run #40545951534 and post-merge `main` CI run #40546208070 both passed `AAP UI quality gates` and `Playwright browser smoke`. Local checks passed: typecheck; Vitest 51/51; lint exit 0 (warning-only); scope audit across 25 source files; build (40 modules); Playwright 25/25; docs audit (70 Markdown / 1,311 links / zero missing targets); and diff-check. It adds `/run/result/:outcome` for COMPLETED/ESCAPED/FAILED/EXPIRED, local recovery states, separate pending/received/forfeited buckets, pseudo-expanded English copy, accessible inactive Mail, and responsive route-matrix evidence. These are demo fixtures only—no authoritative Run result, server request, actual reward, inventory mutation or persistence. Checkpoint: `../evidence/P1-UI-008_CHECKPOINT.md`; acceptance matrix: `../evidence/P1-UI-008_ACCEPTANCE_MATRIX.md`; screenshots: `../evidence/p1-ui-008-*.png`.
+
+## Latest accepted implementation — P1-UI-007 Loot / capacity / optional return encounter — 2026-10-27
 
 ## Latest accepted implementation — P1-UI-007 Loot / capacity / optional return encounter — 2026-10-27
 
