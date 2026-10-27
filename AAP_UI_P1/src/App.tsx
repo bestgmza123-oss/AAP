@@ -1,6 +1,7 @@
 import { NavLink, Route, Routes } from 'react-router-dom';
 import { prototypeFixture } from './fixtures/prototype';
 import { t } from './i18n';
+import { CombatDemoPage } from './routes/CombatDemoPage';
 import { ProvincePage } from './routes/ProvincePage';
 import { RunPreflightPage } from './routes/RunPreflightPage';
 import { StartPage, UpdatesPage } from './routes/StartPage';
@@ -79,6 +80,7 @@ export function App() {
           <Route path="/" element={<StartPage />} />
           <Route path="/province" element={<ProvincePage />} />
           <Route path="/run/preflight" element={<RunPreflightPage />} />
+          <Route path="/run/combat" element={<CombatDemoPage />} />
           <Route path="/updates" element={<UpdatesPage />} />
           <Route path="*" element={<UnknownRoutePage />} />
         </Routes>

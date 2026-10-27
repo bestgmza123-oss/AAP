@@ -2,6 +2,13 @@ import { fireEvent, render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import { App } from './App';
+import {
+  combatFixture,
+  createInitialCombatState,
+  getCombatActionDisabledReason,
+  performCombatAction,
+  resolveEnemyAction,
+} from './fixtures/combat';
 import { prototypeFixture } from './fixtures/prototype';
 import { provinceFixture } from './fixtures/province';
 import { calculateEntryStaminaCost, runPreflightFixture } from './fixtures/run-preflight';
@@ -180,6 +187,10 @@ describe('P1-UI-004 Run preflight disclosure and local confirmation', () => {
     expect(
       screen.getByRole('button', { name: t('preflight.confirm.recordedAction') }),
     ).toBeDisabled();
+    expect(screen.getByRole('link', { name: /Open Combat Demo/ })).toHaveAttribute(
+      'href',
+      '/run/combat',
+    );
   });
 
   it('disables confirmation when the displayed fixture Stamina is insufficient and Cancel returns to Province', () => {
@@ -211,5 +222,166 @@ describe('P1-UI-004 Run preflight disclosure and local confirmation', () => {
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: t('preflight.confirm.beginAction') })).toBeEnabled();
     expect(screen.getByTestId('preflight-resource-stamina')).toHaveTextContent('186 / 240');
+  });
+});
+
+describe('P1-UI-005 Combat interaction demo', () => {
+  it('shows a single Normal fixture, separate classification fields, conditional Mana and only telegraphed intent', () => {
+    renderAt('/run/combat');
+
+    expect(screen.getByRole('heading', { name: t('combat.title') })).toBeVisible();
+    expect(screen.getByText(t('combat.boundaryNotice'))).toBeVisible();
+    expect(screen.getByRole('heading', { name: t('combat.enemy.fixtureAName') })).toBeVisible();
+    expect(screen.getByText(t('combat.species.zombie'))).toBeVisible();
+    expect(screen.getByText(t('combat.tier.normal'))).toBeVisible();
+    expect(screen.getByText('F', { exact: true })).toBeVisible();
+    expect(screen.getByTestId('combat-turn-number')).toHaveTextContent('1');
+    expect(screen.getByText(t('combat.eventTag.standardRun'))).toBeVisible();
+    expect(screen.getByTestId('combat-defeated-count')).toHaveTextContent('0 / 4');
+    expect(screen.getByTestId('combat-intent-name')).toHaveTextContent(t('combat.intent.claw'));
+    expect(
+      screen.queryByRole('progressbar', { name: t('combat.enemy.mana') }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole('progressbar', { name: t('combat.player.hp') })).toHaveValue(86);
+    expect(screen.getByRole('progressbar', { name: t('combat.player.mana') })).toHaveValue(42);
+    expect(screen.getByTestId('combat-action-attack')).toBeEnabled();
+    expect(screen.getByTestId('combat-action-skill')).toBeEnabled();
+    expect(screen.getByTestId('combat-action-skill')).toHaveTextContent(
+      t(combatFixture.skill.nameKey),
+    );
+    expect(screen.getByTestId('combat-action-skill')).toHaveTextContent(
+      t(combatFixture.skill.targetKey),
+    );
+    expect(screen.getByTestId('combat-action-skill')).toHaveTextContent(
+      t(combatFixture.skill.effectKey),
+    );
+    expect(screen.getByTestId('combat-action-skill')).toHaveTextContent(
+      'Cooldown: 2 valid player actions after casting',
+    );
+    expect(screen.getByTestId('combat-action-guard')).toBeEnabled();
+    expect(
+      screen.getByRole('button', { name: t('combat.actions.escapeUnavailable') }),
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: t('combat.actions.surrenderUnavailable') }),
+    ).toBeDisabled();
+  });
+
+  it('runs Normal Attack and a separate enemy step without spending Stamina', () => {
+    renderAt('/run/combat');
+    fireEvent.click(screen.getByTestId('combat-action-attack'));
+
+    expect(screen.getByTestId('combat-phase')).toHaveTextContent(t('combat.status.enemyTurn'));
+    expect(screen.getByTestId('combat-action-attack')).toBeDisabled();
+    expect(screen.getByText('186 / 240')).toBeVisible();
+    expect(screen.getByText(/Normal Attack hit Fixture Enemy A.*Stamina cost: 0/)).toBeVisible();
+
+    fireEvent.click(screen.getByTestId('combat-resolve-enemy'));
+    expect(screen.getByTestId('combat-phase')).toHaveTextContent(t('combat.status.playerTurn'));
+    expect(screen.getByRole('progressbar', { name: t('combat.player.hp') })).toHaveValue(77);
+    expect(
+      screen.getByText(/Fixture Enemy A resolved its telegraphed fixture action for 9 damage/),
+    ).toBeVisible();
+    expect(screen.getByTestId('combat-turn-number')).toHaveTextContent('2');
+  });
+
+  it('Guard reduces the next eligible enemy action after mitigation', () => {
+    renderAt('/run/combat');
+    fireEvent.click(screen.getByTestId('combat-action-guard'));
+
+    expect(screen.getByTestId('combat-phase')).toHaveTextContent(t('combat.status.enemyTurn'));
+    expect(
+      screen.getByText(/Guard is ready and will reduce the next eligible enemy action by 50%/),
+    ).toBeVisible();
+    fireEvent.click(screen.getByTestId('combat-resolve-enemy'));
+
+    expect(screen.getByRole('progressbar', { name: t('combat.player.hp') })).toHaveValue(82);
+    expect(screen.getByText(/Guard reduced Fixture Enemy A to 4 fixture damage/)).toBeVisible();
+    expect(screen.getByText(t('combat.status.guardInactive'))).toBeVisible();
+  });
+
+  it('Skill spends only local Mana, applies cooldown, and advances to the next enemy without leaking untelegraphed intent', () => {
+    renderAt('/run/combat');
+    fireEvent.click(screen.getByTestId('combat-action-skill'));
+
+    expect(screen.getByTestId('combat-defeated-count')).toHaveTextContent('1 / 4');
+    expect(screen.getByRole('heading', { name: t('combat.enemy.fixtureBName') })).toBeVisible();
+    expect(screen.getByRole('progressbar', { name: t('combat.player.mana') })).toHaveValue(32);
+    expect(screen.getByTestId('combat-skill-cooldown')).toHaveTextContent('2');
+    expect(screen.getByTestId('combat-phase')).toHaveTextContent(t('combat.status.playerTurn'));
+    expect(screen.queryByTestId('combat-intent-name')).not.toBeInTheDocument();
+    expect(screen.getByTestId('combat-intent')).toHaveTextContent(t('combat.intent.notShownTitle'));
+    expect(screen.getByRole('progressbar', { name: t('combat.enemy.mana') })).toHaveValue(8);
+    expect(screen.getByRole('progressbar', { name: t('combat.enemy.mana') })).toHaveAttribute(
+      'max',
+      '12',
+    );
+    expect(screen.getByTestId('combat-action-skill')).toBeDisabled();
+    expect(screen.getByText(t('combat.actionReason.cooldown'))).toBeVisible();
+
+    fireEvent.click(screen.getByTestId('combat-action-attack'));
+    expect(screen.getByTestId('combat-skill-cooldown')).toHaveTextContent('1');
+    expect(screen.getByTestId('combat-phase')).toHaveTextContent(t('combat.status.enemyTurn'));
+    expect(screen.getByRole('progressbar', { name: t('combat.player.mana') })).toHaveValue(32);
+  });
+
+  it('rejects invalid skill actions without advancing the turn or consuming Mana/cooldown', () => {
+    const initial = createInitialCombatState();
+    const noMana = { ...initial, playerMana: 0 };
+    const rejectedMana = performCombatAction(noMana, 'skill');
+    expect(rejectedMana.rejection).toBe('insufficient-mana');
+    expect(rejectedMana.state).toBe(noMana);
+
+    const cooldown = { ...initial, skillCooldownRemaining: 1 };
+    const rejectedCooldown = performCombatAction(cooldown, 'skill');
+    expect(rejectedCooldown.rejection).toBe('skill-cooldown');
+    expect(rejectedCooldown.state).toBe(cooldown);
+
+    const enemyTurn = performCombatAction(initial, 'attack').state;
+    const rejectedEnemyPhase = performCombatAction(enemyTurn, 'attack');
+    expect(rejectedEnemyPhase.rejection).toBe('not-player-turn');
+    expect(rejectedEnemyPhase.state).toBe(enemyTurn);
+
+    const noPlayerMana = { ...initial, playerMana: 0 };
+    expect(getCombatActionDisabledReason(noPlayerMana, 'skill')).toBe('combat.actionReason.mana');
+    expect(combatFixture.player.stamina).toBe(186);
+  });
+
+  it('previews insufficient Mana as a disabled Skill state and restores the local fixture', () => {
+    renderAt('/run/combat');
+    fireEvent.click(screen.getByText(t('combat.stateDemo.summary')));
+    fireEvent.click(screen.getByRole('button', { name: t('combat.stateDemo.lowManaAction') }));
+
+    expect(screen.getByRole('progressbar', { name: t('combat.player.mana') })).toHaveValue(9);
+    expect(screen.getByTestId('combat-phase')).toHaveTextContent(t('combat.status.playerTurn'));
+    expect(screen.getByTestId('combat-action-skill')).toBeDisabled();
+    expect(screen.getByText(t('combat.actionReason.mana'))).toBeVisible();
+
+    fireEvent.click(screen.getByRole('button', { name: t('combat.stateDemo.restoreAction') }));
+    expect(screen.getByRole('progressbar', { name: t('combat.player.mana') })).toHaveValue(42);
+    expect(screen.getByTestId('combat-action-skill')).toBeEnabled();
+  });
+
+  it('can play a complete predetermined encounter sequence with no RNG or persistence', () => {
+    let state = createInitialCombatState();
+    let actionCount = 0;
+
+    while (state.phase !== 'complete' && state.phase !== 'paused' && actionCount < 32) {
+      actionCount += 1;
+      if (state.phase === 'player-turn') {
+        const action = getCombatActionDisabledReason(state, 'skill') ? 'attack' : 'skill';
+        state = performCombatAction(state, action).state;
+      } else if (state.phase === 'enemy-turn') {
+        state = resolveEnemyAction(state).state;
+      }
+    }
+
+    expect(state.phase).toBe('complete');
+    expect(state.defeatedCount).toBe(4);
+    expect(state.playerHp).toBeGreaterThan(0);
+    expect(state.logs.map((entry) => entry.id)).toEqual(
+      [...state.logs.map((entry) => entry.id)].sort((a, b) => a - b),
+    );
+    expect(new Set(state.logs.map((entry) => entry.id)).size).toBe(state.logs.length);
   });
 });

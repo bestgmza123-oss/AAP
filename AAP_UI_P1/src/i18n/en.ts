@@ -235,4 +235,152 @@ export const en = {
   'preflight.stateDemo.errorAction': 'Preview preflight error',
   'preflight.stateDemo.restoreAction': 'Restore standard preflight',
   'preflight.backToProvince': 'Back to Province',
+  'preflight.confirm.openCombatDemo': 'Open Combat Demo',
+  'combat.breadcrumbLabel': 'Page location',
+  'combat.title': 'Combat Demo',
+  'combat.eyebrow': 'PHASE 01 / COMBAT INTERACTION',
+  'combat.description':
+    'Play through a fixed local sequence and inspect supported Attack, Skill and Guard feedback.',
+  'combat.fixtureStamp': 'DETERMINISTIC FIXTURE · NOT AUTHORITATIVE',
+  'combat.boundaryNotice':
+    'This page changes only in-memory UI fixtures. No server Run, RNG, initiative roll, real timer, death resolution, or persistent resource mutation occurs.',
+  'combat.stateDemo.summary': 'Preview additional Combat UI states',
+  'combat.stateDemo.description':
+    'Local fixture-only controls to verify the disabled Skill state. These controls reset only this screen state and do not touch a Run or saved resources.',
+  'combat.stateDemo.lowManaAction': 'Preview insufficient Mana',
+  'combat.stateDemo.restoreAction': 'Restore Combat demo',
+  'combat.status.regionLabel': 'Combat turn and encounter status',
+  'combat.status.turnOrder': 'TURN ORDER',
+  'combat.status.fixedTurnOrder': 'Player → Enemy · fixed demo',
+  'combat.status.currentTurn': 'CURRENT PHASE',
+  'combat.status.playerTurn': 'PLAYER TURN',
+  'combat.status.enemyTurn': 'ENEMY TURN',
+  'combat.status.complete': 'DEMO COMPLETE',
+  'combat.status.paused': 'DEMO PAUSED',
+  'combat.status.turnNumber': 'DEMO TURN',
+  'combat.status.demoProgress': 'FIXTURES DEFEATED',
+  'combat.status.demoClock': 'RUN TIME LIMIT',
+  'combat.status.demoClockInactive': 'Static reference · no countdown',
+  'combat.enemy.eyebrow': 'ENCOUNTER / NORMAL FIXTURE',
+  'combat.enemy.sequenceCompleteTitle': 'Fixture sequence complete',
+  'combat.enemy.defeatedStatus': 'DEFEATED',
+  'combat.enemy.normalFixtureStatus': 'NORMAL · FIXTURE',
+  'combat.enemy.fixtureAName': 'Fixture Enemy A',
+  'combat.enemy.fixtureBName': 'Fixture Enemy B',
+  'combat.enemy.fixtureCName': 'Fixture Enemy C',
+  'combat.enemy.fixtureDName': 'Fixture Enemy D',
+  'combat.enemy.profileFixtureNotice': 'Sample content only · not a published enemy template',
+  'combat.enemy.fixtureIndex': 'CURRENT FIXTURE',
+  'combat.enemy.species': 'SPECIES',
+  'combat.enemy.tier': 'TIER',
+  'combat.enemy.threatRank': 'THREAT RANK',
+  'combat.enemy.level': 'LEVEL',
+  'combat.enemy.eventTag': 'EVENT TAG',
+  'combat.enemy.hp': 'Enemy HP',
+  'combat.enemy.mana': 'Enemy Mana',
+  'combat.enemy.noManaBar': 'No enemy Mana bar: this fixture does not define Mana.',
+  'combat.enemy.sequenceCompleteDescription':
+    'All four predetermined normal-enemy fixtures have been defeated in this local demo.',
+  'combat.enemy.noResultYet':
+    'No Run completion, loot, reward, or server result is created by this screen.',
+  'combat.species.zombie': 'Zombie',
+  'combat.species.human': 'Human',
+  'combat.species.mutant': 'Mutant',
+  'combat.tier.normal': 'Normal',
+  'combat.eventTag.standardRun': 'Standard Run · fixture',
+  'combat.intent.label': 'ENEMY INTENT',
+  'combat.intent.claw': 'Claw (telegraphed fixture action)',
+  'combat.intent.heavySwipe': 'Heavy Swipe (telegraphed fixture action)',
+  'combat.intent.telegraphedNotice':
+    'This intent is shown because this exact fixture action is authored as telegraphed=true.',
+  'combat.intent.notShownTitle': 'No telegraphed intent',
+  'combat.intent.notTelegraphedNotice':
+    'The fixture has no telegraphed=true action. Its action name is intentionally not shown before resolution.',
+  'combat.intent.telegraphedTag': 'TELEGRAPHED',
+  'combat.intent.hiddenTag': 'NOT TELEGRAPHED',
+  'combat.actions.eyebrow': 'PLAYER / ACTIONS',
+  'combat.actions.title': 'Choose an action',
+  'combat.actions.description':
+    'Actions are resolved in a fixed local sequence. Select one action; then inspect the separate enemy-turn state.',
+  'combat.actions.attack': 'Normal Attack',
+  'combat.actions.attackCost': '0 Stamina',
+  'combat.actions.attackDescription': 'Single-target physical fixture damage; no Stamina is spent.',
+  'combat.actions.skill': 'Skill',
+  'combat.actions.guard': 'Guard',
+  'combat.actions.guardReduction': 'Next enemy action −{percent}%',
+  'combat.actions.guardDescription':
+    'Prepare to reduce the next eligible fixture enemy action after mitigation.',
+  'combat.actions.resetDemo': 'Reset Combat Demo',
+  'combat.actions.escapeUnavailable': 'Escape · next task',
+  'combat.actions.surrenderUnavailable': 'Surrender · next task',
+  'combat.actions.futureActionsReason':
+    'Escape and Surrender confirmations are not part of P1-UI-005.',
+  'combat.actions.backToPreflight': 'Back to Run Preflight',
+  'combat.skill.name': 'Focus Bolt · fixture',
+  'combat.skill.target': 'Target: one enemy',
+  'combat.skill.effect': 'Direct magic damage · fixture only',
+  'combat.skill.manaCost': '{cost} Mana',
+  'combat.skill.cooldownSummary': 'Cooldown: {actions} valid player actions after casting',
+  'combat.skill.cooldownRemaining':
+    'Skill is on cooldown for {actions} more valid player action(s).',
+  'combat.skill.cooldownReady': 'Skill cooldown is ready.',
+  'combat.actionReason.playerTurn': 'Available only during the player turn.',
+  'combat.actionReason.cooldown': 'Disabled: the Skill cooldown has not cleared.',
+  'combat.actionReason.mana': 'Disabled: there is not enough fixture Mana for this Skill.',
+  'combat.actionReason.ready': 'Available: valid player turn, enough Mana, cooldown ready.',
+  'combat.enemyTurn.title': 'Resolve the enemy action',
+  'combat.enemyTurn.description':
+    'This step is explicit so the telegraph, Guard state, damage result and log can be inspected. No real-time wait occurs.',
+  'combat.enemyTurn.guardReady':
+    'Guard is ready and will reduce the next eligible enemy action by {percent}% after mitigation.',
+  'combat.enemyTurn.resolveAction': 'Resolve Enemy Action',
+  'combat.pause.title': 'Combat demo paused safely',
+  'combat.pause.hpBoundary':
+    'The next fixture hit would cross the HP-zero boundary. The demo stops before applying it; no Character death state is simulated. Reset the demo to retry.',
+  'combat.log.regionLabel': 'Combat log entries',
+  'combat.log.eyebrow': 'ENCOUNTER / EVENT TRAIL',
+  'combat.log.title': 'Combat Log',
+  'combat.log.demoStarted':
+    'Combat demo started with {total} predetermined Normal fixtures. Turn order and initial state are fixed; no RNG roll was made.',
+  'combat.log.attackUsed':
+    'Normal Attack hit {enemy} for {damage} fixture damage. Stamina cost: {staminaCost}.',
+  'combat.log.skillUsed':
+    'Focus Bolt hit {enemy} for {damage} fixture damage, used {manaCost} Mana, and set cooldown to {cooldown} player actions.',
+  'combat.log.guardSet':
+    'Guard is set for the next enemy action, with a {reduction}% reduction after mitigation.',
+  'combat.log.enemyDefeated': 'Defeated {enemy}. Fixture progress: {defeated}/{total}.',
+  'combat.log.nextEnemy':
+    'Next fixture entered: {enemy}. Player HP/Mana and remaining Skill cooldown carry over locally.',
+  'combat.log.enemyGuarded': 'Guard reduced {enemy} to {damage} fixture damage.',
+  'combat.log.enemyTelegraphedResolved':
+    '{enemy} resolved its telegraphed fixture action for {damage} damage.',
+  'combat.log.enemyUntelegraphedResolved':
+    'An untelegraphed fixture action resolved for {damage} damage; its action name was not shown beforehand.',
+  'combat.log.pausedBeforeTerminalHp':
+    'Demo paused before a terminal HP result. The potential {damage} damage was not applied; death is outside this UI task.',
+  'combat.player.regionLabel': 'Player fixture resources and status',
+  'combat.player.eyebrow': 'PLAYER / RESOURCE SNAPSHOT',
+  'combat.player.title': 'Player Fixture',
+  'combat.player.fixtureStatus': 'STATIC INPUT',
+  'combat.player.resourceNotice':
+    'HP and Mana update only in this page’s temporary fixture state and reset when the demo restarts.',
+  'combat.player.hp': 'Player HP',
+  'combat.player.mana': 'Player Mana',
+  'combat.player.staminaNotice':
+    'Static reference only · Normal Attack costs 0 Stamina · no resource is persisted or charged.',
+  'combat.status.skillCooldown': 'SKILL COOLDOWN',
+  'combat.status.guardState': 'GUARD STATE',
+  'combat.status.guardActive': 'READY FOR NEXT ENEMY ACTION',
+  'combat.status.guardInactive': 'NOT ACTIVE',
+  'combat.rules.eyebrow': 'RUN / RESTRICTIONS',
+  'combat.rules.title': 'Run restrictions',
+  'combat.rules.noPotions': 'Potions are not available inside a Run.',
+  'combat.rules.noLoadoutChanges':
+    'Equipment and Skill loadout changes are not available during a Run.',
+  'combat.rules.noEscapeOrSurrender':
+    'Escape/Surrender confirmations are reserved for a later bounded Task.',
+  'combat.footer.activeBoundary':
+    'All turns and resource changes are local demo state. Refreshing the route resets this fixture sequence.',
+  'combat.footer.inactiveBoundary':
+    'The fixture demo is stopped; no Run result, loot, or authoritative state is created.',
 } as const;

@@ -165,3 +165,124 @@ test.describe('P1-UI-004 Run preflight', () => {
     await expect(page.getByRole('heading', { name: 'Province', exact: true })).toBeVisible();
   });
 });
+
+test.describe('P1-UI-005 Combat interaction demo', () => {
+  test('Combat demo exposes fixture-only status and guarded enemy turns on desktop', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/run/combat');
+    await expect(page.getByRole('heading', { name: 'Combat Demo', exact: true })).toBeVisible();
+    await expect(page.getByText(/This page changes only in-memory UI fixtures/)).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Fixture Enemy A' })).toBeVisible();
+    await expect(page.getByText('SPECIES', { exact: true })).toBeVisible();
+    await expect(page.getByText('TIER', { exact: true })).toBeVisible();
+    await expect(page.getByText('THREAT RANK', { exact: true })).toBeVisible();
+    await expect(page.getByText('LEVEL', { exact: true })).toBeVisible();
+    await expect(page.getByText('EVENT TAG', { exact: true })).toBeVisible();
+    await expect(page.getByTestId('combat-intent-name')).toHaveText(
+      'Claw (telegraphed fixture action)',
+    );
+    await expect(page.getByTestId('combat-defeated-count')).toHaveText('0 / 4');
+    await expect(page.getByTestId('combat-action-attack')).toBeEnabled();
+    await expect(page.getByTestId('combat-action-skill')).toBeEnabled();
+    await expect(page.getByTestId('combat-action-guard')).toBeEnabled();
+    await expect(page.getByRole('button', { name: 'Escape · next task' })).toBeDisabled();
+    await page.screenshot({ path: 'test-results/p1-ui-005-combat-desktop.png', fullPage: true });
+
+    await page.getByTestId('combat-action-guard').click();
+    await expect(page.getByTestId('combat-phase')).toHaveText('ENEMY TURN');
+    await expect(
+      page.getByText(/Guard is ready and will reduce the next eligible enemy action by 50%/),
+    ).toBeVisible();
+    await page.getByTestId('combat-resolve-enemy').click();
+    await expect(page.getByRole('progressbar', { name: 'Player HP' })).toHaveAttribute(
+      'value',
+      '82',
+    );
+    await expect(
+      page.getByText('Guard reduced Fixture Enemy A to 4 fixture damage.'),
+    ).toBeVisible();
+
+    await page.getByTestId('combat-action-skill').click();
+    await expect(page.getByTestId('combat-defeated-count')).toHaveText('1 / 4');
+    await expect(page.getByRole('heading', { name: 'Fixture Enemy B' })).toBeVisible();
+    await expect(page.getByTestId('combat-intent')).toContainText('No telegraphed intent');
+    await expect(page.getByTestId('combat-intent-name')).toHaveCount(0);
+    await expect(page.getByRole('progressbar', { name: 'Enemy Mana' })).toHaveAttribute(
+      'value',
+      '8',
+    );
+    await expect(page.getByTestId('combat-action-skill')).toBeDisabled();
+    await expect(page.getByText('Disabled: the Skill cooldown has not cleared.')).toBeVisible();
+
+    await page.getByText('Preview additional Combat UI states', { exact: true }).click();
+    await page.getByRole('button', { name: 'Preview insufficient Mana' }).click();
+    await expect(page.getByRole('progressbar', { name: 'Player Mana' })).toHaveAttribute(
+      'value',
+      '9',
+    );
+    await expect(page.getByTestId('combat-action-skill')).toBeDisabled();
+    await expect(
+      page.getByText('Disabled: there is not enough fixture Mana for this Skill.'),
+    ).toBeVisible();
+    await page.getByRole('button', { name: 'Restore Combat demo' }).click();
+    await expect(page.getByRole('progressbar', { name: 'Player Mana' })).toHaveAttribute(
+      'value',
+      '42',
+    );
+    await expect(page.getByTestId('combat-action-skill')).toBeEnabled();
+  });
+
+  test('Combat demo is readable and fits the narrow mobile viewport', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/run/combat');
+    await expect(page.getByRole('heading', { name: 'Combat Demo', exact: true })).toBeVisible();
+    await expect(page.getByTestId('combat-action-attack')).toBeVisible();
+    await expect(page.getByTestId('combat-action-skill')).toBeVisible();
+    await expect(page.getByTestId('combat-action-guard')).toBeVisible();
+    await expect(page.getByTestId('combat-intent-name')).toBeVisible();
+    const width = await page.evaluate(() => document.documentElement.scrollWidth);
+    expect(width).toBeLessThanOrEqual(390);
+    await page.screenshot({ path: 'test-results/p1-ui-005-combat-mobile.png', fullPage: true });
+  });
+
+  test('Preflight local confirmation opens the Combat UI demo without creating a Run', async ({
+    page,
+  }) => {
+    await page.goto('/run/preflight');
+    await page.getByRole('button', { name: 'Begin Demo Run' }).click();
+    await expect(page.getByRole('status')).toContainText(
+      'No Run was created, no Stamina was deducted, no enemy roll was made and no timer started.',
+    );
+    await page.getByRole('link', { name: /Open Combat Demo/ }).click();
+    await expect(page).toHaveURL('/run/combat');
+    await expect(page.getByRole('heading', { name: 'Combat Demo', exact: true })).toBeVisible();
+    await expect(page.getByText(/No server Run, RNG, initiative roll, real timer/)).toBeVisible();
+  });
+
+  test('Combat actions are keyboard reachable and can be activated without a pointer', async ({
+    page,
+  }) => {
+    await page.goto('/run/combat');
+    await page.keyboard.press('Tab');
+    await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(page.getByRole('link', { name: 'Start', exact: true })).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(page.getByRole('link', { name: 'Updates', exact: true })).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(page.getByRole('link', { name: 'Province', exact: true })).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(page.getByRole('link', { name: 'Run Preflight', exact: true })).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(
+      page.getByText('Preview additional Combat UI states', { exact: true }),
+    ).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(page.getByTestId('combat-action-attack')).toBeFocused();
+    await page.keyboard.press('Enter');
+    await expect(page.getByTestId('combat-phase')).toHaveText('ENEMY TURN');
+    await expect(page.getByTestId('combat-resolve-enemy')).toBeVisible();
+  });
+});
