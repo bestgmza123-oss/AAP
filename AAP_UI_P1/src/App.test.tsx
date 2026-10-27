@@ -502,3 +502,85 @@ describe('P1-UI-006 Escape and Surrender confirmations', () => {
     expect(screen.getByTestId('combat-action-surrender')).toBeDisabled();
   });
 });
+
+describe('P1-UI-007 Loot selection, capacity and optional return encounter', () => {
+  it('renders gram-based weight buckets with bag included and worn gear excluded', () => {
+    renderAt('/run/loot');
+    expect(screen.getByRole('heading', { name: t('loot.page.title') })).toBeVisible();
+    expect(screen.getByText(/including the bag/i)).toBeVisible();
+    expect(screen.getByText(/Worn equipment is excluded/i)).toBeVisible();
+    expect(screen.getByTestId('loot-current-weight')).toHaveTextContent('8.500 kg (8,500 g)');
+    expect(screen.getByTestId('loot-total-capacity')).toHaveTextContent('20.000 kg (20,000 g)');
+    expect(screen.getByTestId('loot-remaining-weight')).toHaveTextContent('11.500 kg (11,500 g)');
+  });
+
+  it('allows exact capacity and disables the next quantity with the exact overage', () => {
+    renderAt('/run/loot');
+    for (let index = 0; index < 4; index += 1) {
+      fireEvent.click(screen.getByTestId('loot-increase-main-alloy'));
+    }
+    fireEvent.click(screen.getByTestId('loot-increase-main-cloth'));
+    fireEvent.click(screen.getByTestId('loot-increase-main-rations'));
+
+    expect(screen.getByTestId('loot-current-weight')).toHaveTextContent('20.000 kg (20,000 g)');
+    expect(screen.getByTestId('loot-remaining-weight')).toHaveTextContent('0.000 kg (0 g)');
+    expect(screen.getByText(t('loot.capacity.atCapacity'))).toBeVisible();
+    expect(screen.getByTestId('loot-increase-main-rations')).toBeDisabled();
+    expect(screen.getByTestId('loot-overflow-main-rations')).toHaveTextContent(
+      'exceed capacity by 500 g',
+    );
+    expect(screen.getByTestId('loot-quantity-main-alloy')).toHaveTextContent('4');
+  });
+
+  it('keeps main loot pending on the no-return-encounter branch and does not create a third check', () => {
+    renderAt('/run/loot');
+    fireEvent.click(screen.getByTestId('loot-increase-main-alloy'));
+    fireEvent.click(screen.getByTestId('loot-confirm-main'));
+    expect(screen.getByRole('heading', { name: t('loot.returnChoice.title') })).toBeVisible();
+    expect(screen.getByText(t('loot.returnChoice.noThirdRoll'))).toBeVisible();
+    fireEvent.change(screen.getByTestId('loot-return-branch'), { target: { value: 'none' } });
+    fireEvent.click(screen.getByTestId('loot-resolve-return'));
+
+    expect(screen.getByTestId('loot-result')).toHaveTextContent('no return encounter');
+    expect(screen.getByTestId('loot-result-main')).toHaveTextContent('2.500 kg (2,500 g)');
+    expect(screen.getByTestId('loot-result-return')).toHaveTextContent('0.000 kg (0 g)');
+    expect(screen.getByText(t('loot.result.noPersistence'))).toBeVisible();
+  });
+
+  it('preserves chosen main loot and forfeits return reward when escaping the one return encounter', () => {
+    renderAt('/run/loot');
+    fireEvent.click(screen.getByTestId('loot-increase-main-alloy'));
+    fireEvent.click(screen.getByTestId('loot-confirm-main'));
+    fireEvent.change(screen.getByTestId('loot-return-branch'), { target: { value: 'one' } });
+    fireEvent.click(screen.getByTestId('loot-resolve-return'));
+    expect(screen.getByRole('heading', { name: t('loot.return.title') })).toBeVisible();
+    fireEvent.click(screen.getByTestId('loot-escape-return'));
+
+    expect(screen.getByTestId('loot-result')).toHaveTextContent(
+      /return encounter reward forfeited/i,
+    );
+    expect(screen.getByTestId('loot-result-main')).toHaveTextContent('2.500 kg (2,500 g)');
+    expect(screen.getByTestId('loot-result-return')).toHaveTextContent('0.000 kg (0 g)');
+    expect(screen.getByTestId('loot-result')).toHaveTextContent('Chosen main loot preserved');
+  });
+
+  it('keeps return loot in a separate bucket and applies the same capacity boundary', () => {
+    renderAt('/run/loot');
+    fireEvent.click(screen.getByTestId('loot-increase-main-alloy'));
+    fireEvent.click(screen.getByTestId('loot-confirm-main'));
+    fireEvent.change(screen.getByTestId('loot-return-branch'), { target: { value: 'one' } });
+    fireEvent.click(screen.getByTestId('loot-resolve-return'));
+    fireEvent.click(screen.getByTestId('loot-complete-return'));
+
+    expect(screen.getByRole('heading', { name: t('loot.returnLoot.title') })).toBeVisible();
+    expect(screen.getByTestId('loot-return-pending-weight')).toHaveTextContent('0.000 kg (0 g)');
+    fireEvent.click(screen.getByTestId('loot-increase-return-salvage'));
+    expect(screen.getByTestId('loot-return-pending-weight')).toHaveTextContent(
+      '1.800 kg (1,800 g)',
+    );
+    fireEvent.click(screen.getByTestId('loot-finish-return'));
+    expect(screen.getByTestId('loot-result')).toHaveTextContent('Return encounter demo complete');
+    expect(screen.getByTestId('loot-result-main')).toHaveTextContent('2.500 kg (2,500 g)');
+    expect(screen.getByTestId('loot-result-return')).toHaveTextContent('1.800 kg (1,800 g)');
+  });
+});

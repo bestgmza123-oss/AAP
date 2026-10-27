@@ -451,4 +451,88 @@ export const en = {
     'All turns and resource changes are local demo state. Refreshing the route resets this fixture sequence.',
   'combat.footer.inactiveBoundary':
     'The fixture demo is stopped; no Run result, loot, or authoritative state is created.',
+  'loot.page.eyebrow': 'RUN / LOOT SELECTION',
+  'loot.page.title': 'Loot & Capacity Demo',
+  'loot.page.description':
+    'Select quantities after the main clear, inspect the carrying-weight boundary, then preview zero or one return encounter.',
+  'loot.notice.title': 'LOCAL FIXTURE ONLY · NO INVENTORY CLAIM',
+  'loot.notice.description':
+    'All weights, quantities, encounter branches and outcomes on this page are deterministic UI fixtures. Nothing is granted, dropped, persisted or sent to a server.',
+  'loot.capacity.eyebrow': 'CARRYING / WEIGHT',
+  'loot.capacity.title': 'Carrying capacity',
+  'loot.capacity.current': 'Current total weight',
+  'loot.capacity.total': 'Total capacity',
+  'loot.capacity.remaining': 'Remaining capacity',
+  'loot.capacity.inclusions':
+    'Total capacity is 20 kg including the bag. Worn equipment is excluded. Weight is stored/displayed as integer grams with a kg conversion.',
+  'loot.capacity.withinCapacity': 'WITHIN CAPACITY',
+  'loot.capacity.atCapacity': 'AT CAPACITY',
+  'loot.capacity.overflow':
+    'Adding one more unit would exceed capacity by {shortfall} g. Reduce another selection or leave this item unselected.',
+  'loot.capacity.overflowShort': 'Over capacity by {shortfall} g',
+  'loot.bucket.region': 'Reward and inventory fixture buckets',
+  'loot.bucket.carriedIn': 'Original / carried-in',
+  'loot.bucket.carriedInDescription': 'Existing carry fixture; remains unchanged.',
+  'loot.bucket.mainPending': 'Chosen main loot pending',
+  'loot.bucket.returnPending': 'Return encounter loot pending',
+  'loot.bucket.mainChosen': 'Chosen main loot preserved',
+  'loot.bucket.returnLootAtRisk': 'Possible return reward (not owned)',
+  'loot.bucket.returnSelected': 'Return loot selected (fixture)',
+  'loot.bucket.returnForfeited': 'Return reward forfeited / not received',
+  'loot.bucket.empty': 'No quantity selected.',
+  'loot.tag.fixture': 'FIXTURE DATA',
+  'loot.main.eyebrow': 'MAIN DUNGEON CLEAR',
+  'loot.main.title': 'Choose loot quantities',
+  'loot.main.description':
+    'Choose only what fits. The capacity check includes original carried weight plus every selected main-loot unit. At-capacity is allowed; an increment that would exceed it is disabled with the exact shortfall.',
+  'loot.main.confirm': 'Confirm main loot preview',
+  'loot.main.openFromCombat': 'Continue to Loot & Capacity Demo',
+  'loot.stack.rations': 'Sealed rations bundle',
+  'loot.stack.alloy': 'Salvaged alloy pieces',
+  'loot.stack.cloth': 'Cloth scrap bundle',
+  'loot.stack.returnSalvage': 'Return encounter salvage',
+  'loot.stack.weightEach': '{kg} kg ({grams} g) each · fixture weight',
+  'loot.stack.available': 'Available in this fixture: {count}',
+  'loot.stack.decrease': 'Decrease {item} quantity',
+  'loot.stack.increase': 'Increase {item} quantity',
+  'loot.stack.quantity': '{item} quantity selected',
+  'loot.backToCombat': 'Back to Combat Demo',
+  'loot.returnChoice.eyebrow': 'RUN CLOSE / OPTIONAL BRANCH',
+  'loot.returnChoice.title': 'Return encounter check',
+  'loot.returnChoice.description':
+    'The main clear has completed and main loot selection is ready. Pick a deterministic test fixture to inspect either no return encounter or exactly one return encounter. This selector is not a random roll.',
+  'loot.returnChoice.selectLabel': 'Return encounter fixture scenario',
+  'loot.returnChoice.none': 'No return encounter',
+  'loot.returnChoice.one': 'One return encounter',
+  'loot.returnChoice.continue': 'Continue fixture flow',
+  'loot.returnChoice.back': 'Back to main loot',
+  'loot.returnChoice.noThirdRoll':
+    'The demo stops after this branch; it never performs a third encounter check.',
+  'loot.return.eyebrow': 'OPTIONAL RETURN ENCOUNTER · FIXTURE',
+  'loot.return.title': 'One return encounter',
+  'loot.return.description':
+    'This is the single optional return encounter for the selected fixture. Chosen main loot is preserved. You may preview escaping (the encounter reward is forfeited) or complete this fixture encounter and inspect its reward quantity/capacity.',
+  'loot.return.rewardNotOwned':
+    'This reward is only a possible fixture reward. It is not owned unless the demo path explicitly selects it, and Escape forfeits it.',
+  'loot.return.escape': 'Escape return encounter',
+  'loot.return.complete': 'Complete return encounter demo',
+  'loot.returnLoot.eyebrow': 'RETURN ENCOUNTER REWARD',
+  'loot.returnLoot.title': 'Select return encounter loot',
+  'loot.returnLoot.description':
+    'Main loot selection remains preserved. The optional encounter reward is a separate pending bucket and must also fit the total capacity.',
+  'loot.returnLoot.confirm': 'Finish loot preview',
+  'loot.returnLoot.back': 'Back to return encounter',
+  'loot.result.eyebrow': 'LOCAL DEMO OUTCOME · NOT PERSISTED',
+  'loot.result.noEncounterTitle': 'Main loot selected · no return encounter',
+  'loot.result.escapedTitle': 'ESCAPED · Return encounter reward forfeited',
+  'loot.result.completedTitle': 'Return encounter demo complete',
+  'loot.result.noEncounterDescription':
+    'No return encounter occurred in this deterministic fixture branch. The chosen main loot remains shown as pending demo selection.',
+  'loot.result.escapedDescription':
+    'Escape from the return encounter preserves all previously chosen main loot. The return encounter reward is forfeited and is not gained.',
+  'loot.result.completedDescription':
+    'The one return encounter fixture was completed. Chosen main loot and selected return loot remain separate preview buckets; nothing is granted to inventory.',
+  'loot.result.noPersistence':
+    'Preview only: no item is actually claimed, granted, dropped or written to persistent inventory. No additional encounter check is available.',
+  'loot.result.reset': 'Reset Loot Demo',
 } as const;

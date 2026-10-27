@@ -437,6 +437,13 @@ export function CombatDemoPage() {
                 </span>
                 <p>{t('combat.enemy.sequenceCompleteDescription')}</p>
                 <p className="combat-boundary-inline">{t('combat.enemy.noResultYet')}</p>
+                <Link
+                  className="combat-secondary-action"
+                  to="/run/loot"
+                  data-testid="combat-continue-to-loot"
+                >
+                  {t('loot.main.openFromCombat')}
+                </Link>
                 <button type="button" className="combat-secondary-action" onClick={resetDemo}>
                   {t('combat.actions.resetDemo')}
                 </button>

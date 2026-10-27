@@ -1,8 +1,12 @@
-# AAP_UI_P1 — Private UI Prototype (P1-UI-001 through P1-UI-006)
+# AAP_UI_P1 — Private UI Prototype (P1-UI-001 through P1-UI-007)
 
-## Latest verification status — P1-UI-006 accepted — 2026-10-27
+## Active implementation — P1-UI-007 Loot / capacity / optional return encounter — 2026-10-27
 
-P1-UI-006 — Escape / Surrender confirmations is accepted and complete. PR #10 was squash-merged to `main` at `77066a810de7ad52fe92aba842213524d1e54255`; exact PR-head CI run #36 and post-merge `main` CI run #37 passed. Local verification on the merged source passed: typecheck, Vitest 30/30, lint exit 0 (four existing reduced-motion CSS `!important` warnings), scope audit (18 source files), production build (35 modules), Playwright 14/14, documentation static audit, and `git diff --check`. See `../evidence/P1-UI-006_CHECKPOINT.md` and `../evidence/p1-ui-006-escape-desktop.png` / `../evidence/p1-ui-006-escape-mobile.png`. All exit outcomes remain local fixture UI only. Stop before P1-UI-007 unless the owner explicitly authorizes it.
+P1-UI-007 is authorized and implemented on `feat/p1-ui-007-loot-capacity`, based on `main` SHA `96422785399948bb2ded69868edb30567e7608ef`. Local gates pass: typecheck, Vitest 38/38, lint exit 0 (four existing reduced-motion CSS `!important` warnings only), scope audit (21 source files), build (37 modules), Playwright 18/18, static documentation audit and `git diff --check`. The `/run/loot` screen includes integer-gram weights, a 20,000 g total capacity that includes the bag and excludes worn equipment, exact over-capacity refusal, separated pending reward buckets, and deterministic no-return/one-return branches. Escape during the optional return encounter retains chosen main loot and forfeits its reward. All values/transitions are local fixtures only; there is no item grant/drop, inventory mutation, server Run, encounter RNG or persistence. Checkpoint and captures are in `../evidence/P1-UI-007_CHECKPOINT.md` and the `p1-ui-007-loot-*.png` files. Exact PR-head and post-merge CI remain pending, so this task is not marked accepted yet. Stop before P1-UI-008 unless explicitly authorized.
+
+## Latest accepted verification — P1-UI-006 — 2026-10-27
+
+P1-UI-006 — Escape / Surrender confirmations is accepted and complete. PR #10 was squash-merged to `main` at `77066a810de7ad52fe92aba842213524d1e54255`; exact PR-head CI run #36 and post-merge `main` CI run #37 passed. Local verification on the merged source passed: typecheck, Vitest 30/30, lint exit 0 (four existing reduced-motion CSS `!important` warnings), scope audit (18 source files), production build (35 modules), Playwright 14/14, documentation static audit, and `git diff --check`. See `../evidence/P1-UI-006_CHECKPOINT.md` and `../evidence/p1-ui-006-escape-desktop.png` / `../evidence/p1-ui-006-escape-mobile.png`. All exit outcomes remain local fixture UI only.
 
 ## Historical verification status — through P1-UI-005 — 2026-10-27
 
