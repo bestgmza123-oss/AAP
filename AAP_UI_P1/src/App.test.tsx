@@ -259,12 +259,9 @@ describe('P1-UI-005 Combat interaction demo', () => {
       'Cooldown: 2 valid player actions after casting',
     );
     expect(screen.getByTestId('combat-action-guard')).toBeEnabled();
-    expect(
-      screen.getByRole('button', { name: t('combat.actions.escapeUnavailable') }),
-    ).toBeDisabled();
-    expect(
-      screen.getByRole('button', { name: t('combat.actions.surrenderUnavailable') }),
-    ).toBeDisabled();
+    expect(screen.getByTestId('combat-action-escape')).toBeEnabled();
+    expect(screen.getByTestId('combat-action-surrender')).toBeEnabled();
+    expect(screen.getByText(t('combat.actions.exitActiveReason'))).toBeVisible();
   });
 
   it('runs Normal Attack and a separate enemy step without spending Stamina', () => {
@@ -383,5 +380,125 @@ describe('P1-UI-005 Combat interaction demo', () => {
       [...state.logs.map((entry) => entry.id)].sort((a, b) => a - b),
     );
     expect(new Set(state.logs.map((entry) => entry.id)).size).toBe(state.logs.length);
+  });
+});
+
+describe('P1-UI-006 Escape and Surrender confirmations', () => {
+  it('cancels Escape without changing combat resources, turn, enemy or focus context', () => {
+    renderAt('/run/combat');
+    const escapeButton = screen.getByTestId('combat-action-escape');
+    expect(screen.getByRole('progressbar', { name: t('combat.player.hp') })).toHaveValue(86);
+    expect(screen.getByRole('progressbar', { name: t('combat.player.mana') })).toHaveValue(42);
+    expect(screen.getByTestId('combat-turn-number')).toHaveTextContent('1');
+
+    fireEvent.click(escapeButton);
+    expect(screen.getByRole('dialog', { name: t('combat.exitDialog.escapeTitle') })).toBeVisible();
+    expect(screen.getByTestId('combat-exit-cancel')).toHaveFocus();
+    expect(screen.getByTestId('combat-escape-gold-cost')).toHaveTextContent('65 Gold');
+    expect(
+      screen.getByText(/pending Run loot \(3.2 kg\) is forfeited and excluded from W/i),
+    ).toBeVisible();
+
+    fireEvent.keyDown(screen.getByTestId('combat-exit-dialog'), { key: 'Escape' });
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(escapeButton).toHaveFocus();
+    expect(screen.getByRole('progressbar', { name: t('combat.player.hp') })).toHaveValue(86);
+    expect(screen.getByRole('progressbar', { name: t('combat.player.mana') })).toHaveValue(42);
+    expect(screen.getByTestId('combat-turn-number')).toHaveTextContent('1');
+    expect(screen.getByRole('heading', { name: t('combat.enemy.fixtureAName') })).toBeVisible();
+    expect(screen.getByTestId('combat-phase')).toHaveTextContent(t('combat.status.playerTurn'));
+  });
+
+  it('blocks insufficient-Gold Escape and offers a Warp Stone only when the fixture owns one', () => {
+    renderAt('/run/combat');
+    fireEvent.click(screen.getByText(t('combat.stateDemo.summary')));
+    fireEvent.change(screen.getByTestId('combat-exit-fixture-select'), {
+      target: { value: 'pre-clear-insufficient-gold' },
+    });
+    fireEvent.click(screen.getByTestId('combat-action-escape'));
+
+    expect(screen.getByTestId('combat-escape-gold-cost')).toHaveTextContent('65 Gold');
+    expect(screen.getByTestId('combat-escape-insufficient-gold')).toHaveTextContent(
+      'Not enough fixture Gold',
+    );
+    expect(screen.getByTestId('combat-exit-confirm-escape')).toBeDisabled();
+    expect(screen.queryByTestId('combat-escape-payment-warp-stone')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('combat-exit-cancel'));
+    fireEvent.change(screen.getByTestId('combat-exit-fixture-select'), {
+      target: { value: 'pre-clear-warp-stone' },
+    });
+    fireEvent.click(screen.getByTestId('combat-action-escape'));
+    expect(screen.getByTestId('combat-escape-payment-warp-stone')).toBeVisible();
+    expect(screen.getByTestId('combat-exit-confirm-escape')).toBeDisabled();
+
+    fireEvent.click(screen.getByTestId('combat-escape-payment-warp-stone'));
+    expect(screen.getByTestId('combat-exit-confirm-escape')).toBeEnabled();
+    fireEvent.click(screen.getByTestId('combat-exit-confirm-escape'));
+    expect(screen.getByTestId('combat-exit-outcome')).toHaveTextContent('ESCAPED');
+    expect(screen.getByTestId('combat-exit-outcome')).toHaveTextContent('Warp Stone selected');
+    expect(screen.getByTestId('combat-exit-outcome')).toHaveTextContent('No debit is performed');
+    expect(screen.getByRole('progressbar', { name: t('combat.player.hp') })).toHaveValue(86);
+  });
+
+  it('uses retained main-loot weight for a return-encounter Escape and not encounter loot', () => {
+    renderAt('/run/combat');
+    fireEvent.click(screen.getByText(t('combat.stateDemo.summary')));
+    fireEvent.change(screen.getByTestId('combat-exit-fixture-select'), {
+      target: { value: 'return-encounter-gold' },
+    });
+    expect(screen.getByTestId('combat-escape-fixture-summary')).toHaveTextContent(
+      'retained W 9.6 kg',
+    );
+    expect(screen.getByTestId('combat-escape-fixture-summary')).toHaveTextContent(
+      'example cost 85 Gold',
+    );
+
+    fireEvent.click(screen.getByTestId('combat-action-escape'));
+    expect(screen.getByTestId('combat-escape-gold-cost')).toHaveTextContent('85 Gold');
+    expect(
+      screen.getByText(/chosen main-dungeon loot \(3.2 kg\) is kept and included in W/i),
+    ).toBeVisible();
+    expect(screen.getByText(/return-encounter reward \(1.8 kg\) is not gained/i)).toBeVisible();
+
+    fireEvent.click(screen.getByTestId('combat-exit-confirm-escape'));
+    expect(screen.getByTestId('combat-exit-outcome')).toHaveTextContent('already chosen main loot');
+    expect(screen.getByTestId('combat-exit-outcome')).toHaveTextContent(
+      'does not award the return-encounter reward',
+    );
+    expect(screen.getByTestId('combat-phase')).toHaveTextContent(t('combat.status.escaped'));
+  });
+
+  it('keeps Surrender available only in active Combat and preserves current HP with no death/refund', () => {
+    renderAt('/run/combat');
+    expect(screen.getByTestId('combat-action-surrender')).toBeEnabled();
+    fireEvent.click(screen.getByTestId('combat-action-attack'));
+    expect(screen.getByTestId('combat-phase')).toHaveTextContent(t('combat.status.enemyTurn'));
+    expect(screen.getByTestId('combat-action-surrender')).toBeEnabled();
+
+    fireEvent.click(screen.getByTestId('combat-action-surrender'));
+    expect(
+      screen.getByRole('dialog', { name: t('combat.exitDialog.surrenderTitle') }),
+    ).toBeVisible();
+    expect(screen.getByText(t('combat.exitOutcome.surrenderNoRewards'))).toBeVisible();
+    expect(screen.getByText(t('combat.exitOutcome.surrenderNoRefund'))).toBeVisible();
+    expect(screen.getByText(t('combat.exitOutcome.surrenderNoDeath'))).toBeVisible();
+    expect(screen.getByText(t('combat.exitOutcome.surrenderNoHpRefill'))).toBeVisible();
+
+    fireEvent.click(screen.getByTestId('combat-surrender-cancel'));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(screen.getByTestId('combat-phase')).toHaveTextContent(t('combat.status.enemyTurn'));
+    expect(screen.getByRole('progressbar', { name: t('combat.player.hp') })).toHaveValue(86);
+
+    fireEvent.click(screen.getByTestId('combat-action-surrender'));
+    const confirm = screen.getByTestId('combat-exit-confirm-surrender');
+    fireEvent.click(confirm);
+    expect(screen.getByTestId('combat-exit-outcome')).toHaveTextContent('FAILED');
+    expect(screen.getByTestId('combat-phase')).toHaveTextContent(t('combat.status.failed'));
+    expect(screen.getByRole('progressbar', { name: t('combat.player.hp') })).toHaveValue(86);
+    expect(screen.getByTestId('combat-exit-outcome')).toHaveTextContent(
+      'no Character death or resource refill is simulated',
+    );
+    expect(screen.getByTestId('combat-action-surrender')).toBeDisabled();
   });
 });

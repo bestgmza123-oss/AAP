@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { type KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   type CombatAction,
@@ -9,8 +9,28 @@ import {
   performCombatAction,
   resolveEnemyAction,
 } from '../fixtures/combat';
+import {
+  calculateEscapeFixtureCost,
+  canConfirmEscape,
+  type EscapePaymentMethod,
+  type EscapeScenarioId,
+  escapeSurrenderFixture,
+  getEscapeScenario,
+} from '../fixtures/escape-surrender';
 import { runPreflightFixture } from '../fixtures/run-preflight';
 import { type TranslationKey, t } from '../i18n';
+
+type ExitDialogKind = 'escape' | 'surrender';
+
+type ExitOutcome =
+  | {
+      kind: 'escaped';
+      fixtureId: string;
+      paymentMethod: EscapePaymentMethod;
+      goldCost: number;
+      retainedWeightKg: number;
+    }
+  | { kind: 'surrendered' };
 
 function renderCombatLogEntry(entry: CombatLogEntry): string {
   const values = { ...entry.values };
@@ -47,11 +67,77 @@ function ResourceBar({
 
 export function CombatDemoPage() {
   const [state, setState] = useState(createInitialCombatState);
+  const [exitDialog, setExitDialog] = useState<ExitDialogKind | null>(null);
+  const [exitOutcome, setExitOutcome] = useState<ExitOutcome | null>(null);
+  const [escapeScenarioId, setEscapeScenarioId] = useState<EscapeScenarioId>('pre-clear-gold');
+  const [escapePaymentMethod, setEscapePaymentMethod] = useState<EscapePaymentMethod>('gold');
+  const exitDialogRef = useRef<HTMLDivElement>(null);
+  const exitTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const exitOutcomeHeadingRef = useRef<HTMLHeadingElement>(null);
   const activeEnemy = combatFixture.enemies[state.enemyIndex];
-  const isPlayerTurn = state.phase === 'player-turn';
-  const isEnemyTurn = state.phase === 'enemy-turn';
-  const isActive = isPlayerTurn || isEnemyTurn;
+  const escapeScenario = getEscapeScenario(escapeScenarioId);
+  const escapeCalculation = calculateEscapeFixtureCost(escapeScenario);
+  const escapeConfirmEnabled = canConfirmEscape(
+    escapeScenario,
+    escapePaymentMethod,
+    escapeCalculation.goldCost,
+  );
+  const isPlayerTurn = state.phase === 'player-turn' && exitOutcome === null;
+  const isEnemyTurn = state.phase === 'enemy-turn' && exitOutcome === null;
+  const isActive =
+    (state.phase === 'player-turn' || state.phase === 'enemy-turn') && exitOutcome === null;
   const skillDisabledReason = getCombatActionDisabledReason(state, 'skill');
+  const phaseLabelKey: TranslationKey = exitOutcome
+    ? exitOutcome.kind === 'escaped'
+      ? 'combat.status.escaped'
+      : 'combat.status.failed'
+    : state.phase === 'player-turn'
+      ? 'combat.status.playerTurn'
+      : state.phase === 'enemy-turn'
+        ? 'combat.status.enemyTurn'
+        : state.phase === 'complete'
+          ? 'combat.status.complete'
+          : 'combat.status.paused';
+
+  useEffect(() => {
+    if (exitDialog) {
+      exitDialogRef.current?.querySelector<HTMLButtonElement>('[data-dialog-cancel]')?.focus();
+      return;
+    }
+    if (exitOutcome) {
+      exitOutcomeHeadingRef.current?.focus();
+      return;
+    }
+    exitTriggerRef.current?.focus();
+  }, [exitDialog, exitOutcome]);
+
+  function handleExitDialogKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      setExitDialog(null);
+      return;
+    }
+    if (event.key !== 'Tab') return;
+
+    const controls = Array.from(
+      exitDialogRef.current?.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), input:not([disabled]), select:not([disabled]), a[href]',
+      ) ?? [],
+    );
+    if (controls.length === 0) {
+      event.preventDefault();
+      return;
+    }
+    const first = controls[0];
+    const last = controls[controls.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
 
   function handlePlayerAction(action: CombatAction) {
     setState((current) => performCombatAction(current, action).state);
@@ -63,9 +149,33 @@ export function CombatDemoPage() {
 
   function resetDemo() {
     setState(createInitialCombatState());
+    setExitDialog(null);
+    setExitOutcome(null);
+    setEscapeScenarioId('pre-clear-gold');
+    setEscapePaymentMethod('gold');
+  }
+
+  function confirmEscape() {
+    if (!isActive || !escapeConfirmEnabled) return;
+    setExitOutcome({
+      kind: 'escaped',
+      fixtureId: escapeScenario.fixture_id,
+      paymentMethod: escapePaymentMethod,
+      goldCost: escapeCalculation.goldCost,
+      retainedWeightKg: escapeCalculation.retainedWeightKg,
+    });
+    setExitDialog(null);
+  }
+
+  function confirmSurrender() {
+    if (!isActive) return;
+    setExitOutcome({ kind: 'surrendered' });
+    setExitDialog(null);
   }
 
   function previewInsufficientMana() {
+    setExitDialog(null);
+    setExitOutcome(null);
     setState({
       ...createInitialCombatState(),
       playerMana: combatFixture.skill.manaCost - 1,
@@ -109,6 +219,63 @@ export function CombatDemoPage() {
         <p>{t('combat.boundaryNotice')}</p>
       </aside>
 
+      {exitOutcome ? (
+        <section
+          className={`combat-exit-outcome ${exitOutcome.kind}`}
+          role="status"
+          aria-labelledby="combat-exit-outcome-title"
+          data-testid="combat-exit-outcome"
+        >
+          <p className="card-eyebrow">{t('combat.exitOutcome.eyebrow')}</p>
+          <h2 id="combat-exit-outcome-title" ref={exitOutcomeHeadingRef} tabIndex={-1}>
+            {t(
+              exitOutcome.kind === 'escaped'
+                ? 'combat.exitOutcome.escapeTitle'
+                : 'combat.exitOutcome.surrenderTitle',
+            )}
+          </h2>
+          {exitOutcome.kind === 'escaped' ? (
+            <>
+              <p>
+                {t('combat.exitOutcome.escapePayment', {
+                  payment:
+                    exitOutcome.paymentMethod === 'gold'
+                      ? t('combat.exitFixture.paymentGold', { cost: exitOutcome.goldCost })
+                      : t('combat.exitFixture.paymentWarpStone'),
+                })}
+              </p>
+              <p>
+                {t(
+                  exitOutcome.fixtureId === 'return-encounter-gold'
+                    ? 'combat.exitOutcome.escapeReturnDescription'
+                    : 'combat.exitOutcome.escapePreClearDescription',
+                  { weight: exitOutcome.retainedWeightKg.toFixed(1) },
+                )}
+              </p>
+              <p>{t('combat.exitOutcome.escapeDestination')}</p>
+              <p className="combat-exit-outcome-boundary">{t('combat.exitOutcome.noMutation')}</p>
+              <Link className="combat-exit-outcome-link" to="/province">
+                {t('combat.exitOutcome.returnToProvince')}
+              </Link>
+            </>
+          ) : (
+            <>
+              <p>{t('combat.exitOutcome.surrenderDescription')}</p>
+              <ul>
+                <li>{t('combat.exitOutcome.surrenderNoRewards')}</li>
+                <li>{t('combat.exitOutcome.surrenderNoRefund')}</li>
+                <li>{t('combat.exitOutcome.surrenderNoDeath')}</li>
+                <li>{t('combat.exitOutcome.surrenderNoHpRefill')}</li>
+              </ul>
+              <p className="combat-exit-outcome-boundary">{t('combat.exitOutcome.noMutation')}</p>
+            </>
+          )}
+          <button type="button" className="combat-secondary-action" onClick={resetDemo}>
+            {t('combat.actions.resetDemo')}
+          </button>
+        </section>
+      ) : null}
+
       <details className="combat-state-demo">
         <summary>{t('combat.stateDemo.summary')}</summary>
         <p>{t('combat.stateDemo.description')}</p>
@@ -120,6 +287,37 @@ export function CombatDemoPage() {
             {t('combat.stateDemo.restoreAction')}
           </button>
         </div>
+        <div className="combat-exit-fixture-picker">
+          <label htmlFor="combat-exit-fixture-select">
+            {t('combat.exitFixture.selectorLabel')}
+          </label>
+          <select
+            id="combat-exit-fixture-select"
+            data-testid="combat-exit-fixture-select"
+            value={escapeScenarioId}
+            onChange={(event) => {
+              setEscapeScenarioId(event.currentTarget.value as EscapeScenarioId);
+              setEscapePaymentMethod('gold');
+            }}
+          >
+            {escapeSurrenderFixture.scenarios.map((scenario) => (
+              <option key={scenario.fixture_id} value={scenario.fixture_id}>
+                {t(scenario.labelKey)}
+              </option>
+            ))}
+          </select>
+          <p data-testid="combat-escape-fixture-summary">
+            {t('combat.exitFixture.scenarioSummary', {
+              carried: (escapeScenario.fixture_carried_weight_grams / 1000).toFixed(1),
+              retainedWeight: escapeCalculation.retainedWeightKg.toFixed(1),
+              multiplier: escapeScenario.fixture_danger_multiplier,
+              cost: escapeCalculation.goldCost,
+              gold: escapeScenario.fixture_gold_balance,
+              stones: escapeScenario.fixture_warp_stone_count,
+            })}
+          </p>
+          <p>{t('combat.exitFixture.nonFinalNotice')}</p>
+        </div>
       </details>
 
       <section className="combat-status-strip" aria-label={t('combat.status.regionLabel')}>
@@ -129,17 +327,7 @@ export function CombatDemoPage() {
         </article>
         <article className="combat-status-cell">
           <span>{t('combat.status.currentTurn')}</span>
-          <strong data-testid="combat-phase">
-            {t(
-              state.phase === 'player-turn'
-                ? 'combat.status.playerTurn'
-                : state.phase === 'enemy-turn'
-                  ? 'combat.status.enemyTurn'
-                  : state.phase === 'complete'
-                    ? 'combat.status.complete'
-                    : 'combat.status.paused',
-            )}
-          </strong>
+          <strong data-testid="combat-phase">{t(phaseLabelKey)}</strong>
         </article>
         <article className="combat-status-cell">
           <span>{t('combat.status.turnNumber')}</span>
@@ -255,7 +443,7 @@ export function CombatDemoPage() {
               </div>
             )}
 
-            {state.phase !== 'complete' && state.phase !== 'paused' ? (
+            {!exitOutcome && state.phase !== 'complete' && state.phase !== 'paused' ? (
               <div className="combat-intent-panel" data-testid="combat-intent">
                 <div className="combat-intent-icon" aria-hidden="true">
                   !
@@ -292,17 +480,7 @@ export function CombatDemoPage() {
                 <p className="card-eyebrow">{t('combat.actions.eyebrow')}</p>
                 <h2 id="combat-actions-title">{t('combat.actions.title')}</h2>
               </div>
-              <span className="combat-turn-badge">
-                {t(
-                  isPlayerTurn
-                    ? 'combat.status.playerTurn'
-                    : isEnemyTurn
-                      ? 'combat.status.enemyTurn'
-                      : state.phase === 'complete'
-                        ? 'combat.status.complete'
-                        : 'combat.status.paused',
-                )}
-              </span>
+              <span className="combat-turn-badge">{t(phaseLabelKey)}</span>
             </div>
 
             <p className="combat-actions-intro">{t('combat.actions.description')}</p>
@@ -497,16 +675,36 @@ export function CombatDemoPage() {
             <ul>
               <li>{t('combat.rules.noPotions')}</li>
               <li>{t('combat.rules.noLoadoutChanges')}</li>
-              <li>{t('combat.rules.noEscapeOrSurrender')}</li>
+              <li>{t('combat.rules.exitActionRestriction')}</li>
             </ul>
             <div className="combat-unavailable-actions">
-              <button type="button" disabled aria-describedby="combat-future-actions-reason">
-                {t('combat.actions.escapeUnavailable')}
+              <button
+                type="button"
+                data-testid="combat-action-escape"
+                disabled={!isActive}
+                onClick={(event) => {
+                  exitTriggerRef.current = event.currentTarget;
+                  setExitDialog('escape');
+                }}
+              >
+                {t('combat.actions.escape')}
               </button>
-              <button type="button" disabled aria-describedby="combat-future-actions-reason">
-                {t('combat.actions.surrenderUnavailable')}
+              <button
+                type="button"
+                data-testid="combat-action-surrender"
+                disabled={!isActive}
+                onClick={(event) => {
+                  exitTriggerRef.current = event.currentTarget;
+                  setExitDialog('surrender');
+                }}
+              >
+                {t('combat.actions.surrender')}
               </button>
-              <p id="combat-future-actions-reason">{t('combat.actions.futureActionsReason')}</p>
+              <p id="combat-future-actions-reason">
+                {isActive
+                  ? t('combat.actions.exitActiveReason')
+                  : t('combat.actions.exitInactiveReason')}
+              </p>
             </div>
           </section>
         </aside>
@@ -525,6 +723,192 @@ export function CombatDemoPage() {
           <p>{t('combat.footer.inactiveBoundary')}</p>
         )}
       </footer>
+
+      {exitDialog === 'escape' ? (
+        <div className="combat-exit-overlay">
+          <div
+            ref={exitDialogRef}
+            className="combat-exit-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="combat-exit-dialog-title"
+            aria-describedby="combat-exit-dialog-description"
+            tabIndex={-1}
+            onKeyDown={handleExitDialogKeyDown}
+            data-testid="combat-exit-dialog"
+          >
+            <p className="card-eyebrow">{t('combat.exitDialog.escapeEyebrow')}</p>
+            <h2 id="combat-exit-dialog-title">{t('combat.exitDialog.escapeTitle')}</h2>
+            <p id="combat-exit-dialog-description">{t('combat.exitDialog.escapeDescription')}</p>
+            <p className="combat-exit-context">
+              {t(
+                escapeScenario.fixture_context === 'pre-clear'
+                  ? 'combat.exitDialog.escapePreClear'
+                  : 'combat.exitDialog.escapeReturnEncounter',
+                {
+                  pendingWeight: (
+                    escapeScenario.fixture_pending_run_loot_weight_grams / 1000
+                  ).toFixed(1),
+                  chosenWeight: (
+                    escapeScenario.fixture_chosen_main_loot_weight_grams / 1000
+                  ).toFixed(1),
+                  encounterWeight: (
+                    escapeScenario.fixture_return_encounter_loot_weight_grams / 1000
+                  ).toFixed(1),
+                },
+              )}
+            </p>
+            <dl className="combat-exit-cost-grid">
+              <div>
+                <dt>{t('combat.exitFixture.formulaLabel')}</dt>
+                <dd>{escapeSurrenderFixture.fixture_formula}</dd>
+              </div>
+              <div>
+                <dt>{t('combat.exitFixture.retainedWeightLabel')}</dt>
+                <dd>
+                  {t('combat.exitFixture.retainedWeightValue', {
+                    weight: escapeCalculation.retainedWeightKg.toFixed(1),
+                  })}
+                </dd>
+              </div>
+              <div>
+                <dt>{t('combat.exitFixture.multiplierLabel')}</dt>
+                <dd>
+                  {t('combat.exitFixture.multiplierValue', {
+                    multiplier: escapeScenario.fixture_danger_multiplier,
+                  })}
+                </dd>
+              </div>
+              <div>
+                <dt>{t('combat.exitFixture.goldCostLabel')}</dt>
+                <dd data-testid="combat-escape-gold-cost">
+                  {t('combat.exitFixture.goldCostValue', { cost: escapeCalculation.goldCost })}
+                </dd>
+              </div>
+            </dl>
+            <fieldset className="combat-exit-payment-options">
+              <legend>{t('combat.exitFixture.paymentLegend')}</legend>
+              {escapeScenario.fixture_warp_stone_count > 0 ? (
+                <label>
+                  <input
+                    type="radio"
+                    name="combat-escape-payment"
+                    data-testid="combat-escape-payment-warp-stone"
+                    value="warp-stone"
+                    checked={escapePaymentMethod === 'warp-stone'}
+                    onChange={() => setEscapePaymentMethod('warp-stone')}
+                  />
+                  <span>
+                    {t('combat.exitFixture.warpStoneOption', {
+                      count: escapeScenario.fixture_warp_stone_count,
+                    })}
+                  </span>
+                </label>
+              ) : null}
+              <label>
+                <input
+                  type="radio"
+                  name="combat-escape-payment"
+                  data-testid="combat-escape-payment-gold"
+                  value="gold"
+                  checked={escapePaymentMethod === 'gold'}
+                  onChange={() => setEscapePaymentMethod('gold')}
+                />
+                <span>
+                  {t('combat.exitFixture.goldOption', {
+                    cost: escapeCalculation.goldCost,
+                    gold: escapeScenario.fixture_gold_balance,
+                  })}
+                </span>
+              </label>
+            </fieldset>
+            {escapePaymentMethod === 'gold' && !escapeConfirmEnabled ? (
+              <p
+                className="combat-exit-warning"
+                role="alert"
+                data-testid="combat-escape-insufficient-gold"
+              >
+                {t('combat.exitFixture.insufficientGold', {
+                  cost: escapeCalculation.goldCost,
+                  gold: escapeScenario.fixture_gold_balance,
+                })}
+              </p>
+            ) : null}
+            <p className="combat-exit-dialog-note">{t('combat.exitDialog.escapeDestination')}</p>
+            <p className="combat-exit-dialog-note">{t('combat.exitFixture.nonFinalNotice')}</p>
+            <div className="combat-exit-dialog-actions">
+              <button
+                type="button"
+                className="combat-secondary-action"
+                data-dialog-cancel
+                data-testid="combat-exit-cancel"
+                onClick={() => setExitDialog(null)}
+              >
+                {t('combat.exitDialog.cancelEscape')}
+              </button>
+              <button
+                type="button"
+                className="combat-exit-confirm"
+                data-testid="combat-exit-confirm-escape"
+                disabled={!isActive || !escapeConfirmEnabled}
+                onClick={confirmEscape}
+              >
+                {t('combat.exitDialog.confirmEscape')}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {exitDialog === 'surrender' ? (
+        <div className="combat-exit-overlay">
+          <div
+            ref={exitDialogRef}
+            className="combat-exit-dialog surrender"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="combat-surrender-dialog-title"
+            aria-describedby="combat-surrender-dialog-description"
+            tabIndex={-1}
+            onKeyDown={handleExitDialogKeyDown}
+            data-testid="combat-surrender-dialog"
+          >
+            <p className="card-eyebrow">{t('combat.exitDialog.surrenderEyebrow')}</p>
+            <h2 id="combat-surrender-dialog-title">{t('combat.exitDialog.surrenderTitle')}</h2>
+            <p id="combat-surrender-dialog-description">
+              {t('combat.exitDialog.surrenderDescription')}
+            </p>
+            <ul className="combat-exit-consequence-list">
+              <li>{t('combat.exitOutcome.surrenderNoRewards')}</li>
+              <li>{t('combat.exitOutcome.surrenderNoRefund')}</li>
+              <li>{t('combat.exitOutcome.surrenderNoDeath')}</li>
+              <li>{t('combat.exitOutcome.surrenderNoHpRefill')}</li>
+            </ul>
+            <p className="combat-exit-dialog-note">{t('combat.exitDialog.surrenderContrast')}</p>
+            <p className="combat-exit-dialog-note">{t('combat.exitFixture.nonFinalNotice')}</p>
+            <div className="combat-exit-dialog-actions">
+              <button
+                type="button"
+                className="combat-secondary-action"
+                data-dialog-cancel
+                data-testid="combat-surrender-cancel"
+                onClick={() => setExitDialog(null)}
+              >
+                {t('combat.exitDialog.cancelSurrender')}
+              </button>
+              <button
+                type="button"
+                className="combat-exit-confirm surrender"
+                data-testid="combat-exit-confirm-surrender"
+                disabled={!isActive}
+                onClick={confirmSurrender}
+              >
+                {t('combat.exitDialog.confirmSurrender')}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }

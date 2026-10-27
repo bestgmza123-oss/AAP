@@ -311,10 +311,6 @@ export const en = {
   'combat.actions.guardDescription':
     'Prepare to reduce the next eligible fixture enemy action after mitigation.',
   'combat.actions.resetDemo': 'Reset Combat Demo',
-  'combat.actions.escapeUnavailable': 'Escape · next task',
-  'combat.actions.surrenderUnavailable': 'Surrender · next task',
-  'combat.actions.futureActionsReason':
-    'Escape and Surrender confirmations are not part of P1-UI-005.',
   'combat.actions.backToPreflight': 'Back to Run Preflight',
   'combat.skill.name': 'Focus Bolt · fixture',
   'combat.skill.target': 'Target: one enemy',
@@ -377,8 +373,80 @@ export const en = {
   'combat.rules.noPotions': 'Potions are not available inside a Run.',
   'combat.rules.noLoadoutChanges':
     'Equipment and Skill loadout changes are not available during a Run.',
-  'combat.rules.noEscapeOrSurrender':
-    'Escape/Surrender confirmations are reserved for a later bounded Task.',
+  'combat.status.escaped': 'ESCAPED · DEMO',
+  'combat.status.failed': 'FAILED · DEMO',
+  'combat.rules.exitActionRestriction':
+    'Escape and Surrender use separate confirmations and are available only during active Combat.',
+  'combat.actions.escape': 'Escape',
+  'combat.actions.surrender': 'Surrender',
+  'combat.actions.exitActiveReason':
+    'Both exit choices are available during active Combat, including the enemy-turn preview.',
+  'combat.actions.exitInactiveReason':
+    'Exit actions are disabled because this demo Combat is no longer active.',
+  'combat.exitFixture.selectorLabel': 'Exit scenario fixture (testing only)',
+  'combat.exitFixture.preClearGold': 'Pre-clear · Gold available',
+  'combat.exitFixture.preClearWarpStone': 'Pre-clear · Warp Stone available',
+  'combat.exitFixture.insufficientGoldScenario': 'Pre-clear · insufficient Gold',
+  'combat.exitFixture.returnEncounter': 'Return encounter · main loot retained',
+  'combat.exitFixture.scenarioSummary':
+    'Fixture summary — carried {carried} kg; retained W {retainedWeight} kg; non-final Z {multiplier}; example cost {cost} Gold; balance {gold}; Warp Stones {stones}.',
+  'combat.exitFixture.nonFinalNotice':
+    'Weights, Gold, Warp Stones and Z are clearly non-final UI fixtures. Confirming this demo never spends or transfers an asset.',
+  'combat.exitFixture.formulaLabel': 'EXAMPLE FORMULA',
+  'combat.exitFixture.retainedWeightLabel': 'WEIGHT INCLUDED IN W',
+  'combat.exitFixture.retainedWeightValue': '{weight} kg (carried + only retained loot)',
+  'combat.exitFixture.multiplierLabel': 'NON-FINAL FIXTURE Z',
+  'combat.exitFixture.multiplierValue': '× {multiplier} · example only',
+  'combat.exitFixture.goldCostLabel': 'EXAMPLE GOLD COST',
+  'combat.exitFixture.goldCostValue': '{cost} Gold',
+  'combat.exitFixture.paymentLegend': 'Choose a preview payment option',
+  'combat.exitFixture.warpStoneOption': 'Use {count} carried Warp Stone · fixture choice only',
+  'combat.exitFixture.goldOption': 'Use {cost} Gold · fixture balance {gold}',
+  'combat.exitFixture.insufficientGold':
+    'Not enough fixture Gold: the example cost is {cost} Gold but this fixture has {gold}. Select a carried Warp Stone if available or Cancel.',
+  'combat.exitFixture.paymentGold': '{cost} Gold selected (fixture only)',
+  'combat.exitFixture.paymentWarpStone': '1 carried Warp Stone selected (fixture only)',
+  'combat.exitDialog.escapeEyebrow': 'RUN EXIT / ESCAPE',
+  'combat.exitDialog.escapeTitle': 'Confirm Escape?',
+  'combat.exitDialog.escapeDescription':
+    'Review the exact example cost and the items/rewards that remain or are forfeited before confirming Escape.',
+  'combat.exitDialog.escapePreClear':
+    'PRE-CLEAR: pending Run loot ({pendingWeight} kg) is forfeited and excluded from W. Carried-in items remain yours and are not seized.',
+  'combat.exitDialog.escapeReturnEncounter':
+    'RETURN ENCOUNTER: chosen main-dungeon loot ({chosenWeight} kg) is kept and included in W. The return-encounter reward ({encounterWeight} kg) is not gained.',
+  'combat.exitDialog.escapeDestination':
+    'Destination: current Province. No home is required and no additional Encounter is triggered.',
+  'combat.exitDialog.cancelEscape': 'Cancel · Continue Combat',
+  'combat.exitDialog.confirmEscape': 'Confirm Escape',
+  'combat.exitDialog.surrenderEyebrow': 'RUN EXIT / SURRENDER',
+  'combat.exitDialog.surrenderTitle': 'Confirm Surrender?',
+  'combat.exitDialog.surrenderDescription':
+    'Surrender immediately ends this demo Run as FAILED. This is different from Escape and has no Escape payment choice.',
+  'combat.exitDialog.surrenderContrast':
+    'Unlike Escape, Surrender does not pay Gold or a Warp Stone. The entry Stamina is still not refunded.',
+  'combat.exitDialog.cancelSurrender': 'Continue Fighting',
+  'combat.exitDialog.confirmSurrender': 'Confirm Surrender · FAILED',
+  'combat.exitOutcome.eyebrow': 'LOCAL DEMO OUTCOME · NOT A SERVER RESULT',
+  'combat.exitOutcome.escapeTitle': 'ESCAPED · Demo outcome',
+  'combat.exitOutcome.surrenderTitle': 'FAILED · Surrender demo outcome',
+  'combat.exitOutcome.escapePayment':
+    'Payment selection preview: {payment}. No debit is performed.',
+  'combat.exitOutcome.escapePreClearDescription':
+    'Pre-clear Escape forfeits pending Run loot. The example cost used {weight} kg of carried/retained weight; carried-in items remain untouched.',
+  'combat.exitOutcome.escapeReturnDescription':
+    'Return-encounter Escape keeps the already chosen main loot and does not award the return-encounter reward. The example cost used {weight} kg of carried plus retained main loot.',
+  'combat.exitOutcome.escapeDestination':
+    'Local destination preview: current Province. No home is required and there is no additional Encounter.',
+  'combat.exitOutcome.surrenderDescription':
+    'The demo Combat has stopped. HP and Mana remain at their current values; no Character death or resource refill is simulated.',
+  'combat.exitOutcome.surrenderNoRewards': 'No Run rewards or EXP are granted.',
+  'combat.exitOutcome.surrenderNoRefund': 'Entry Stamina is not refunded.',
+  'combat.exitOutcome.surrenderNoDeath': 'Surrender does not kill the Character.',
+  'combat.exitOutcome.surrenderNoHpRefill':
+    'HP is not refilled; the current HP value is preserved.',
+  'combat.exitOutcome.noMutation':
+    'UI fixture only: no server Run changed, no currency/item spent or transferred, and no persistent reward/result was written.',
+  'combat.exitOutcome.returnToProvince': 'Return to Province preview',
   'combat.footer.activeBoundary':
     'All turns and resource changes are local demo state. Refreshing the route resets this fixture sequence.',
   'combat.footer.inactiveBoundary':

@@ -187,7 +187,8 @@ test.describe('P1-UI-005 Combat interaction demo', () => {
     await expect(page.getByTestId('combat-action-attack')).toBeEnabled();
     await expect(page.getByTestId('combat-action-skill')).toBeEnabled();
     await expect(page.getByTestId('combat-action-guard')).toBeEnabled();
-    await expect(page.getByRole('button', { name: 'Escape · next task' })).toBeDisabled();
+    await expect(page.getByTestId('combat-action-escape')).toBeEnabled();
+    await expect(page.getByTestId('combat-action-surrender')).toBeEnabled();
     await page.screenshot({ path: 'test-results/p1-ui-005-combat-desktop.png', fullPage: true });
 
     await page.getByTestId('combat-action-guard').click();
@@ -285,4 +286,171 @@ test.describe('P1-UI-005 Combat interaction demo', () => {
     await expect(page.getByTestId('combat-phase')).toHaveText('ENEMY TURN');
     await expect(page.getByTestId('combat-resolve-enemy')).toBeVisible();
   });
+});
+
+test.describe('P1-UI-006 Escape and Surrender confirmations', () => {
+  test('Escape shows exact fixture calculation, cancels cleanly and handles return-encounter loot', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/run/combat');
+    const hp = page.getByRole('progressbar', { name: 'Player HP' });
+    const mana = page.getByRole('progressbar', { name: 'Player Mana' });
+
+    await page.getByTestId('combat-action-escape').click();
+    const dialog = page.getByRole('dialog', { name: 'Confirm Escape?' });
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByTestId('combat-escape-gold-cost')).toHaveText('65 Gold');
+    await expect(
+      dialog.getByText(/pending Run loot \(3.2 kg\) is forfeited and excluded from W/i),
+    ).toBeVisible();
+    await expect(
+      dialog.getByText(/current Province.*no home is required.*no additional Encounter/i),
+    ).toBeVisible();
+    await page.screenshot({ path: 'test-results/p1-ui-006-escape-desktop.png', fullPage: true });
+
+    await page.getByTestId('combat-exit-cancel').click();
+    await expect(page.getByTestId('combat-action-escape')).toBeFocused();
+    await expect(hp).toHaveAttribute('value', '86');
+    await expect(mana).toHaveAttribute('value', '42');
+    await expect(page.getByTestId('combat-turn-number')).toHaveText('1');
+    await expect(page.getByRole('heading', { name: 'Fixture Enemy A' })).toBeVisible();
+
+    await page.getByText('Preview additional Combat UI states', { exact: true }).click();
+    await page.getByTestId('combat-exit-fixture-select').selectOption('return-encounter-gold');
+    await expect(page.getByTestId('combat-escape-fixture-summary')).toContainText(
+      'retained W 9.6 kg',
+    );
+    await expect(page.getByTestId('combat-escape-fixture-summary')).toContainText(
+      'example cost 85 Gold',
+    );
+
+    await page.getByTestId('combat-action-escape').click();
+    await expect(page.getByTestId('combat-escape-gold-cost')).toHaveText('85 Gold');
+    await expect(
+      page.getByText(/chosen main-dungeon loot \(3.2 kg\) is kept and included in W/i),
+    ).toBeVisible();
+    await expect(page.getByText(/return-encounter reward \(1.8 kg\) is not gained/i)).toBeVisible();
+    await page.getByTestId('combat-exit-confirm-escape').click();
+    await expect(page.getByTestId('combat-exit-outcome')).toContainText('already chosen main loot');
+    await expect(page.getByTestId('combat-exit-outcome')).toContainText(
+      'does not award the return-encounter reward',
+    );
+    await expect(page.getByTestId('combat-phase')).toHaveText('ESCAPED · DEMO');
+    await expect(page.getByRole('link', { name: 'Return to Province preview' })).toBeVisible();
+  });
+
+  test('insufficient Gold blocks Escape, Warp Stone is conditional and confirm is local-only', async ({
+    page,
+  }) => {
+    await page.goto('/run/combat');
+    await page.getByText('Preview additional Combat UI states', { exact: true }).click();
+    await page
+      .getByTestId('combat-exit-fixture-select')
+      .selectOption('pre-clear-insufficient-gold');
+    await page.getByTestId('combat-action-escape').click();
+
+    const dialog = page.getByTestId('combat-exit-dialog');
+    await expect(dialog.getByTestId('combat-escape-gold-cost')).toHaveText('65 Gold');
+    await expect(dialog.getByTestId('combat-escape-insufficient-gold')).toContainText(
+      'Not enough fixture Gold',
+    );
+    await expect(dialog.getByTestId('combat-exit-confirm-escape')).toBeDisabled();
+    await expect(dialog.getByTestId('combat-escape-payment-warp-stone')).toHaveCount(0);
+    await page.getByTestId('combat-exit-cancel').click();
+
+    await page.getByTestId('combat-exit-fixture-select').selectOption('pre-clear-warp-stone');
+    await page.getByTestId('combat-action-escape').click();
+    await expect(page.getByTestId('combat-escape-payment-warp-stone')).toBeVisible();
+    await page.getByTestId('combat-escape-payment-warp-stone').check();
+    await expect(page.getByTestId('combat-exit-confirm-escape')).toBeEnabled();
+    await page.getByTestId('combat-exit-confirm-escape').click();
+    await expect(page.getByTestId('combat-exit-outcome')).toHaveCount(1);
+    await expect(page.getByTestId('combat-exit-outcome')).toContainText(
+      '1 carried Warp Stone selected (fixture only)',
+    );
+    await expect(page.getByTestId('combat-exit-outcome')).toContainText('No debit is performed');
+    await expect(page.getByRole('progressbar', { name: 'Player HP' })).toHaveAttribute(
+      'value',
+      '86',
+    );
+  });
+
+  test('Surrender warns about all canonical consequences and stays available during enemy-turn preview', async ({
+    page,
+  }) => {
+    await page.goto('/run/combat');
+    await page.getByTestId('combat-action-attack').click();
+    await expect(page.getByTestId('combat-phase')).toHaveText('ENEMY TURN');
+    await page.getByTestId('combat-action-surrender').click();
+
+    const dialog = page.getByRole('dialog', { name: 'Confirm Surrender?' });
+    await expect(dialog).toBeVisible();
+    await expect(dialog).toContainText('FAILED');
+    await expect(dialog).toContainText('No Run rewards or EXP are granted.');
+    await expect(dialog).toContainText('Entry Stamina is not refunded.');
+    await expect(dialog).toContainText('Surrender does not kill the Character.');
+    await expect(dialog).toContainText('HP is not refilled; the current HP value is preserved.');
+    await page.getByTestId('combat-surrender-cancel').click();
+
+    await expect(page.getByTestId('combat-phase')).toHaveText('ENEMY TURN');
+    await expect(page.getByRole('progressbar', { name: 'Player HP' })).toHaveAttribute(
+      'value',
+      '86',
+    );
+    await page.getByTestId('combat-action-surrender').click();
+    await page.getByTestId('combat-exit-confirm-surrender').click();
+
+    await expect(page.getByTestId('combat-exit-outcome')).toContainText('FAILED');
+    await expect(page.getByTestId('combat-exit-outcome')).toContainText(
+      'No Run rewards or EXP are granted.',
+    );
+    await expect(page.getByTestId('combat-exit-outcome')).toContainText('no server Run changed');
+    await expect(page.getByTestId('combat-phase')).toHaveText('FAILED · DEMO');
+    await expect(page.getByRole('progressbar', { name: 'Player HP' })).toHaveAttribute(
+      'value',
+      '86',
+    );
+    await expect(page.getByTestId('combat-action-surrender')).toBeDisabled();
+  });
+
+  test('Escape confirmation is readable on mobile with no horizontal viewport overflow', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/run/combat');
+    await page.getByTestId('combat-action-escape').click();
+    const dialog = page.getByTestId('combat-exit-dialog');
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByTestId('combat-exit-cancel')).toBeVisible();
+    await expect(dialog.getByTestId('combat-exit-confirm-escape')).toBeVisible();
+    const width = await page.evaluate(() => document.documentElement.scrollWidth);
+    expect(width).toBeLessThanOrEqual(390);
+    await page.screenshot({ path: 'test-results/p1-ui-006-escape-mobile.png', fullPage: false });
+    await page.keyboard.press('Escape');
+    await expect(page.getByTestId('combat-exit-dialog')).toHaveCount(0);
+    await expect(page.getByTestId('combat-action-escape')).toBeFocused();
+  });
+});
+
+test('P1-UI-006 confirmation dialog traps keyboard focus and restores it on Escape', async ({
+  page,
+}) => {
+  await page.goto('/run/combat');
+  const opener = page.getByTestId('combat-action-escape');
+  await opener.click();
+  const dialog = page.getByTestId('combat-exit-dialog');
+  const goldOption = page.getByTestId('combat-escape-payment-gold');
+  const confirm = page.getByTestId('combat-exit-confirm-escape');
+
+  await expect(page.getByTestId('combat-exit-cancel')).toBeFocused();
+  await page.keyboard.press('Shift+Tab');
+  await expect(goldOption).toBeFocused();
+  await page.keyboard.press('Shift+Tab');
+  await expect(confirm).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(goldOption).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(dialog).toHaveCount(0);
+  await expect(opener).toBeFocused();
 });
