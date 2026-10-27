@@ -2,7 +2,7 @@
 
 Date: 2026-10-27 (Asia/Bangkok)
 Task: `P1-UI-003 — Province and resource preview`
-Status: **LOCAL ACCEPTANCE CRITERIA PASS; REMOTE PR/CI PENDING**
+Status: **IMPLEMENTATION AND EXACT-HEAD CI PASS; PR #4 READY FOR MERGE REVIEW**
 
 ## Source identity and preservation
 
@@ -45,16 +45,20 @@ Runtime observed: Node.js `v24.19.0`, npm `11.17.0`; existing locked dependencie
 
 The browser tests assert the route transition, hierarchy and Safe Zone status, Standard Run display/disabled state, prototype boundary, Hunger semantics, both preview-only statuses, and inactive-mechanics disclosure. They do not prove any authoritative gameplay behavior.
 
-## Outstanding acceptance work
+## Remote verification — exact implementation SHA
 
-- Open a PR from `feat/p1-ui-003-province-resource-preview` and verify both required GitHub Actions jobs on the exact PR head SHA. No remote CI result has been claimed in this checkpoint yet.
-- Record the final branch/commit/PR/Actions links below after they actually exist.
+- PR: [#4 — P1-UI-003: Province and resource preview](https://github.com/bestgmza123-oss/AAP/pull/4)
+- Implementation commit under review: `614a9dff49e99fe944c9994df02b893e3262fccc`
+- [GitHub Actions run #22](https://github.com/bestgmza123-oss/AAP/actions/runs/40479139048), attempt 2, completed successfully on that exact SHA.
+- `AAP UI quality gates`: PASS — locked dependency install, lint, Vitest, typecheck, scope audit and production build all succeeded.
+- `Playwright browser smoke`: PASS — 4/4 browser tests; Chromium installation and browser test step both completed successfully. Diagnostics upload was skipped because no failure occurred.
+- PR status was `OPEN`, `MERGEABLE`, and `CLEAN` when reviewed. Verify the current PR check rollup before merge if another commit is pushed.
 
 ## Handoff fields
 
-- Commit SHA: pending
-- Pull request: pending
-- Exact-head quality gate / Playwright Actions run: pending
+- Implementation commit SHA: `614a9dff49e99fe944c9994df02b893e3262fccc`
+- Pull request: https://github.com/bestgmza123-oss/AAP/pull/4
+- Exact-head Actions: https://github.com/bestgmza123-oss/AAP/actions/runs/40479139048
 - Trello task: https://trello.com/c/y0PIp8wB/8-p1-ui-003-province-and-resource-preview
-- First incomplete criterion: exact source-SHA review and remote CI evidence.
+- Acceptance summary: implementation, local verification and exact-head GitHub checks passed. PR merge/acceptance state is tracked by the PR and Trello.
 - Stop condition: after P1-UI-003 acceptance. Do not start P1-UI-004 automatically.
