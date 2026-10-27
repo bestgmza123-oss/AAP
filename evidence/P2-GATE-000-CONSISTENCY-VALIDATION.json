@@ -72,7 +72,8 @@
   "content_hashes": {
     "crosswalk_sha256": "ab784bb0c575275635de686e9d70b4395ce1611e4700b08a25050b66315bf0e7",
     "preflight_report_sha256": "372f5bb60446826c31561c2a13dcf41264cd46dc7c7ff86792f090f3f9b460f9",
-    "requirements_traceability_sha256": "1a266d7a724e2a6b30c3c753386a24f718f43b7c76faf20ab0ffff89566f0a53"
+    "requirements_traceability_sha256": "d0b9d63441a2c58f653fcff260ab34ece60dffe46a31521e7f400f955f63d37d",
+    "reconciliation_log_sha256": "c98c6432c74392f148bb7b8eb2a028423bf7dc39281e5cc721ef96eee50f71da"
   },
   "runtime_boundary": {
     "gameplay_runtime_tests": "NOT RUN IN REBOOT",
@@ -81,5 +82,17 @@
     "application_source_code_changes": "NONE",
     "P2_CORE_001_started": "NO",
     "note": "This evidence demonstrates static/document consistency only; it does not certify product runtime or authorize implementation."
+  },
+  "reconciliation_log_integrity": {
+    "entry_count": 25,
+    "unique_ids": 25,
+    "duplicate_ids": [],
+    "tail_ids": [
+      "RECON-021",
+      "RECON-022",
+      "RECON-023",
+      "RECON-024",
+      "RECON-025"
+    ]
   }
 }
