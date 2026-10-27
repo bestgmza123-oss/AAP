@@ -45,3 +45,41 @@ test.describe('P1-UI-002 browser smoke', () => {
     await expect(page.getByRole('link', { name: 'Return to Start' })).toHaveAttribute('href', '/');
   });
 });
+
+test.describe('P1-UI-003 Province and resource preview', () => {
+  test('Province hierarchy and preview-only resource states render on desktop and mobile', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/');
+    await page.getByRole('link', { name: 'Continue to Province', exact: true }).click();
+    await expect(page).toHaveURL('/province');
+    await expect(page.getByRole('heading', { name: 'Province', exact: true })).toBeVisible();
+    await expect(page.getByText('Acheria', { exact: true })).toBeVisible();
+    await expect(page.getByText('Velra Province', { exact: true })).toBeVisible();
+    await expect(page.getByText('Velra Outskirts', { exact: true })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Safe Zone status' })).toBeVisible();
+    await expect(page.getByText('OUTSIDE SAFE ZONE', { exact: true })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Standard Run' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'View Run details' })).toBeDisabled();
+    await expect(page.getByText('100 = Fed · 0 = Death')).toBeVisible();
+    await expect(
+      page.getByText('PREVIEW ONLY · NOT ACTIVE IN PHASE 1', { exact: true }),
+    ).toHaveCount(2);
+    await expect(
+      page.getByText(
+        'No elapsed-time decay, regeneration, Infection rolls, alerts, or death transitions run on this page.',
+      ),
+    ).toBeVisible();
+    await expect(
+      page.getByText('PRIVATE PROTOTYPE · FIXTURE DATA · NOT CONNECTED TO GAME SERVER'),
+    ).toBeVisible();
+    await page.screenshot({ path: 'test-results/p1-ui-003-province-desktop.png', fullPage: true });
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    await expect(page.getByRole('heading', { name: 'Province', exact: true })).toBeVisible();
+    await expect(page.getByText('100 = Fed · 0 = Death')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'View Run details' })).toBeDisabled();
+    await page.screenshot({ path: 'test-results/p1-ui-003-province-mobile.png', fullPage: true });
+  });
+});

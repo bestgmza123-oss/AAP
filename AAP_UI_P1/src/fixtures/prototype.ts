@@ -1,9 +1,9 @@
 /**
  * Single canonical location for current local prototype metadata.
- * Identity is a non-account fixture; no gameplay-tunable values are stored here.
+ * Gameplay/display values live in named task fixtures, not in build metadata.
  */
 export const prototypeFixture = {
-  taskId: 'P1-UI-002',
+  taskId: 'P1-UI-003',
   version: '0.1.0',
   fixtureIdentity: 'AAP-LOCAL-001',
   buildLabelKey: 'app.previewLabel',

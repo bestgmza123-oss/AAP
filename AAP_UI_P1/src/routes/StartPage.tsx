@@ -13,8 +13,8 @@ export function StartPage() {
         <h1 id="start-title">{t('start.title')}</h1>
         <p className="hero-description">{t('start.description')}</p>
         <div className="start-actions">
-          <Link className="primary-action" to="/updates">
-            {t('start.updatesAction')} <span aria-hidden="true">→</span>
+          <Link className="primary-action" to="/province">
+            {t('start.provinceAction')} <span aria-hidden="true">→</span>
           </Link>
           <span className="action-note">{t('start.actionNote')}</span>
         </div>
