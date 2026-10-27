@@ -435,6 +435,9 @@ export function RunPreflightPage() {
               <div className="preflight-confirmed-notice" role="status" aria-live="polite">
                 <strong>{t('preflight.confirm.recordedTitle')}</strong>
                 <p>{t('preflight.confirm.recordedDescription')}</p>
+                <Link className="preflight-begin-action" to="/run/combat">
+                  {t('preflight.confirm.openCombatDemo')} <span aria-hidden="true">→</span>
+                </Link>
               </div>
             ) : null}
             <p className="preflight-confirm-footer">{t('preflight.confirm.footer')}</p>
