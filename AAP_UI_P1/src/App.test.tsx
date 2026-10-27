@@ -39,10 +39,19 @@ describe('P1-UI-002 Start and global navigation', () => {
     expect(screen.getByText(t('updates.emptyTitle'))).toBeVisible();
   });
 
-  it('keeps Mail visibly disabled with a reason', () => {
+  it('opens the accessible inactive Mail destination without exposing message mutations', () => {
     renderAt();
-    expect(screen.getByRole('button', { name: /Mail/ })).toBeDisabled();
-    expect(screen.getByText(t('nav.mailDisabledReason'))).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('link', { name: /Mail/ }));
+    expect(screen.getByRole('heading', { name: t('mail.page.title') })).toBeVisible();
+    expect(screen.getByRole('heading', { name: t('mail.page.emptyTitle') })).toBeVisible();
+    expect(screen.getByText(t('mail.page.inactiveDescription'))).toBeVisible();
+    expect(screen.getByRole('button', { name: t('mail.page.claimDisabled') })).toBeDisabled();
+    expect(screen.getByRole('button', { name: t('mail.page.deleteDisabled') })).toBeDisabled();
+    expect(screen.getByRole('link', { name: t('mail.page.updatesLink') })).toHaveAttribute(
+      'href',
+      '/updates',
+    );
+    expect(screen.getByText(t('nav.mailInactiveReason'))).toBeInTheDocument();
   });
 
   it('provides keyboard-focusable Start and Updates links', () => {
@@ -582,5 +591,126 @@ describe('P1-UI-007 Loot selection, capacity and optional return encounter', () 
     expect(screen.getByTestId('loot-result')).toHaveTextContent('Return encounter demo complete');
     expect(screen.getByTestId('loot-result-main')).toHaveTextContent('2.500 kg (2,500 g)');
     expect(screen.getByTestId('loot-result-return')).toHaveTextContent('1.800 kg (1,800 g)');
+  });
+});
+
+describe('P1-UI-008 Run Result, accessible recovery states and localization', () => {
+  it('shows the completed result with separate carried-in, pending and received buckets', () => {
+    renderAt('/run/result/completed');
+    expect(screen.getByRole('heading', { name: t('result.page.title') })).toBeVisible();
+    expect(screen.getByRole('heading', { name: t('result.outcome.completedTitle') })).toBeVisible();
+    expect(screen.getByTestId('result-carried-in-weight')).toHaveTextContent('8.500 kg (8,500 g)');
+    expect(screen.getByTestId('result-chosen-weight')).toHaveTextContent('2.500 kg (2,500 g)');
+    expect(screen.getByTestId('result-received-weight')).toHaveTextContent('0.000 kg (0 g)');
+    expect(screen.getByText(t('result.outcome.completedPendingNotice'))).toBeVisible();
+    expect(screen.getByTestId('result-disabled-action')).toHaveTextContent(
+      'Claiming is inactive in Phase 1',
+    );
+    expect(
+      screen.getByRole('button', { name: t('result.actions.claimUnavailable') }),
+    ).toBeDisabled();
+  });
+
+  it('renders escaped terminal state with explicit forfeiture and original items preserved', () => {
+    renderAt('/run/result/escaped');
+    expect(screen.getByRole('heading', { name: t('result.outcome.escapedTitle') })).toBeVisible();
+    expect(screen.getByText(t('result.outcome.escapedPreClearContext'))).toBeVisible();
+    expect(screen.getByTestId('result-carried-in-weight')).toHaveTextContent('8.500 kg (8,500 g)');
+    expect(screen.getByTestId('result-forfeited-weight')).toHaveTextContent('2.500 kg (2,500 g)');
+    expect(screen.getByTestId('result-received-weight')).toHaveTextContent('0.000 kg (0 g)');
+  });
+
+  it('renders FAILED/SURRENDER distinctly and does not show death or refund claims', () => {
+    renderAt('/run/result/failed');
+    expect(screen.getByRole('heading', { name: t('result.outcome.failedTitle') })).toBeVisible();
+    expect(screen.getByText(t('result.outcome.surrenderNoDeath'))).toBeVisible();
+    expect(screen.getByText(t('result.outcome.noEntryRefund'))).toBeVisible();
+    expect(screen.getByText(t('result.outcome.noRewards'))).toBeVisible();
+  });
+
+  it('renders EXPIRED as timeout, not death, with no reward or entry refund', () => {
+    renderAt('/run/result/expired');
+    expect(screen.getByRole('heading', { name: t('result.outcome.expiredTitle') })).toBeVisible();
+    expect(screen.getByText(t('result.outcome.expiryNotDeath'))).toBeVisible();
+    expect(screen.getByText(t('result.outcome.noEntryRefund'))).toBeVisible();
+    expect(screen.getByText(t('result.outcome.noRewards'))).toBeVisible();
+    expect(screen.getByText(/No real timer or offline clock is simulated/)).toBeVisible();
+  });
+
+  it('supports explicit loading/waiting cancellation, empty restoration, error retry and blocked state', () => {
+    renderAt('/run/result/completed');
+    const stateSelect = screen.getByTestId('result-state-mode');
+
+    fireEvent.change(stateSelect, { target: { value: 'loading' } });
+    expect(screen.getByTestId('result-loading-state')).toHaveAttribute('aria-busy', 'true');
+    expect(screen.getByTestId('result-loading-state')).toHaveTextContent(
+      'No network request is pending',
+    );
+    fireEvent.click(screen.getByTestId('result-state-cancel'));
+    expect(screen.getByTestId('result-outcome-completed')).toBeVisible();
+
+    fireEvent.change(stateSelect, { target: { value: 'waiting' } });
+    expect(screen.getByTestId('result-waiting-state')).toHaveTextContent(
+      'No command was submitted',
+    );
+    fireEvent.click(screen.getByTestId('result-state-cancel'));
+
+    fireEvent.change(stateSelect, { target: { value: 'empty' } });
+    expect(screen.getByTestId('result-empty-state')).toHaveTextContent('not a successful outcome');
+    fireEvent.click(screen.getByTestId('result-empty-restore'));
+    expect(screen.getByTestId('result-outcome-completed')).toBeVisible();
+
+    fireEvent.change(stateSelect, { target: { value: 'error' } });
+    expect(screen.getByTestId('result-error-state')).toHaveTextContent(
+      'not a failed server request',
+    );
+    fireEvent.click(screen.getByTestId('result-retry-local'));
+    expect(screen.getByTestId('result-outcome-title')).toHaveTextContent('COMPLETED');
+
+    fireEvent.change(stateSelect, { target: { value: 'blocked' } });
+    expect(screen.getByTestId('result-blocked-state')).toHaveTextContent('not implemented');
+    fireEvent.click(screen.getByRole('button', { name: t('result.review.backToResult') }));
+    expect(screen.getByTestId('result-outcome-completed')).toBeVisible();
+  });
+
+  it('can pseudo-expand the terminal copy without changing outcome data or stable identifiers', () => {
+    renderAt('/run/result/completed');
+    fireEvent.change(screen.getByTestId('result-text-mode'), { target: { value: 'expanded' } });
+    expect(screen.getByTestId('result-page-title')).toHaveTextContent('⟦');
+    expect(screen.getByTestId('result-outcome-title')).toHaveTextContent('⟦');
+    expect(screen.getByTestId('result-chosen-weight')).toHaveTextContent('2.500 kg (2,500 g)');
+    expect(screen.getByTestId('result-received-weight')).toHaveTextContent('0.000 kg (0 g)');
+  });
+
+  it('navigates from Loot into the dedicated terminal result with separate pending and received buckets', () => {
+    renderAt('/run/loot');
+    fireEvent.click(screen.getByTestId('loot-increase-main-alloy'));
+    fireEvent.click(screen.getByTestId('loot-confirm-main'));
+    fireEvent.change(screen.getByTestId('loot-return-branch'), { target: { value: 'none' } });
+    fireEvent.click(screen.getByTestId('loot-resolve-return'));
+    fireEvent.click(screen.getByTestId('loot-view-terminal-result'));
+    expect(screen.getByRole('heading', { name: t('result.outcome.completedTitle') })).toBeVisible();
+    expect(screen.getByTestId('result-chosen-weight')).toHaveTextContent('2.500 kg (2,500 g)');
+    expect(screen.getByTestId('result-received-weight')).toHaveTextContent('0.000 kg (0 g)');
+  });
+
+  it('opens the complete return-escape result preserving chosen main loot and forfeiting return reward', () => {
+    renderAt('/run/loot');
+    fireEvent.click(screen.getByTestId('loot-increase-main-alloy'));
+    fireEvent.click(screen.getByTestId('loot-confirm-main'));
+    fireEvent.change(screen.getByTestId('loot-return-branch'), { target: { value: 'one' } });
+    fireEvent.click(screen.getByTestId('loot-resolve-return'));
+    fireEvent.click(screen.getByTestId('loot-escape-return'));
+    fireEvent.click(screen.getByTestId('loot-view-terminal-result'));
+    expect(screen.getByRole('heading', { name: t('result.outcome.escapedTitle') })).toBeVisible();
+    expect(screen.getByTestId('result-chosen-weight')).toHaveTextContent('2.500 kg (2,500 g)');
+    expect(screen.getByTestId('result-forfeited-weight')).toHaveTextContent('1.800 kg (1,800 g)');
+    expect(screen.getByTestId('result-received-weight')).toHaveTextContent('0.000 kg (0 g)');
+  });
+
+  it('keeps malformed result routes explicit instead of rendering a false completed outcome', () => {
+    renderAt('/run/result/dead');
+    expect(screen.getByTestId('result-invalid-outcome')).toBeVisible();
+    expect(screen.queryByTestId('result-outcome-completed')).not.toBeInTheDocument();
   });
 });

@@ -14,14 +14,14 @@ test.describe('P1-UI-002 browser smoke', () => {
         exact: true,
       }),
     ).toBeVisible();
-    await expect(page.getByRole('button', { name: /Mail/ })).toBeDisabled();
+    await expect(page.getByRole('link', { name: /Mail/ })).toHaveAttribute('href', '/mail');
     await page.screenshot({ path: 'test-results/p1-ui-002-start-desktop.png', fullPage: true });
 
     await page.setViewportSize({ width: 390, height: 844 });
     await expect(
       page.getByRole('heading', { name: 'A private preview. A clear starting point.' }),
     ).toBeVisible();
-    await expect(page.getByRole('button', { name: /Mail/ })).toBeDisabled();
+    await expect(page.getByRole('link', { name: /Mail/ })).toHaveAttribute('href', '/mail');
     await page.screenshot({ path: 'test-results/p1-ui-002-start-mobile.png', fullPage: true });
   });
 
@@ -272,6 +272,8 @@ test.describe('P1-UI-005 Combat interaction demo', () => {
     await expect(page.getByRole('link', { name: 'Start', exact: true })).toBeFocused();
     await page.keyboard.press('Tab');
     await expect(page.getByRole('link', { name: 'Updates', exact: true })).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(page.getByRole('link', { name: /Mail/ })).toBeFocused();
     await page.keyboard.press('Tab');
     await expect(page.getByRole('link', { name: 'Province', exact: true })).toBeFocused();
     await page.keyboard.press('Tab');
@@ -546,5 +548,258 @@ test.describe('P1-UI-007 Loot selection, capacity and return encounter', () => {
     await page.getByTestId('loot-increase-main-alloy').focus();
     await page.keyboard.press('Enter');
     await expect(page.getByTestId('loot-quantity-main-alloy')).toHaveText('1');
+  });
+});
+
+test.describe('P1-UI-008 Run Result, accessibility, localization and vertical-slice review', () => {
+  test('full clickable journey from Start to completed terminal Result preserves pending loot', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/');
+    await page.getByRole('link', { name: 'Continue to Province', exact: true }).click();
+    await expect(page).toHaveURL('/province');
+    await page.getByRole('link', { name: 'View Run Preflight', exact: true }).click();
+    await expect(page).toHaveURL('/run/preflight');
+    await page.getByRole('button', { name: 'Begin Demo Run' }).click();
+    await expect(page.getByRole('status')).toContainText('No Run was created');
+    await page.getByRole('link', { name: /Open Combat Demo/ }).click();
+    await expect(page).toHaveURL('/run/combat');
+
+    let phase = (await page.getByTestId('combat-phase').textContent()) ?? '';
+    let steps = 0;
+    while (!phase.includes('COMPLETE') && steps < 40) {
+      steps += 1;
+      if (phase.includes('PLAYER TURN')) {
+        const skill = page.getByTestId('combat-action-skill');
+        if (await skill.isEnabled()) await skill.click();
+        else await page.getByTestId('combat-action-attack').click();
+      } else if (phase.includes('ENEMY TURN')) {
+        await page.getByTestId('combat-resolve-enemy').click();
+      } else {
+        break;
+      }
+      phase = (await page.getByTestId('combat-phase').textContent()) ?? '';
+    }
+    await expect(page.getByTestId('combat-phase')).toContainText('COMPLETE');
+    await page.getByTestId('combat-continue-to-loot').click();
+    await expect(page).toHaveURL('/run/loot');
+    await page.getByTestId('loot-increase-main-alloy').click();
+    await page.getByTestId('loot-confirm-main').click();
+    await page.getByTestId('loot-return-branch').selectOption('none');
+    await page.getByTestId('loot-resolve-return').click();
+    await page.getByTestId('loot-view-terminal-result').click();
+
+    await expect(page).toHaveURL('/run/result/completed');
+    await expect(page.getByTestId('result-outcome-completed')).toBeVisible();
+    await expect(page.getByTestId('result-chosen-weight')).toContainText('2.500 kg (2,500 g)');
+    await expect(page.getByTestId('result-received-weight')).toContainText('0.000 kg (0 g)');
+    await expect(page.getByTestId('result-disabled-action')).toContainText('Claiming is inactive');
+    await page.screenshot({
+      path: 'test-results/p1-ui-008-result-completed-desktop.png',
+      fullPage: true,
+    });
+
+    await page.getByTestId('result-return-province').click();
+    await expect(page).toHaveURL('/province');
+    await expect(page.getByRole('heading', { name: 'Province', exact: true })).toBeVisible();
+    await page.goBack();
+    await expect(page).toHaveURL('/run/result/completed');
+    await expect(page.getByTestId('result-chosen-weight')).toContainText('2.500 kg (2,500 g)');
+  });
+
+  test('all four terminal outcome fixtures have distinct consequence copy and preserve three item buckets', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const outcomes = [
+      {
+        id: 'completed',
+        title: 'COMPLETED',
+        phrase: 'Chosen rewards below remain an inspectable selection preview',
+      },
+      { id: 'escaped', title: 'ESCAPED', phrase: 'The local demo took an Escape path' },
+      { id: 'failed', title: 'FAILED', phrase: 'Surrender terminates this demo Run as FAILED' },
+      { id: 'expired', title: 'EXPIRED', phrase: 'Expiry is not Character death' },
+    ];
+    for (const outcome of outcomes) {
+      await page.goto(`/run/result/${outcome.id}`);
+      await expect(page.getByTestId(`result-outcome-${outcome.id}`)).toBeVisible();
+      await expect(page.getByTestId('result-outcome-title')).toContainText(outcome.title);
+      await expect(page.getByTestId(`result-outcome-${outcome.id}`)).toContainText(outcome.phrase);
+      await expect(page.getByTestId('result-carried-in-weight')).toBeVisible();
+      await expect(page.getByTestId('result-chosen-weight')).toBeVisible();
+      await expect(page.getByTestId('result-received-weight')).toContainText('0.000 kg (0 g)');
+      await expect(page.getByTestId('result-disabled-action')).toContainText(
+        'Claiming is inactive',
+      );
+      if (outcome.id === 'escaped') {
+        await page.screenshot({
+          path: 'test-results/p1-ui-008-result-escaped-desktop.png',
+          fullPage: true,
+        });
+      }
+    }
+    await page.goto('/run/result/expired');
+    await expect(page.getByTestId('result-outcome-expired')).toContainText(
+      'does not trigger Character-death',
+    );
+    await page.screenshot({
+      path: 'test-results/p1-ui-008-result-expired-desktop.png',
+      fullPage: true,
+    });
+  });
+
+  test('Combat Escape and Surrender actions open their matching terminal Result states', async ({
+    page,
+  }) => {
+    await page.goto('/run/combat');
+    await page.getByTestId('combat-action-escape').click();
+    await page.getByTestId('combat-exit-confirm-escape').click();
+    await page.getByTestId('combat-view-run-result').click();
+    await expect(page).toHaveURL('/run/result/escaped');
+    await expect(page.getByTestId('result-outcome-title')).toContainText('ESCAPED');
+    await expect(page.getByTestId('result-outcome-escaped')).toContainText('No debit occurred');
+
+    await page.goto('/run/combat');
+    await page.getByTestId('combat-action-surrender').click();
+    await page.getByTestId('combat-exit-confirm-surrender').click();
+    await page.getByTestId('combat-view-run-result').click();
+    await expect(page).toHaveURL('/run/result/failed');
+    await expect(page.getByTestId('result-outcome-title')).toContainText('FAILED');
+    await expect(page.getByTestId('result-outcome-failed')).toContainText(
+      'does not kill the Character',
+    );
+  });
+
+  test('local loading/waiting/empty/error/blocked states have clear recovery without a network request', async ({
+    page,
+  }) => {
+    await page.goto('/run/result/completed');
+    const selector = page.getByTestId('result-state-mode');
+    await selector.selectOption('loading');
+    await expect(page.getByTestId('result-loading-state')).toContainText(
+      'No network request is pending',
+    );
+    await page.getByTestId('result-state-cancel').click();
+    await expect(page.getByTestId('result-outcome-completed')).toBeVisible();
+
+    await selector.selectOption('waiting');
+    await expect(page.getByTestId('result-waiting-state')).toContainText(
+      'No command was submitted',
+    );
+    await page.getByTestId('result-state-cancel').click();
+
+    await selector.selectOption('error');
+    await expect(page.getByTestId('result-error-state')).toContainText(
+      'not a failed server request',
+    );
+    await page.getByTestId('result-retry-local').click();
+    await expect(page.getByTestId('result-outcome-title')).toContainText('COMPLETED');
+
+    await selector.selectOption('empty');
+    await expect(page.getByTestId('result-empty-state')).toContainText('not a successful outcome');
+    await page.getByTestId('result-empty-restore').click();
+    await expect(page.getByTestId('result-outcome-completed')).toBeVisible();
+
+    await selector.selectOption('blocked');
+    await expect(page.getByTestId('result-blocked-state')).toContainText('Persistent Run data');
+    await page.getByRole('button', { name: 'Return to loaded result' }).click();
+    await expect(page.getByTestId('result-outcome-completed')).toBeVisible();
+  });
+
+  test('pseudo-expanded result copy wraps on mobile, focus is visible and reduced motion is respected', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/run/result/completed');
+    await expect(page.getByTestId('result-page-title')).toBeFocused();
+    await page.getByTestId('result-text-mode').selectOption('expanded');
+    await expect(page.getByTestId('result-page-title')).toContainText('⟦');
+    await expect(page.getByTestId('result-outcome-title')).toContainText('⟦');
+    await expect(page.getByTestId('result-chosen-weight')).toContainText('2.500 kg (2,500 g)');
+    const width = await page.evaluate(() => document.documentElement.scrollWidth);
+    expect(width).toBeLessThanOrEqual(390);
+    await page.screenshot({
+      path: 'test-results/p1-ui-008-result-expanded-mobile.png',
+      fullPage: true,
+    });
+
+    await page.getByTestId('result-text-mode').selectOption('normal');
+    await expect(page.getByTestId('result-page-title')).toHaveText('Run Result');
+    await expect(page.getByRole('button', { name: 'Claim rewards · unavailable' })).toBeDisabled();
+  });
+
+  test('Mail shows an accessible inactive empty state and future feature routes remain placeholders', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/');
+    await page.getByRole('link', { name: /Mail/ }).click();
+    await expect(page).toHaveURL('/mail');
+    await expect(page.getByTestId('mail-inactive-page')).toContainText(
+      'INACTIVE · NO MAIL BACKEND',
+    );
+    await expect(page.getByTestId('mail-empty-state')).toContainText('No messages available');
+    await expect(
+      page.getByRole('button', { name: 'Claim attachments · unavailable' }),
+    ).toBeDisabled();
+    await expect(page.getByRole('button', { name: 'Delete message · unavailable' })).toBeDisabled();
+    await page.screenshot({
+      path: 'test-results/p1-ui-008-mail-empty-desktop.png',
+      fullPage: true,
+    });
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.reload();
+    await expect(page.getByRole('heading', { name: 'No messages available' })).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
+      390,
+    );
+
+    for (const path of ['/market', '/travel', '/housing', '/payments', '/admin', '/social']) {
+      await page.goto(path);
+      await expect(
+        page.getByRole('heading', { name: 'Route not implemented', exact: true }),
+      ).toBeVisible();
+      await expect(page.getByRole('link', { name: 'Return to Start' })).toBeVisible();
+    }
+  });
+
+  test('route matrix fits desktop 1440px and mobile 390px and all routes keep a main landmark', async ({
+    page,
+  }) => {
+    const paths = [
+      '/',
+      '/province',
+      '/run/preflight',
+      '/run/combat',
+      '/run/loot',
+      '/run/result/completed',
+      '/run/result/escaped',
+      '/run/result/failed',
+      '/run/result/expired',
+      '/updates',
+      '/mail',
+      '/not-yet-implemented',
+    ];
+    for (const viewport of [
+      { width: 1440, height: 900 },
+      { width: 390, height: 844 },
+    ]) {
+      await page.setViewportSize(viewport);
+      for (const path of paths) {
+        await page.goto(path);
+        await expect(page.locator('main#main-content')).toBeVisible();
+        const width = await page.evaluate(() => document.documentElement.scrollWidth);
+        expect(width, `horizontal overflow at ${viewport.width}px for ${path}`).toBeLessThanOrEqual(
+          viewport.width,
+        );
+      }
+    }
+    await page.goto('/province');
+    await expect(
+      page.locator('[data-testid="province-destination-disabled"], .destination-disabled').first(),
+    ).toBeDisabled();
   });
 });

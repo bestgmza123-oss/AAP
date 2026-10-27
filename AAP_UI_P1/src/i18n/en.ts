@@ -38,8 +38,8 @@ export const en = {
   'nav.updates': 'Updates',
   'nav.mail': 'Mail',
   'nav.unavailable': 'UNAVAILABLE',
-  'nav.mailDisabledReason':
-    'Mail is disabled in this prototype. No account or message delivery is connected.',
+  'nav.mailInactiveReason':
+    'Mail opens an inactive Phase 1 mailbox state. No account, message delivery or reward claim is connected.',
   'identity.sectionLabel': 'FIXTURE IDENTITY',
   'identity.title': 'Local preview identity',
   'identity.description':
@@ -447,6 +447,7 @@ export const en = {
   'combat.exitOutcome.noMutation':
     'UI fixture only: no server Run changed, no currency/item spent or transferred, and no persistent reward/result was written.',
   'combat.exitOutcome.returnToProvince': 'Return to Province preview',
+  'combat.exitOutcome.viewRunResult': 'View terminal Run Result',
   'combat.footer.activeBoundary':
     'All turns and resource changes are local demo state. Refreshing the route resets this fixture sequence.',
   'combat.footer.inactiveBoundary':
@@ -535,4 +536,122 @@ export const en = {
   'loot.result.noPersistence':
     'Preview only: no item is actually claimed, granted, dropped or written to persistent inventory. No additional encounter check is available.',
   'loot.result.reset': 'Reset Loot Demo',
+  'loot.result.viewTerminalResult': 'Continue to Run Result',
+  'result.page.eyebrow': 'RUN TERMINAL / PHASE 1 REVIEW',
+  'result.page.title': 'Run Result',
+  'result.page.description':
+    'Review the final local demo outcome, item buckets and next safe navigation step.',
+  'result.page.fixtureStamp': 'LOCAL RESULT FIXTURE',
+  'result.page.boundaryLabel': 'Run result prototype boundary',
+  'result.page.boundaryTitle': 'DEMO RESULT ONLY · NO SERVER RUN',
+  'result.page.boundaryDescription':
+    'This result is derived from deterministic route fixtures or in-memory navigation state. No server command, timer, debit, item grant, death or persistent write occurred.',
+  'result.breadcrumb.label': 'Run result breadcrumbs',
+  'result.outcome.eyebrow': 'TERMINAL STATE / DEMO OUTCOME',
+  'result.outcome.completedTitle': 'COMPLETED · loot remains a preview',
+  'result.outcome.completedStatus': 'COMPLETED · LOCAL FIXTURE',
+  'result.outcome.completedDescription':
+    'The local demo reached the completed path. Chosen rewards below remain an inspectable selection preview; this screen does not claim that any item was committed or received.',
+  'result.outcome.completedPendingNotice':
+    'Completion in this UI fixture does not turn selected loot into a durable inventory grant. The received bucket stays separate and empty unless a future authorized implementation defines otherwise.',
+  'result.outcome.escapedTitle': 'ESCAPED · Run loot rules apply',
+  'result.outcome.escapedStatus': 'ESCAPED · LOCAL FIXTURE',
+  'result.outcome.escapedDescription':
+    'The local demo took an Escape path. The details below distinguish carried-in items from selected pending loot and any forfeited return-encounter reward.',
+  'result.outcome.escapedPreClearContext':
+    'Pre-clear Escape forfeits pending Run loot. Original/carried-in items remain shown separately; an Escape cost in this example is display-only and was not deducted.',
+  'result.outcome.escapedReturnContext':
+    'Return-encounter Escape keeps main loot that was already selected and forfeits the return-encounter reward. When this Result is opened directly from the Combat fixture without a prior Loot selection, no main loot is invented or shown as preserved; use the Loot path to inspect the preservation case.',
+  'result.outcome.failedTitle': 'FAILED · Surrender demo outcome',
+  'result.outcome.failedStatus': 'FAILED / SURRENDER · LOCAL FIXTURE',
+  'result.outcome.failedDescription':
+    'Surrender terminates this demo Run as FAILED. No Run loot or EXP is awarded, entry Stamina is not refunded, and Surrender itself does not kill the Character or refill HP.',
+  'result.outcome.expiredTitle': 'EXPIRED · timeout demo outcome',
+  'result.outcome.expiredStatus': 'EXPIRED · LOCAL FIXTURE',
+  'result.outcome.expiredDescription':
+    'The hard-timeout example ends the Run without rewards or an entry Stamina refund. Expiry is not Character death. No real timer or offline clock is simulated.',
+  'result.outcome.noRewards': 'No Run rewards or EXP are received in this outcome.',
+  'result.outcome.noEntryRefund': 'Entry Stamina is not refunded by this outcome.',
+  'result.outcome.surrenderNoDeath':
+    'Surrender does not cause Character death; HP is not refilled.',
+  'result.outcome.expiryNotDeath':
+    'Expiry is not death; it does not trigger Character-death asset rules.',
+  'result.outcome.escapePaymentGold':
+    'Escape Gold cost shown by the selected demo fixture: {cost}. No debit occurred.',
+  'result.outcome.escapePaymentStone':
+    'Warp Stone option shown by the selected demo fixture. No item was consumed.',
+  'result.outcome.noPersistence':
+    'Local display only. The result is not a durable receipt, the selected data is not committed, and refreshing a direct link shows a deterministic sample fixture.',
+  'result.bucket.region': 'Run result item buckets',
+  'result.bucket.carriedIn': 'Original / carried-in',
+  'result.bucket.carriedInDescription':
+    'Existing carried items are kept separate from all rewards and are not modified by this display.',
+  'result.bucket.chosenPending': 'Chosen loot · pending preview',
+  'result.bucket.chosenPendingDescription':
+    'The chosen quantity is shown for review only; no atomic inventory claim is performed.',
+  'result.bucket.receivedDemo': 'Received · demo outcome only',
+  'result.bucket.receivedDemoDescription':
+    'No persistent grant was recorded. A received-item value here would still require an explicit local-demo label.',
+  'result.bucket.forfeited': 'Forfeited / not received',
+  'result.bucket.forfeitedDescription':
+    'Possible fixture reward forfeited by this branch. It was not owned or granted by this page.',
+  'result.bucket.none': 'No item quantity in this bucket.',
+  'result.actions.claimUnavailable': 'Claim rewards · unavailable',
+  'result.actions.claimDisabledReason':
+    'Claiming is inactive in Phase 1. This prototype cannot grant or persist an item.',
+  'result.actions.openCombatFixture': 'Open Combat demo fixture',
+  'result.returnToProvince': 'Return to Province',
+  'result.review.eyebrow': 'STATE / ACCESSIBILITY / COPY REVIEW',
+  'result.review.title': 'Page state review tools',
+  'result.review.description':
+    'Switch local states to inspect recovery, waiting, disabled and long-copy behavior. These controls never call a server or modify the result payload.',
+  'result.review.copyModeLabel': 'Text layout preview',
+  'result.review.copyNormal': 'English baseline',
+  'result.review.copyExpanded': 'Pseudo-expanded copy',
+  'result.review.stateLabel': 'Local page-state fixture',
+  'result.review.stateReady': 'Loaded result',
+  'result.review.stateLoading': 'Loading',
+  'result.review.stateWaiting': 'Waiting',
+  'result.review.stateEmpty': 'Empty fixture',
+  'result.review.stateError': 'Simulated error',
+  'result.review.stateBlocked': 'Blocked / unavailable',
+  'result.review.loadingTitle': 'Loading local result fixture',
+  'result.review.loadingDescription':
+    'This is a deliberately simulated loading state. No network request is pending. Cancel returns to the same result without resetting or rerolling it.',
+  'result.review.waitingTitle': 'Waiting on a local demo action',
+  'result.review.waitingDescription':
+    'Waiting feedback is shown separately from page loading. No command was submitted; cancel restores the existing result state.',
+  'result.review.cancel': 'Cancel · return to result',
+  'result.review.emptyTitle': 'No result fixture available',
+  'result.review.emptyDescription':
+    'This simulated empty state contains no result data and is not a successful outcome. Restore a deterministic sample fixture or return to Province.',
+  'result.review.restoreSample': 'Restore sample result fixture',
+  'result.review.errorTitle': 'The local result fixture could not be displayed',
+  'result.review.errorDescription':
+    'This is an intentionally simulated UI error, not a failed server request. Retry only restores the same local sample state; it never performs an authoritative retry or new encounter roll.',
+  'result.review.retryLocal': 'Retry local fixture display',
+  'result.review.blockedTitle': 'Result action unavailable in Phase 1',
+  'result.review.blockedDescription':
+    'Persistent Run data and account authorization are not implemented. The UI blocks this sample state without claiming that a server request was denied.',
+  'result.review.backToResult': 'Return to loaded result',
+  'result.review.invalidOutcomeTitle': 'Unknown result fixture',
+  'result.review.invalidOutcomeDescription':
+    'This result key is not one of the supported Phase 1 demo outcomes. No result data was created.',
+  'mail.page.breadcrumbLabel': 'Mail breadcrumbs',
+  'mail.page.eyebrow': 'COMMUNICATION / FUTURE SCOPE',
+  'mail.page.title': 'Mail',
+  'mail.page.description':
+    'Mailbox delivery and reward claims are not active in this Phase 1 prototype.',
+  'mail.page.inactiveStatus': 'INACTIVE · NO MAIL BACKEND',
+  'mail.page.inactiveDescription':
+    'This destination exists to explain the boundary only. It does not send, receive, store, delete, archive or claim messages or attachments.',
+  'mail.page.emptyEyebrow': 'MAILBOX / EMPTY STATE',
+  'mail.page.emptyTitle': 'No messages available',
+  'mail.page.emptyDescription':
+    'No sample messages are supplied for this fixture. This is an explicit empty state, not a loading failure or a missing reward receipt.',
+  'mail.page.claimDisabled': 'Claim attachments · unavailable',
+  'mail.page.deleteDisabled': 'Delete message · unavailable',
+  'mail.page.actionsDisabledReason':
+    'Mail actions are disabled because Phase 1 has no mailbox or reward-delivery feature.',
+  'mail.page.updatesLink': 'View Updates',
 } as const;

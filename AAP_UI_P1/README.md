@@ -1,4 +1,8 @@
-# AAP_UI_P1 — Private UI Prototype (P1-UI-001 through P1-UI-007)
+# AAP_UI_P1 — Private UI Prototype (P1-UI-001 through P1-UI-008)
+
+## Current implementation — P1-UI-008 Run Result, accessibility, localization and vertical slice — 2026-10-27
+
+P1-UI-008 is implemented on `feat/p1-ui-008-result-a11y-localization` from `main` SHA `e881eea47dafc3aa1f2ac8d99a28499099267621`. Local checks currently pass: typecheck; Vitest 51/51; lint exit 0 (warnings only); scope audit across 25 source files; build (40 modules); and Playwright 25/25. It adds `/run/result/:outcome` for COMPLETED/ESCAPED/FAILED/EXPIRED, explicit local recovery states, separate pending/received/forfeited buckets, pseudo-expanded English copy, accessible inactive Mail, and the full responsive route matrix. These are demo fixtures only—no authoritative Run result, server request, actual reward, inventory mutation or persistence. Checkpoint: `../evidence/P1-UI-008_CHECKPOINT.md`; acceptance matrix: `../evidence/P1-UI-008_ACCEPTANCE_MATRIX.md`; screenshots: `../evidence/p1-ui-008-*.png`. Exact-head CI, merge and post-merge CI remain pending.
 
 ## Latest accepted implementation — P1-UI-007 Loot / capacity / optional return encounter — 2026-10-27
 
