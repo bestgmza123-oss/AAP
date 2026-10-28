@@ -14,6 +14,7 @@ Carrying capacity is weight-based, not slot-count based. Store physical weight a
 - **Owns:** Item identity/stacking, weight, bag capacity, location/locks, starter entitlement and partial stack movement.
 - **Depends on:** Loot, crafting, market escrow, mail, homes, vehicles, Companion custody, death and trade.
 - **Cross-system contract:** A bag swap that would exceed capacity is rejected without auto-dropping/deleting items. Starter entitlement cannot be reissued by Character recreation.
+- **Phase boundary:** Phase 2 covers carried inventory, Run-loot custody, exact weight, protected movement and the Account-scoped starter grant. Starting Room/home storage access and container capacity are owned by SYS-20 in Phase 3; Phase 2 must not implement a room storage route or physical Starting Room container.
 
 ## UI contract
 

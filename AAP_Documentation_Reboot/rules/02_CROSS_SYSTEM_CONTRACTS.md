@@ -26,6 +26,7 @@
 - SYS-13 owns weight and item-location rules; SYS-17 owns Market escrow/listing; SYS-18 owns two-sided trade; SYS-19 owns Bank/Delivery; SYS-23 owns Companion recovery.
 - Every transfer has one source state, one destination state and a stable idempotency identity. Do not allow an item to be used while escrowed or in transit.
 - Capacity limits apply at commit, not only when the UI first opens. Full storage must preserve items in the explicitly designated non-destructive pending state or reject the action; never silently delete.
+- Phase 2 tests generic custody/idempotency only with synthetic non-housing containers; Starter Room/home storage access, its 10 kg capacity and deposit/withdraw behavior belong to SYS-20 Phase 3 (AC-SYS20-01/06/07). Do not promote those tests to Phase 2 implementation scope.
 - Market Claim Storage (100 kg) is for designated market-delivery claims, not a general-purpose player-deposit vault. Clear claims/overflow before allowing further intake as specified by the Market rules.
 
 ## CC-05 — Housing / Fridge / Lease / Death

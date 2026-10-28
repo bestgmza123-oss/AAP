@@ -57,4 +57,4 @@ The tests verify deterministic UI/fixture behavior only; this task does not cert
 
 ## Acceptance result / next step
 
-P1-UI-008 is accepted: all 16 UI-P1 criteria have mapped implementation/test/evidence, local verification passed, the implementation PR exact-head checks passed, and post-merge `main` CI passed. No authoritative server or persistent gameplay behavior is implied. The next task candidate is `P2-GATE-000 — Phase 2 semantic and test preflight`; it has not been started or authorized.
+P1-UI-008 is accepted: all 16 UI-P1 criteria have mapped implementation/test/evidence, local verification passed, the implementation PR exact-head checks passed, and post-merge `main` CI passed. No authoritative server or persistent gameplay behavior is implied. Historical note: P2-GATE-000 was the next task candidate when this checkpoint was written; it was subsequently authorized and completed. Current status is recorded in AAP_Documentation_Reboot/delivery/P2_GATE_000_SEMANTIC_TEST_PREFLIGHT.md and evidence/P2-GATE-000_CHECKPOINT.md.

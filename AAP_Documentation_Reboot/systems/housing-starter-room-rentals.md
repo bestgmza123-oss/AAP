@@ -23,6 +23,8 @@ Always show capacity, tier, parking, rent term, expiry, notices and exact overfl
 
 Phase 3; full rental/death/time tests required before public/shared access.
 
+**Phase boundary:** Starter Room storage belongs to this SYS-20 Phase 3 system. Phase 2 may test generic custody/idempotency with synthetic non-housing locations only; it does not expose a room deposit/withdraw feature.
+
 ## Property pricing and expiry detail
 
 | Tier | Storage | Parking | 7-day rent | 30-day rent | 90-day rent | Purchase price | Owned-home upkeep / 7 days |
@@ -56,6 +58,8 @@ These are requirements to verify in a future implementation task, not evidence t
 - `AC-SYS20-03` — At expiry, death-versus-lease chronology is decided by logical UTC time; if death is at/before expiry, do not run the living-owner expiry branch as well. **Status:** design requirement defined; runtime evidence not supplied by this document-only package.
 - `AC-SYS20-04` — Old-home Fridge eligibility ends at lease expiry; expiry and Character death cannot both disposition the same contents. **Status:** design requirement defined; runtime evidence not supplied by this document-only package.
 - `AC-SYS20-05` — Rental overflow previews exact quantities/weight, provides the 48-hour choice window and finalizes retained/deleted/death-dispositioned units once. **Status:** design requirement defined; runtime evidence not supplied by this document-only package.
+- `AC-SYS20-06` - Starting Room storage is accessible only to a living Character whose authoritative current location is that Character's Starter Room; remote access and access during Run, Combat, Travel or a settlement lock are denied server-side without mutation. **Status:** AI-selected conservative Phase 3 baseline; runtime evidence not supplied.
+- `AC-SYS20-07` - Starting Room storage has fixed 10,000 g (10 kg) contents capacity. Capacity is inclusive; an over-capacity request is rejected atomically with source and destination unchanged, no silent drop and no implicit overflow queue. Partial-stack moves require an integer quantity; duplicate/concurrent retries follow SYS-33 receipt/custody rules. **Status:** AI-selected conservative Phase 3 baseline; runtime/race evidence not supplied.
 
 ## Authoring checklist for this system
 

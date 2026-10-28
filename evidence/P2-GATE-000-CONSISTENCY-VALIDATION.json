@@ -1,0 +1,98 @@
+{
+  "date": "2026-10-28",
+  "task": "P2-GATE-000 documentation consistency remediation",
+  "result": "PASS - documentation/semantic/test preflight only",
+  "documentation_static_audit": {
+    "documentation_markdown_files": 71,
+    "documentation_non_markdown_files": 0,
+    "local_markdown_link_count": 1329,
+    "missing_markdown_targets": [],
+    "required_policy_markers_missing": [],
+    "forbidden_old_header_role_present": false,
+    "documentation_only_boundary": "PASS",
+    "policy_and_link_audit": "PASS"
+  },
+  "crosswalk_integrity": {
+    "source_rows": 379,
+    "unique_ids": 379,
+    "duplicate_ids": [],
+    "body_rows_with_invalid_column_count": 0,
+    "expected_body_columns": 9,
+    "phase2_relevant_rows": 169,
+    "phase2_task_distribution": {
+      "P2-CORE-006": 17,
+      "P2-CORE-007": 22,
+      "P2-CORE-008": 16,
+      "P2-CORE-010": 7,
+      "P2-CORE-011": 13,
+      "P2-CORE-003": 3,
+      "P2-CORE-009": 21,
+      "P2-CORE-012": 2,
+      "P2-CORE-005": 31,
+      "P1-UI-008 / P2-CORE-013 / P6-REL-001": 6,
+      "P2-CORE-013": 15,
+      "P2-CORE-004": 12,
+      "P2-CORE-013 / P6-COMP-005": 1,
+      "P2-CORE-002": 1,
+      "P1-UI-008 / P2-CORE-013": 2
+    },
+    "distinct_AC_ids_referenced": 83,
+    "AC_registry_ids": 160,
+    "missing_AC_registry_references": [],
+    "duplicate_AC_registry_ids": [],
+    "new_AC_ids_added": [
+      "AC-SYS20-06",
+      "AC-SYS20-07",
+      "AC-SYS33-06",
+      "AC-SYS33-07",
+      "AC-SYS33-08",
+      "AC-SYS33-09"
+    ]
+  },
+  "phase_alignment": {
+    "V18-STOR-001": {
+      "phase": "P3",
+      "task": "P3-LIFE-005"
+    },
+    "V18-STOR-002": {
+      "phase": "P3",
+      "task": "P3-LIFE-005"
+    },
+    "P1-DB-001": {
+      "phase": "P2",
+      "task": "P2-CORE-002",
+      "ACs": [
+        "AC-SYS33-06",
+        "AC-SYS33-07",
+        "AC-SYS33-08",
+        "AC-SYS33-09"
+      ]
+    }
+  },
+  "content_hashes": {
+    "crosswalk_sha256": "ab784bb0c575275635de686e9d70b4395ce1611e4700b08a25050b66315bf0e7",
+    "preflight_report_sha256": "372f5bb60446826c31561c2a13dcf41264cd46dc7c7ff86792f090f3f9b460f9",
+    "requirements_traceability_sha256": "d0b9d63441a2c58f653fcff260ab34ece60dffe46a31521e7f400f955f63d37d",
+    "reconciliation_log_sha256": "c98c6432c74392f148bb7b8eb2a028423bf7dc39281e5cc721ef96eee50f71da"
+  },
+  "runtime_boundary": {
+    "gameplay_runtime_tests": "NOT RUN IN REBOOT",
+    "database_RLS_migration_tests": "NOT RUN",
+    "live_supabase_project_inspection_or_mutation": "NOT PERFORMED",
+    "application_source_code_changes": "NONE",
+    "P2_CORE_001_started": "NO",
+    "note": "This evidence demonstrates static/document consistency only; it does not certify product runtime or authorize implementation."
+  },
+  "reconciliation_log_integrity": {
+    "entry_count": 25,
+    "unique_ids": 25,
+    "duplicate_ids": [],
+    "tail_ids": [
+      "RECON-021",
+      "RECON-022",
+      "RECON-023",
+      "RECON-024",
+      "RECON-025"
+    ]
+  }
+}

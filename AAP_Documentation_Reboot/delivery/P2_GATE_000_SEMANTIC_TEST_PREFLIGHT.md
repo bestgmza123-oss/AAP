@@ -1,14 +1,15 @@
 # P2-GATE-000 — Phase 2 Semantic and Test Preflight
 
-**Outcome: CONDITIONAL PASS WITH TWO ISOLATED BLOCKERS.** Every Phase 2-assigned source-test row is mapped to current acceptance criteria and given an explicit disposition. Two sub-scopes remain BLOCKED because their current contracts/ACs are missing; no gap has been resolved by guessing.
+**Outcome: PASS — DOCUMENTATION / SEMANTIC / TEST PREFLIGHT ONLY.** All 169 Phase 2-relevant source-test rows are mapped to current acceptance criteria and dispositions. Implementation and runtime evidence remain separate gates.
 
-**Scope:** documentation/semantic review/test planning only. No application source code, database schema/RLS, Auth provider, API/backend, live data, or gameplay state was changed. This report is not evidence that server/runtime tests passed. All 171 Phase 2-relevant rows remain NOT RUN IN REBOOT.
+**Scope:** documentation/semantic review/test planning only. No application source code, database schema/RLS, Auth provider, API/backend, live data, or gameplay state was changed. This report is not evidence that server/runtime tests passed. All 169 Phase 2-relevant rows remain NOT RUN IN REBOOT.
 
 ## Authority and acceptance basis
 
 - Master contract: 09_PHASE_BOUNDARY_EXECUTION_MATRIX.md, row P2-GATE-000. Required outputs: source-to-current-AC mapping, preserved/superseded/deferred dispositions, executable/manual checks, fixtures and environment plan.
 - Current authority: owner system docs, requirements traceability, global invariants, cross-system contracts, current balance policy and reconciliation decisions. Old SoT is migration provenance only; RECON-004 forbids adopting legacy SoT schema as current authority. Historical R/C/PASS labels are never runtime proof.
 - Phase 1 entry prerequisite is met: P1-UI-008 implementation PR #14 is merged at d9477bbadbeb96e62150f417aa87661e570944e3; exact-head and post-merge required CI passed. Documentation PR #15 is merged at a3383ea27d90ba4a7f4fc49e1af7ef99266e081f; both required CI jobs passed. This proves the accepted Phase 1 prototype slice, not server behavior.
+- Original P2-GATE-000 baseline PR #16 is merged at fa802050734a49a86c2e0c060152cbca05b6317f; exact-head run #40574037881 and post-merge run #40574368873 passed both required UI quality-gate and Playwright smoke jobs. Those CI results do not constitute gameplay/database/RLS runtime proof; this follow-up is a documentation-consistency correction.
 - Current AC IDs are design acceptance criteria. Their presence in this map means the source scenario has a defined verification target, not that the test ran or passed.
 
 ## Inventory integrity
@@ -16,9 +17,9 @@
 | Measure | Result |
 |---|---|
 | Legacy rows/unique IDs | 379 / 379 as declared by source inventory integrity section |
-| P2-relevant rows | 171 |
-| Phase labels represented | P1/P2: 2, P1/P2/P6: 6, P2: 161, P2/P6: 1, P2–P6: 1 |
-| Task distribution | P1-UI-008 / P2-CORE-013: 2, P1-UI-008 / P2-CORE-013 / P6-REL-001: 6, P2-CORE-002: 1, P2-CORE-003: 3, P2-CORE-004: 12, P2-CORE-005: 31, P2-CORE-006: 17, P2-CORE-007: 22, P2-CORE-008: 16, P2-CORE-009: 21, P2-CORE-010: 7, P2-CORE-011: 15, P2-CORE-012: 2, P2-CORE-013: 15, P2-CORE-013 / P6-COMP-005: 1 |
+| P2-relevant rows | 169 |
+| Phase labels represented | P1/P2: 2, P1/P2/P6: 6, P2: 159, P2/P6: 1, P2–P6: 1 |
+| Task distribution | P1-UI-008 / P2-CORE-013: 2, P1-UI-008 / P2-CORE-013 / P6-REL-001: 6, P2-CORE-002: 1, P2-CORE-003: 3, P2-CORE-004: 12, P2-CORE-005: 31, P2-CORE-006: 17, P2-CORE-007: 22, P2-CORE-008: 16, P2-CORE-009: 21, P2-CORE-010: 7, P2-CORE-011: 13, P2-CORE-012: 2, P2-CORE-013: 15, P2-CORE-013 / P6-COMP-005: 1 |
 | Current AC IDs missing from registry | 0 |
 | P2 rows without mapping | 0 |
 | Duplicate IDs among P2 rows | 0 |
@@ -26,17 +27,17 @@
 
 The original crosswalk table had a 6-column header but 8- or 9-cell body rows. It is normalized to a stable 9-column schema, preserving separate source summary, procedure/detail, expected result, historical provenance/status, current owner, phase, task and reboot status. Historical statuses are kept separate from current runtime status.
 
-## Critical conflicts and isolation decisions
+## Critical conflicts, dispositions and phase correction
 
 | Source/test | Decision | Exact issue | Safe boundary |
 |---|---|---|---|
-| P1-DB-001 / P2-CORE-002 | BLOCKED — isolated sub-scope | AC-SYS33-01/03 only partially cover authority/custody; no current AC defines the schema/table inventory, RLS policy matrix, role/grant matrix and migration re-apply contract. RECON-004 forbids treating legacy SoT §8 as current authority. | Do not create/apply migrations until the current schema/RLS contract and exact AC are added and reviewed. No live or remote DB. |
-| V18-STOR-001/002 / subset of P2-CORE-011 | BLOCKED — isolated sub-scope | AC-SYS13-03 and AC-SYS33-02/03 cover ownership, idempotency and location, but no exact current AC defines Starting Room storage capacity, access/eligibility and overflow/race behavior. | Inventory/weight rules can be planned independently. Do not implement Starting Room storage before its exact AC exists. |
+| P1-DB-001 / P2-CORE-002 | DESIGN CONTRACT ADDED; implementation prerequisites remain | SYS-33 now owns a Phase 2 logical schema inventory, least-privilege role/grant/RLS matrix and migration/rebuild ACs (AC-SYS33-06..09). This is an AI-selected design baseline, not a discovered/deployed schema. The actual target, live schema, permissions, costs, backups and isolation have not been verified. | P2-CORE-002 may start only after P2-CORE-001 is accepted and a disposable local/CI target/reset path is proven. No remote project link/push or live DB mutation. |
+| V18-STOR-001/002 / Starting Room storage | DEFERRED BY PHASE — P3-LIFE-005 | Earlier report wording incorrectly treated the capacity value as missing: SYS-20 already defines a fixed 10 kg Starter Room and Phase 3 placement. The conflict was the Phase 2 task/crosswalk assignment. SYS-20 now defines conservative access/atomic-capacity ACs (AC-SYS20-06/07), and these two preserved tests move to Phase 3 under RECON-005. | Phase 2 uses synthetic non-housing containers for generic inventory/custody tests. Room storage runtime remains NOT RUN. |
 | AUTH-001 | SPLIT: preserve/defer | Legacy definition requests public signup/verification during Phase 2; SYS-01 and RECON-006 make Phase 1–2 private/internal, with public Auth in Phase 3. | P2 may test internal allowlisted identity only; defer public provider signup/verification and public gameplay to Phase 3. |
 | HUN/Fridge/time ties | SPLIT: preserve/defer | RECON-003 renames Satiety to Hunger while preserving 100=fed and 0=death; actual Fridge/home/lease behavior is Phase 3. | Phase 2 uses generic synthetic due-event order tests and current Hunger terminology, not a working Fridge. |
 | Simulation/Auction/Companion/Home Raid/full gear/affixes/chat/paid paths | Split or phase-deferred | Shared integrity/time primitives can be tested without feature activation; actual features stay with their owning phases. | Synthetic fixtures only for shared primitives. Payment remains disabled under AC-SYS31-01/02/04. |
 
-**Gate decision:** Conditional pass is appropriate because all P2 source rows have explicit AC mappings and dispositions, and the two critical gaps are safely isolated rather than silently resolved. P2-CORE-002 database/schema/RLS work and the Starting Room storage subset of P2-CORE-011 remain blocked. This gate does not authorize P2-CORE-001 or any implementation automatically.
+**Gate decision:** PASS for the documentation/semantic/test preflight. The Phase 2 schema/security design gap now has current ACs, and the Starter Room phase conflict is corrected by moving V18-STOR-001/002 to the SYS-20-owned Phase 3 task. This is not an implementation, database or runtime pass. P2-CORE-001 still requires its own explicit task authorization; P2-CORE-002 depends on accepted P2-CORE-001 plus a verified disposable local/CI target. No live database or remote Supabase operation was performed.
 
 ## Cross-system invariants for all tests
 
@@ -209,13 +210,11 @@ Every line below is a traceability design record, not a runtime test result. PRE
 | V18-RES-001 | P2-CORE-005 | AC-SYS03-02, AC-SYS03-03, AC-SYS30-02 | PRESERVE | Keep as current owner-rule test-design input. Historical PASS/R/C labels remain provenance only; all runtime status stays NOT RUN IN REBOOT. | NOT RUN IN REBOOT |
 | V18-EQP-SLOT-001 | P2-CORE-012 | AC-SYS15-01, AC-SYS15-02, AC-SYS13-03 | PRESERVE | Keep as current owner-rule test-design input. Historical PASS/R/C labels remain provenance only; all runtime status stays NOT RUN IN REBOOT. | NOT RUN IN REBOOT |
 | V18-INV-002 | P2-CORE-011 | AC-SYS13-01, AC-SYS13-04 | PRESERVE | Keep as current owner-rule test-design input. Historical PASS/R/C labels remain provenance only; all runtime status stays NOT RUN IN REBOOT. | NOT RUN IN REBOOT |
-| V18-STOR-001 | P2-CORE-011 | AC-SYS13-03, AC-SYS33-03 | BLOCKED — ISOLATED SUB-SCOPE | AC-SYS13-03 and AC-SYS33-02/03 cover ownership/idempotency/location but not exact Starting Room storage capacity, access/eligibility and overflow policy. Preserve the source test; isolate this slice until those rules and ACs exist. | NOT RUN IN REBOOT |
-| V18-STOR-002 | P2-CORE-011 | AC-SYS13-03, AC-SYS33-02, AC-SYS33-03 | BLOCKED — ISOLATED SUB-SCOPE | Current ACs do not set exact Starting Room storage race/retry/capacity behavior. Preserve source intent but do not implement or claim acceptance until the current storage AC is defined. | NOT RUN IN REBOOT |
 | V18-CHAT-001 | P2-CORE-013 | AC-SYS27-05, AC-SYS33-05 | DEFERRED BY PHASE — NEGATIVE-SCOPE ONLY | Province chat/moderation/retention implementation remains in its later phase. P2 may check that the future feature is not activated. | NOT RUN IN REBOOT |
 | V18-RUN-001 | P2-CORE-008 | AC-SYS09-01, AC-SYS09-02, AC-SYS09-03 | PRESERVE | Keep as current owner-rule test-design input. Historical PASS/R/C labels remain provenance only; all runtime status stays NOT RUN IN REBOOT. | NOT RUN IN REBOOT |
 | V18-SEC-BASE-001 | P2-CORE-004 | AC-SYS33-01, AC-SYS33-02, AC-SYS33-03, AC-SYS33-04, AC-SYS33-05 | PRESERVE | Keep as current owner-rule test-design input. Historical PASS/R/C labels remain provenance only; all runtime status stays NOT RUN IN REBOOT. | NOT RUN IN REBOOT |
 | V18-UTC-001 | P2-CORE-005 | AC-SYS30-01, AC-SYS30-02, AC-SYS33-04 | PRESERVE | Keep as current owner-rule test-design input. Historical PASS/R/C labels remain provenance only; all runtime status stays NOT RUN IN REBOOT. | NOT RUN IN REBOOT |
-| P1-DB-001 | P2-CORE-002 | AC-SYS33-01, AC-SYS33-03 | BLOCKED — ISOLATED SUB-SCOPE | Current criteria cover trusted authority/custody but do not define authoritative schema/table inventory, RLS policy matrix, exact roles/grants, migration compatibility and re-apply contract. RECON-004 forbids using legacy SoT §8 as current authority. No migration/database changes until a current contract and exact AC are added. | NOT RUN IN REBOOT |
+| P1-DB-001 | P2-CORE-002 | AC-SYS33-06, AC-SYS33-07, AC-SYS33-08, AC-SYS33-09 | MAPPED; IMPLEMENTATION PREREQUISITES REMAIN | Current SYS-33 design contract defines the Phase 2 schema, role/grant/RLS and migration/rebuild expectations. Live target identity/state is unverified; require accepted P2-CORE-001 and a proven disposable local/CI DB/reset path before any migration. | NOT RUN IN REBOOT |
 | P1-AUTH-001 | P2-CORE-003 | AC-SYS01-03, AC-SYS33-01 | PRESERVE | Private allowlisted test principal only; no public signup, OAuth or client-supplied authority. | NOT RUN IN REBOOT |
 | P1-EVT-001 | P2-CORE-005 | AC-SYS30-02, AC-SYS33-04 | PRESERVE | Keep as current owner-rule test-design input. Historical PASS/R/C labels remain provenance only; all runtime status stays NOT RUN IN REBOOT. | NOT RUN IN REBOOT |
 | P1-EVT-002 | P2-CORE-005 | AC-SYS30-02, AC-SYS33-02, AC-SYS33-04 | PRESERVE | Keep as current owner-rule test-design input. Historical PASS/R/C labels remain provenance only; all runtime status stays NOT RUN IN REBOOT. | NOT RUN IN REBOOT |
@@ -231,7 +230,7 @@ All commands and scenarios below are acceptance-plan entries only. Run them only
 | Task | Executable acceptance plan | Deterministic fixtures / manual gate | Required evidence |
 |---|---|---|---|
 | P2-CORE-001 | Record git status/commit, node/npm versions, package manager/lockfile fingerprint; then typecheck, unit tests, lint, build, scope audit and git diff --check on the authorized checkout. Do not repeat npm install/ci after known EAI_AGAIN without fresh network diagnostics. | Keep existing node_modules if lockfile unchanged; no production secrets, no new API paths. | Exact SHA, tool versions, commands/exit codes, CI URLs, redacted environment inventory and reset/restore notes. Not run by this gate. |
-| P2-CORE-002 (BLOCKED) | After current schema/RLS AC and isolated target are approved: apply tracked migrations to empty disposable DB; inspect schema/ledger; reapply safely; positive/negative grants and RLS tests including cross-account denial; pgTAP if supported. | No live/production DB; exact target identity and reset plan required first. | Schema diff, migration ledger, role/policy matrix, positive/negative tests and isolated-target proof. NOT RUN. |
+| P2-CORE-002 (requires accepted P2-CORE-001 and a verified disposable target) | After current schema/RLS AC and isolated target are verified: apply tracked migrations to empty disposable DB; inspect schema/ledger; reapply safely; positive/negative grants and RLS tests including cross-account denial; pgTAP if supported. | No live/production DB; exact target identity and reset plan required first. | Schema diff, migration ledger, role/policy matrix, positive/negative tests and isolated-target proof. NOT RUN. |
 | P2-CORE-003 | Exercise absent/expired/unallowlisted/valid internal test identity, forged Account/Character/role IDs, concurrent Character creation and replayed starter grant. | Internal allowlisted principals only; no public signup/OAuth. Fixed Account/Character fixtures. | Denial matrix, server-derived actor evidence, one active Character and one grant receipt. |
 | P2-CORE-004 | Repeat one idempotency key, submit concurrent requests, and force failure before commit and after commit/no acknowledgement. Reconcile timeout by reading receipt; assert one effect and conservation. | Disposable ledger, fixed item/currency amounts, coordinated barriers; synthetic aggregates for later systems. | Source/destination/sink ledger, receipts, race transcript, no negative balances/duplicate/missing quantities. |
 | P2-CORE-005 | Fake UTC clock; due events before/at/after command/Pause; sort same-time events by due-time/priority/sequence/event ID; duplicate workers; crash before/after commit; lazy catch-up vs stepwise equality; Pause vs Maintenance vs unplanned outage; independent auth/security/audit clocks. | Fixed event tuples; synthetic events only for future Fridge/lease/Simulation/Auction/Companion flows. | Ordered event/effect timestamps, idempotency receipt, timezone/boundary matrix, no retroactive resource credit and Pause audit. |
@@ -240,7 +239,7 @@ All commands and scenarios below are acceptance-plan entries only. Run them only
 | P2-CORE-008 | Run entry levels 1/5/6/50 cost 20/20/22/38; insufficient Stamina, duplicate entry, refresh/reconnect, persisted 4–7 count, 30-minute timer across offline/loot/return, expiry without death/reward/refund and terminal retry matrix. | Fixed Run seed/count and clock; Normal fixtures only; no tier/Elite/Boss expansion. | One Run ID/debit receipt, unchanged count/timer after reconnect and valid terminal/item buckets. |
 | P2-CORE-009 | Deterministic initiative tie (one seeded roll), Crit/Buff → mitigation → Guard → Shield order/floors, Guard across multi-hit Action once, piercing, cooldown, Mana/condition denial, telegraph, forged client damage/turn and duplicate command. Invalid commands consume nothing. | Only supported normal enemy/skill fixtures; no gear/progression or Companion-as-enemy feature. | Formula intermediate snapshots, fixture/seed versions, turn/resource diffs and rejected-action no-side-effect proof. |
 | P2-CORE-010 | Escape cost formula ceil((20 + 5 × W) × Z) using versioned fixture Z and correct retained-weight bucket; Warp Stone/funds-short paths, same Province, no extra encounter, carried-in retention/pre-clear forfeiture, return-encounter reward, surrender FAILED without reward/EXP/refund/death/HP refill, retry/race. | Z is fixture-only until canonical content data exists; matrix covers active combat, clear, loot, return encounter and terminal. | Outcome matrix, bucket diff, cost provenance, one terminal receipt and no unauthorized loss/refund. |
-| P2-CORE-011 (storage subset BLOCKED) | Weight/capacity at exact limit and one gram over; integer grams; bag weight included/worn gear excluded; partial stack; lock/escrow/transit rejection; failed bag swap unchanged; starter grant once; no silent drop. | Fixed gram-based inventory fixtures; no Market, home/Fridge, Guild storage or generic claim vault. Starting Room storage waits for AC. | Quantity/weight conservation, before/after rejection snapshots and one location/lock. Storage NOT RUN/BLOCKED. |
+| P2-CORE-011 | Weight/capacity at exact limit and one gram over; integer grams; bag weight included/worn gear excluded; partial stack; lock/escrow/transit rejection; failed bag swap unchanged; starter grant once; no silent drop. | Fixed gram-based inventory fixtures; synthetic non-housing locations only; no Starting Room/home container, Market, Fridge, Guild storage or generic claim vault. | Quantity/weight conservation, before/after rejection snapshots and one location/lock. Starting Room storage is assigned to P3-LIFE-005; all inventory/custody runtime checks remain NOT RUN. |
 | P2-CORE-012 | Basic food/HP craft with sufficient/insufficient material, interrupted transaction, retry after commit and concurrent same recipe; synthetic slot/hand compatibility with atomic rejection. | Versioned synthetic item IDs; no production gear grant or active equipment catalogue/affix/enhancement. | Material/output conservation, one receipt/result, slot matrix and unchanged state on rejection. |
 | P2-CORE-013 | Invalid content rejected; Draft does not alter active version; publish creates immutable version/audit; role separation prevents asset/currency/pause misuse; non-admin denied from Admin route/API; future features and paid routes unavailable; repeatable internal test reset; scoped synthetic shared listing-cap helper. | Private test roles, separate content vs asset permissions, immutable IDs; no payment credentials, public deploy, actual Auction lifecycle, public chat or production mutation. | Role/route matrix, draft/published diff, audit evidence, negative path transcript and reproducible reset report. |
 
@@ -258,12 +257,12 @@ All commands and scenarios below are acceptance-plan entries only. Run them only
 - [x] Current AC references validated against the registry; no missing identifiers or duplicate P2 IDs.
 - [x] Shared clock/death/custody/idempotency contracts and test plan documented.
 - [x] Public Auth, later-phase feature slices and payment exclusions are split/deferred explicitly.
-- [x] Schema/RLS and Starting Room storage gaps are isolated rather than guessed.
+- [x] Phase 2 schema/RLS design contract and exact ACs are recorded; Starting Room storage is correctly assigned to SYS-20 Phase 3 / P3-LIFE-005.
 - [x] No implementation, DB migration, API call or runtime test was performed.
-- [ ] P2-CORE-002 exact schema/RLS contract and AC remain blocked.
-- [ ] Starting Room storage subset of P2-CORE-011 remains blocked.
+- [x] Phase 2 schema/security design contract and AC-SYS33-06..09 are recorded; actual migration/runtime proof remains for P2-CORE-002.
+- [x] Starting Room storage is assigned to SYS-20 Phase 3 / P3-LIFE-005 with AC-SYS20-06/07; it is not a P2 blocker.
 
-**Stop:** Do not start P2-CORE-001 automatically. The next bounded task requires separate owner authorization. Do not implement blocked sub-scopes until exact current rules and ACs are added and reviewed.
+**Stop:** P2-GATE-000 documentation preflight is complete. Do not auto-start P2-CORE-001; it requires separate owner authorization. Do not run P2-CORE-002 against any remote/undisclosed target; first accept P2-CORE-001 and prove the task-scoped disposable local/CI target. Starting Room storage is Phase 3, not a P2 blocker.
 
 ## Source links
 
