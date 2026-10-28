@@ -3,7 +3,7 @@
 **Domain:** Cross-Cutting Foundation  
 **New roadmap placement:** Design from Phase 1; real enforcement Phase 2 onwards  
 **Canonical owner:** this document for behavior summarized below; see `product/04_SYSTEMS_MAP.md` for neighbors.
-**Source basis (provenance, not runtime proof):** Old SoT ``31–32; DEC-053–063; AI-DEC-205/208/250; later user directions RECON-001/002 override contradictory UI-first assumptions.
+**Source basis (provenance, not runtime proof):** Old SoT §§31–32; DEC-053–063; AI-DEC-205/208/250; later user directions RECON-001/002 override contradictory UI-first assumptions.
 
 ## Goal
 
